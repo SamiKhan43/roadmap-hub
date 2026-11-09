@@ -5,42 +5,65 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Complete SQL Learning Roadmap</title>
 <script src="https://cdn.tailwindcss.com"></script>
+<script>tailwind.config={theme:{extend:{colors:{slate:{100:"#f4f4f5",200:"#e4e4e7",300:"#d4d4d8",400:"#a1a1aa",500:"#71717a",600:"#303036",700:"#232328",800:"#141417",900:"#0c0c0e",950:"#09090b"}}}}}</script>
 <script src="https://unpkg.com/lucide@latest"></script>
 <style>
-body{background:#0f172a;color:#e2e8f0;font-family:ui-sans-serif,system-ui,-apple-system,"Segoe UI",sans-serif}
-.mono{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace}
-.l1{--c:#34d399;--bg:rgba(16,185,129,.12)}.l2{--c:#818cf8;--bg:rgba(99,102,241,.14)}.l3{--c:#a78bfa;--bg:rgba(139,92,246,.16)}
-.l4{--c:#fbbf24;--bg:rgba(245,158,11,.13)}.l5{--c:#22d3ee;--bg:rgba(6,182,212,.13)}
-.accent{color:var(--c)}.badge{background:var(--bg);color:var(--c);border:1px solid var(--c)}
-.line{background:linear-gradient(to bottom,var(--c),transparent)}
-.node{border:2px solid var(--c);background:#0f172a;color:var(--c);transition:all .25s}
-.card{background:#1e293b;border:1px solid #334155;transition:all .25s;cursor:pointer;text-align:left;width:100%}
-.card:hover{transform:translateX(6px);border-color:var(--c);box-shadow:0 8px 30px -10px var(--c)}
-.row:hover .node,.done .node{background:var(--c);color:#0f172a}.row:hover .node{transform:scale(1.1)}
-.drawer{transform:translateX(100%);transition:transform .35s cubic-bezier(.4,0,.2,1)}
-.open .drawer{transform:none}.ov{opacity:0;pointer-events:none;transition:opacity .3s}.open .ov{opacity:1;pointer-events:auto}
-.code{background:#020617;border:1px solid #334155;border-radius:.75rem;padding:1rem;overflow-x:auto;font-size:.82rem;line-height:1.6;color:#e2e8f0;white-space:pre}
-.kw{color:#c084fc;font-weight:600}.st{color:#fbbf24}.nm{color:#38bdf8}.cm{color:#94a3b8;font-style:italic}
-table.res{border-collapse:collapse;width:100%;font-size:.85rem}
-table.res th{background:var(--bg);color:var(--c);text-align:left;padding:.5rem .75rem;border-bottom:1px solid var(--c);white-space:nowrap}
-table.res td{padding:.45rem .75rem;border-bottom:1px solid #334155}.null{color:#94a3b8;font-style:italic}
-.chip{background:#0f172a;border:1px solid #475569;color:#cbd5e1;font-size:.75rem;padding:.2rem .6rem;border-radius:999px}
-::-webkit-scrollbar{height:8px;width:8px}::-webkit-scrollbar-thumb{background:#475569;border-radius:8px}
-.fade{animation:f .4s ease both}@keyframes f{from{opacity:0;transform:translateY(8px)}to{opacity:1}}
+:root{--c:#34d399;--bg:rgba(52,211,153,.08);--line:#232328;--ease:cubic-bezier(.2,.8,.2,1);--t:160ms}
+.l1,.l2,.l3,.l4,.l5{--c:#34d399;--bg:rgba(52,211,153,.08)}
+*{-webkit-font-smoothing:antialiased}
+html{scroll-behavior:smooth}
+body{background:#09090b radial-gradient(60% 380px at 50% -80px,rgba(16,185,129,.14),transparent) no-repeat;color:#e4e4e7;font-family:ui-sans-serif,system-ui,-apple-system,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;line-height:1.65;letter-spacing:-.011em}
+.mono,code,pre{font-family:ui-monospace,"SF Mono","JetBrains Mono",Menlo,Consolas,"Liberation Mono",monospace;letter-spacing:0}
+.accent{color:var(--c)}
+.eyebrow{font-size:.6875rem;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--c);line-height:1.2}
+.lbl{font-size:.75rem;font-weight:500;letter-spacing:.02em;color:#a1a1aa;margin-bottom:.5rem}
+.sh{display:flex;align-items:center;gap:.625rem;font-size:.9375rem;font-weight:600;color:#fafafa;letter-spacing:-.01em;margin-bottom:.875rem}
+.sh i{width:1.75rem;height:1.75rem;padding:.4rem;border-radius:.5rem;background:var(--bg);border:1px solid rgba(52,211,153,.22);color:var(--c)}
+.logo{width:1.875rem;height:1.875rem;border-radius:.5rem;display:flex;align-items:center;justify-content:center;background:var(--bg);border:1px solid rgba(52,211,153,.3);color:var(--c)}
+.badge{background:var(--bg);color:var(--c);border:1px solid rgba(52,211,153,.25)}
+.line{background:linear-gradient(to bottom,rgba(52,211,153,.55),rgba(52,211,153,.04))}
+.node{border:1.5px solid rgba(52,211,153,.45);background:#09090b;color:var(--c);transition:all var(--t) var(--ease)}
+.row:hover .node{border-color:var(--c);box-shadow:0 0 0 4px rgba(52,211,153,.12),0 0 18px rgba(52,211,153,.35)}
+.done .node{background:var(--c);color:#052e1f;border-color:var(--c)}
+.card{background:linear-gradient(180deg,#131316,#0f0f12);border:1px solid var(--line);box-shadow:0 1px 0 rgba(255,255,255,.03) inset,0 1px 2px rgba(0,0,0,.4);transition:border-color var(--t) var(--ease),box-shadow 200ms var(--ease),transform var(--t) var(--ease);cursor:pointer;text-align:left;width:100%}
+.card:hover{transform:translateY(-1px);border-color:rgba(52,211,153,.5);box-shadow:0 1px 0 rgba(255,255,255,.04) inset,0 0 0 1px rgba(52,211,153,.12),0 12px 32px -14px rgba(52,211,153,.4)}
+button,input,textarea{transition:background-color var(--t) var(--ease),border-color var(--t) var(--ease),filter var(--t) var(--ease),opacity var(--t) var(--ease)}
+button:focus-visible,input:focus-visible,textarea:focus-visible{outline:2px solid var(--c);outline-offset:2px}
+.drawer{transform:translateX(100%);transition:transform 260ms var(--ease);background:#0c0c0f;border-left:1px solid var(--line)}
+.open .drawer{transform:none}
+.ov{opacity:0;pointer-events:none;transition:opacity 200ms ease-out;backdrop-filter:blur(4px)}
+.open .ov{opacity:1;pointer-events:auto}
+.code{background:#060608;border:1px solid var(--line);border-radius:.625rem;padding:1rem 1.125rem;overflow-x:auto;font-size:.8125rem;line-height:1.7;color:#e4e4e7;white-space:pre}
+textarea.code:focus{border-color:rgba(52,211,153,.5)}
+.kw{color:#34d399;font-weight:600}.st{color:#e6c07b}.nm{color:#7dd3fc}.cm{color:#71717a;font-style:italic}
+table.res{border-collapse:collapse;width:100%;font-size:.8125rem}
+table.res th{background:rgba(52,211,153,.06);color:var(--c);text-align:left;padding:.625rem .875rem;border-bottom:1px solid var(--line);font-size:.6875rem;letter-spacing:.06em;text-transform:uppercase;font-weight:600;white-space:nowrap}
+table.res td{padding:.5rem .875rem;border-bottom:1px solid #1b1b20;color:#e4e4e7}
+table.res tr:last-child td{border-bottom:0}.null{color:#71717a;font-style:italic}
+.chip{background:#141417;border:1px solid var(--line);color:#d4d4d8;font-size:.75rem;padding:.25rem .625rem;border-radius:999px;line-height:1.4}
+.scn{background:var(--bg);border:1px solid rgba(52,211,153,.2);border-radius:.75rem;padding:1rem 1.125rem}
+.frag{list-style:none;margin:0;padding:0;display:grid;gap:.625rem}
+.frag li{position:relative;padding-left:1.125rem;color:#d4d4d8;line-height:1.65}
+.frag li:before{content:"";position:absolute;left:.125rem;top:.7em;width:.3125rem;height:.3125rem;border-radius:50%;background:var(--c)}
+.frag b,.scn b{color:#fafafa;font-weight:600}
+.frag code,.scn code,.sh+p code{background:#18181b;border:1px solid var(--line);padding:.0625rem .375rem;border-radius:.375rem;font-size:.85em;color:#6ee7b7}
+::-webkit-scrollbar{height:8px;width:8px}::-webkit-scrollbar-thumb{background:#2a2a30;border-radius:8px}::-webkit-scrollbar-thumb:hover{background:#3f3f46}
+.fade{animation:f 260ms var(--ease) both}@keyframes f{from{opacity:0;transform:translateY(6px)}to{opacity:1}}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
 </style>
 </head>
 <body class="min-h-screen">
 <header class="sticky top-0 z-30 backdrop-blur bg-slate-900/85 border-b border-slate-700">
  <div class="max-w-6xl mx-auto px-4 py-3 flex items-center gap-4">
-  <i data-lucide="database" class="text-emerald-400"></i><h1 class="font-bold text-lg">SQL Roadmap <span class="hidden sm:inline text-slate-400 font-normal text-sm">Beginner → Professional</span></h1>
+  <span class="logo"><i data-lucide="database" class="w-4 h-4"></i></span><h1 class="font-semibold tracking-tight text-base">SQL Roadmap <span class="hidden sm:inline text-slate-400 font-normal text-sm">Beginner → Professional</span></h1>
   <div class="ml-auto flex items-center gap-3 w-52 sm:w-72">
-   <div class="flex-1 h-2 bg-slate-700 rounded-full overflow-hidden"><div id="bar" class="h-full bg-gradient-to-r from-emerald-400 via-indigo-400 via-violet-400 via-amber-400 to-cyan-400 transition-all duration-500" style="width:0"></div></div>
+   <div class="flex-1 h-2 bg-slate-700 rounded-full overflow-hidden"><div id="bar" class="h-full bg-emerald-400 transition-all duration-500" style="width:0"></div></div>
    <span id="pct" class="text-sm text-slate-300 mono">0/32</span>
   </div>
  </div>
 </header>
 <main class="max-w-4xl mx-auto px-4 py-10">
- <p class="text-slate-300 mb-4 text-lg">32 topics across 5 levels, from your first <span class="mono text-emerald-400">SELECT</span> to interview-ready analytics. Click any node to open its lesson.</p>
+ <div class="mb-8"><div class="eyebrow mb-3">Learning path · Beginner to Professional</div><h2 class="text-4xl sm:text-5xl font-semibold text-white mb-4" style="letter-spacing:-.03em;line-height:1.1">Master SQL, one step at a time.</h2><p class="text-slate-400 text-lg max-w-2xl" style="line-height:1.65">Follow a clear path from your first <span class="mono accent">SELECT</span> to production-grade analytics. Open any node for a lesson, an example and a practice challenge.</p></div>
  <div id="legend" class="flex flex-wrap gap-2 mb-10"></div>
  <div id="road"></div>
  <div id="mile"></div>
@@ -241,6 +264,47 @@ s:`-- Classic patterns\nSELECT MAX(x) FROM t WHERE x < (SELECT MAX(x) FROM t);  
 sc:"Classic question: What is the second-highest salary?",tb:["employees"],
 q:`SELECT MAX(salary) AS second_highest\nFROM employees\nWHERE salary < (SELECT MAX(salary) FROM employees);`,o:R(["second_highest"],[[5200]])}
 ];
+const PR=[
+["Which customer placed order 103? Return that customer's name and city.","Join orders to customers on the foreign key, then filter on the order id.",`SELECT c.name, c.city\nFROM orders o\nJOIN customers c ON c.id = o.customer_id\nWHERE o.order_id = 103;`],
+["Create a table customers_copy with an id primary key and a name (max 50 characters), insert one row, then select it.","You need CREATE TABLE, INSERT INTO ... VALUES and SELECT, in that order.",`CREATE TABLE customers_copy (id INT PRIMARY KEY, name VARCHAR(50));\nINSERT INTO customers_copy VALUES (1, 'Ayesha');\nSELECT * FROM customers_copy;`],
+["List each city in customers only once, with the column named location.","DISTINCT removes duplicates and AS renames the column.",`SELECT DISTINCT city AS location\nFROM customers;`],
+["Find products whose name starts with G, or whose price is above 30.","Use LIKE with % for the pattern and OR between the two conditions.",`SELECT name, price\nFROM products\nWHERE name LIKE 'G%' OR price > 30;`],
+["Show the two cheapest products, cheapest first.","Sort ascending, then limit the rows.",`SELECT name, price\nFROM products\nORDER BY price ASC\nLIMIT 2;`],
+["Return 10 divided by 4 as exactly 2.5 without typing a decimal point in the numbers.","CAST one side to DECIMAL before dividing.",`SELECT CAST(10 AS DECIMAL(5,2)) / 4 AS result;`],
+["Show every customer's name in lowercase together with its length.","LOWER() and LENGTH() work row by row.",`SELECT LOWER(name) AS name_lower, LENGTH(name) AS len\nFROM customers;`],
+["Round every product price to the nearest whole number.","ROUND with no second argument rounds to an integer.",`SELECT name, ROUND(price) AS rounded\nFROM products;`],
+["Label each order Big if amount is 100 or more, otherwise Small.","CASE WHEN ... THEN ... ELSE ... END.",`SELECT order_id,\n  CASE WHEN amount >= 100 THEN 'Big' ELSE 'Small' END AS size\nFROM orders;`],
+["For paid orders only, show the order count and total amount per customer_id.","Filter with WHERE before GROUP BY.",`SELECT customer_id, COUNT(*) AS orders, SUM(amount) AS total\nFROM orders\nWHERE status = 'paid'\nGROUP BY customer_id;`],
+["Show every customer's total order amount, with 0 for customers who never ordered.","LEFT JOIN keeps all customers; COALESCE turns NULL into 0.",`SELECT c.name, COALESCE(SUM(o.amount), 0) AS total\nFROM customers c\nLEFT JOIN orders o ON o.customer_id = c.id\nGROUP BY c.name;`],
+["Return every distinct city from customers plus Islamabad, with no duplicates.","UNION removes duplicates between two SELECTs.",`SELECT city FROM customers\nUNION\nSELECT 'Islamabad';`],
+["List customers who have at least one order, using EXISTS.","Correlate the inner query to the outer customer id.",`SELECT name\nFROM customers c\nWHERE EXISTS (\n  SELECT 1 FROM orders o WHERE o.customer_id = c.id\n);`],
+["Raise all Stationery prices by 10%, then show the Stationery products.","UPDATE with a WHERE, then a SELECT to verify.",`UPDATE products\nSET price = price * 1.10\nWHERE category = 'Stationery';\n\nSELECT name, price FROM products WHERE category = 'Stationery';`],
+["Using a CTE, find customers whose total order amount is above 100.","Aggregate in the CTE, then join to customers and filter.",`WITH totals AS (\n  SELECT customer_id, SUM(amount) AS total\n  FROM orders GROUP BY customer_id\n)\nSELECT c.name, t.total\nFROM totals t\nJOIN customers c ON c.id = t.customer_id\nWHERE t.total > 100;`],
+["Rank employees by salary within each department using RANK().","PARTITION BY dept, ORDER BY salary DESC.",`SELECT name, dept, salary,\n  RANK() OVER (PARTITION BY dept ORDER BY salary DESC) AS rk\nFROM employees;`],
+["Show each sale's amount as a percentage of the total of all sales.","SUM(amount) OVER () gives the grand total on every row.",`SELECT id, amount,\n  ROUND(amount * 100.0 / SUM(amount) OVER (), 1) AS pct_of_total\nFROM sales;`],
+["Design a 3NF schema for students, courses and enrollments (many-to-many).","A many-to-many relationship needs a bridge table with two foreign keys.",`CREATE TABLE students (id INT PRIMARY KEY, name VARCHAR(80));\nCREATE TABLE courses  (id INT PRIMARY KEY, title VARCHAR(80));\nCREATE TABLE enrollments (\n  student_id INT REFERENCES students(id),\n  course_id  INT REFERENCES courses(id),\n  PRIMARY KEY (student_id, course_id)\n);`],
+["Create a view customer_totals showing each customer's name and total paid amount.","Join, filter paid, group, and wrap it in CREATE VIEW.",`CREATE VIEW customer_totals AS\nSELECT c.name, SUM(o.amount) AS total_paid\nFROM customers c\nJOIN orders o ON o.customer_id = c.id\nWHERE o.status = 'paid'\nGROUP BY c.name;`],
+["Alter products so price must be greater than 0 and category defaults to 'General'.","ALTER TABLE ... ADD CONSTRAINT, and SET DEFAULT.",`ALTER TABLE products\n  ADD CONSTRAINT price_positive CHECK (price > 0);\nALTER TABLE products\n  ALTER COLUMN category SET DEFAULT 'General';`],
+["Move 50 from account 2 to account 1 in a transaction, with a SAVEPOINT between the two updates.","BEGIN ... SAVEPOINT ... COMMIT.",`BEGIN;\n  UPDATE accounts SET balance = balance - 50 WHERE id = 2;\n  SAVEPOINT after_debit;\n  UPDATE accounts SET balance = balance + 50 WHERE id = 1;\nCOMMIT;`],
+["Lock account 1's row so nobody else can change it until you finish.","SELECT ... FOR UPDATE inside a transaction.",`BEGIN;\nSELECT * FROM accounts WHERE id = 1 FOR UPDATE;\n-- make your changes here\nCOMMIT;`],
+["Orders are often filtered by customer_id and then status. Create the best index and say why the column order matters.","Put the most commonly filtered (equality) column first.",`CREATE INDEX idx_orders_cust_status\n  ON orders (customer_id, status);\n-- Left-most column first: queries filtering on customer_id\n-- (alone or with status) can use this index.`],
+["Rewrite WHERE amount + 10 > 100 so an index on amount can be used.","Keep the indexed column alone on one side.",`SELECT * FROM orders\nWHERE amount > 90;`],
+["Write a function discounted_price(price, pct) that returns the price after the percentage discount.","RETURNS NUMERIC and a single SELECT expression.",`CREATE FUNCTION discounted_price(price NUMERIC, pct NUMERIC)\nRETURNS NUMERIC AS $$\n  SELECT price - price * pct / 100;\n$$ LANGUAGE sql;\n\nSELECT discounted_price(200, 15);   -- 170`],
+["Write a BEFORE INSERT trigger that sets created_at to the current time on orders.","The trigger function modifies NEW and returns it.",`CREATE FUNCTION set_created() RETURNS trigger AS $$\nBEGIN\n  NEW.created_at := now();\n  RETURN NEW;\nEND $$ LANGUAGE plpgsql;\n\nCREATE TRIGGER trg_created\n  BEFORE INSERT ON orders\n  FOR EACH ROW EXECUTE FUNCTION set_created();`],
+["Create a role reporting that can read products and customers but cannot change anything.","Grant only SELECT (least privilege).",`CREATE ROLE reporting;\nGRANT SELECT ON products, customers TO reporting;`],
+["Find customers whose city is missing or blank.","Check both NULL and an empty string after trimming.",`SELECT *\nFROM customers\nWHERE city IS NULL OR TRIM(city) = '';`],
+["Rank regions by total sales, highest first.","GROUP BY region, then ORDER BY the SUM.",`SELECT region, SUM(amount) AS total\nFROM sales\nGROUP BY region\nORDER BY total DESC;`],
+["Return the second-highest-paid employee in each department using DENSE_RANK.","Rank in a CTE, then keep rank = 2.",`WITH r AS (\n  SELECT name, dept, salary,\n    DENSE_RANK() OVER (PARTITION BY dept ORDER BY salary DESC) AS rk\n  FROM employees\n)\nSELECT dept, name, salary FROM r WHERE rk = 2;`],
+["Write three KPI queries: total paid revenue, number of customers and average paid order value.","Three simple aggregates on orders and customers.",`SELECT SUM(amount) AS revenue FROM orders WHERE status = 'paid';\nSELECT COUNT(*) AS customers FROM customers;\nSELECT ROUND(AVG(amount), 2) AS aov FROM orders WHERE status = 'paid';`],
+["Find customers who never placed an order, without using EXCEPT.","Use an anti-join: LEFT JOIN and keep rows where the right side is NULL.",`SELECT c.name\nFROM customers c\nLEFT JOIN orders o ON o.customer_id = c.id\nWHERE o.order_id IS NULL;`]
+];
+const PROJ=[
+{t:"Library Starter Database",ic:"library",brief:"Model a small library and answer basic questions about it. This proves you can design tables and write clean beginner queries.",steps:["Create tables: books, members and loans, with primary and foreign keys","Insert at least 5 rows into each table","Find books by title pattern and publication-year range (LIKE, BETWEEN)","List the 3 newest books (ORDER BY, LIMIT)","List distinct genres and the members who joined this year"],skills:"Topics 1-6",out:"A library.sql file with the schema, sample data and 5 queries."},
+{t:"Online Store Reports",ic:"shopping-cart",brief:"Build a small shop database and produce the reports a manager would ask for every Monday.",steps:["Create customers, products, orders and order_items tables","Report revenue per customer with LEFT JOIN (include 0)","Find customers who never ordered (EXCEPT or anti-join)","Label products Budget / Standard / Premium with CASE","Compute orders and revenue per month with GROUP BY and EXTRACT","Add an order with INSERT and fix a price with a safe UPDATE"],skills:"Topics 7-14",out:"A store.sql file and a short note describing each report."},
+{t:"Sales Analytics Warehouse",ic:"warehouse",brief:"Design a normalized schema and write the analytical queries behind a sales dashboard.",steps:["Draw an ERD and create a 3NF schema with constraints","Create a view for monthly revenue","Write a CTE chain: revenue, then growth, then top categories","Calculate running totals and month-over-month growth with window functions","Return the top 3 products per category","Add a materialized view for the heaviest report"],skills:"Topics 15-20",out:"An ERD image plus schema.sql and analytics.sql."},
+{t:"Bank Transfer System",ic:"landmark",brief:"Build the safe core of a banking app: money moves atomically, every change is audited and access is limited.",steps:["Create accounts and transactions tables with CHECK(balance >= 0)","Write a transfer function that uses a transaction with rollback on error","Add an AFTER UPDATE trigger that logs changes to an audit table","Create roles: teller (read/write) and auditor (read-only)","Index the transactions table and compare EXPLAIN ANALYZE before and after","Explain which isolation level you chose and why"],skills:"Topics 21-27",out:"A bank.sql file and a one-page design note."},
+{t:"E-commerce Analytics Case Study",ic:"trending-up",brief:"Act as a data analyst: take a messy e-commerce dataset (e.g. Olist or Northwind), clean it and present business findings.",steps:["Import the dataset and document its tables","Clean it: remove duplicates, trim text, handle NULLs","Calculate KPIs: revenue, orders, AOV and repeat-customer rate","Build a monthly retention or cohort table","Segment customers by spend (e.g. top 20%)","Write 3 insights and 3 recommendations in a README","Prepare answers to 5 interview questions based on your own project"],skills:"Topics 28-32",out:"A GitHub repo with SQL scripts, README insights and a dashboard screenshot."}
+];
 const MILE=["Design relational databases","Write SQL queries independently","Join multiple tables confidently","Perform complex data analysis","Use CTEs and window functions","Clean and transform datasets","Understand database performance","Optimize SQL queries","Solve real-world business problems","Complete SQL assessments & interviews"];
 
 const esc=s=>String(s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");
@@ -250,39 +314,42 @@ const hl=s=>esc(s).replace(RX,(m,c,st,k,f,t)=>c?`<span class="cm">${c}</span>`:s
 const md=t=>{const w=t.c.map((c,i)=>Math.max(String(c).length,...t.r.map(r=>String(r[i]===null?"NULL":r[i]).length)));const row=r=>"| "+r.map((v,i)=>String(v===null?"NULL":v).padEnd(w[i])).join(" | ")+" |";return row(t.c)+"\n| "+w.map(n=>"-".repeat(n)).join(" | ")+" |\n"+t.r.map(row).join("\n")};
 const resTable=o=>`<div class="overflow-x-auto rounded-xl border border-slate-600"><table class="res mono"><thead><tr>${o.c.map(c=>`<th>${esc(c)}</th>`).join("")}</tr></thead><tbody>${o.r.map(r=>`<tr>${r.map(v=>`<td>${v===null?'<span class="null">NULL</span>':esc(v)}</td>`).join("")}</tr>`).join("")}</tbody></table></div>`;
 
-let done=new Set(),ms=new Set(),cur=-1;
-try{done=new Set(JSON.parse(localStorage.getItem("sqlroad2")||"[]"));ms=new Set(JSON.parse(localStorage.getItem("sqlmile2")||"[]"))}catch(e){}
-const save=()=>{try{localStorage.setItem("sqlroad2",JSON.stringify([...done]));localStorage.setItem("sqlmile2",JSON.stringify([...ms]))}catch(e){}};
+let done=new Set(),ms=new Set(),pj=new Set(),cur=-1;
+try{done=new Set(JSON.parse(localStorage.getItem("sqlroad2")||"[]"));ms=new Set(JSON.parse(localStorage.getItem("sqlmile2")||"[]"));pj=new Set(JSON.parse(localStorage.getItem("sqlproj2")||"[]"))}catch(e){}
+const save=()=>{try{localStorage.setItem("sqlroad2",JSON.stringify([...done]));localStorage.setItem("sqlmile2",JSON.stringify([...ms]));localStorage.setItem("sqlproj2",JSON.stringify([...pj]))}catch(e){}};
 
 function renderRoad(){
  let h="",n=0;
  LV.forEach((L,li)=>{
   const items=TOPICS.map((x,i)=>[x,i]).filter(([x])=>x.l===li),dn=items.filter(([,i])=>done.has(i)).length;
-  h+=`<section class="${L.cls} mb-12"><div class="flex flex-wrap items-center gap-3 mb-1"><span class="badge w-9 h-9 rounded-lg flex items-center justify-center"><i data-lucide="${L.ic}" class="w-5 h-5"></i></span><h2 class="text-xl sm:text-2xl font-bold accent">${L.n}</h2><span class="ml-auto mono text-sm text-slate-300">${dn}/${items.length}</span></div><p class="text-slate-400 text-sm mb-6 pl-12"><b class="text-slate-300">Goal:</b> ${L.g}</p><div class="relative pl-14"><div class="line absolute left-[22px] top-0 bottom-0 w-0.5"></div>`;
+  h+=`<section class="${L.cls} mb-12"><div class="flex flex-wrap items-center gap-3 mb-1"><span class="badge w-10 h-10 rounded-lg flex items-center justify-center"><i data-lucide="${L.ic}" class="w-5 h-5"></i></span><div class="flex-1"><div class="eyebrow mb-1">${L.n.split(" · ")[0]}</div><h2 class="text-2xl font-semibold tracking-tight text-white" style="line-height:1.2">${L.n.split(" · ")[1]}</h2></div><span class="ml-auto mono text-sm text-slate-300">${dn}/${items.length}${pj.has(li)?" · project ✓":""}</span></div><p class="text-slate-400 text-sm mb-6 pl-[3.25rem]"><b class="text-slate-300 font-medium">Goal:</b> ${L.g}</p><div class="relative pl-14"><div class="line absolute left-[22px] top-0 bottom-0 w-0.5"></div>`;
   for(const [x,i] of items){n++;
    h+=`<div class="row relative mb-4 ${done.has(i)?"done":""}"><div class="node absolute -left-14 top-3 w-11 h-11 rounded-full flex items-center justify-center z-10">${done.has(i)?'<i data-lucide="check" class="w-5 h-5"></i>':`<span class="mono font-bold text-sm">${n}</span>`}</div><button class="card rounded-xl p-4 flex items-center gap-4" onclick="openD(${i})"><span class="badge w-10 h-10 rounded-lg flex items-center justify-center shrink-0"><i data-lucide="${x.i}" class="w-5 h-5"></i></span><span class="flex-1 min-w-0"><span class="block font-semibold text-slate-100">${x.t}</span><span class="block text-sm text-slate-400 truncate">${x.c.slice(0,4).join(" · ")}</span></span><i data-lucide="chevron-right" class="accent w-5 h-5"></i></button></div>`;}
+  const P=PROJ[li];
+  h+=`<div class="row relative mb-2 ${pj.has(li)?"done":""}"><div class="node absolute -left-14 top-3 w-11 h-11 rounded-full flex items-center justify-center z-10"><i data-lucide="${pj.has(li)?"check":"flag"}" class="w-5 h-5"></i></div><button class="card rounded-xl p-4 flex items-center gap-4" style="border-style:dashed;border-color:var(--c)" onclick="openP(${li})"><span class="badge w-10 h-10 rounded-lg flex items-center justify-center shrink-0"><i data-lucide="${P.ic}" class="w-5 h-5"></i></span><span class="flex-1 min-w-0"><span class="block eyebrow">Level project</span><span class="block font-semibold text-slate-100">${P.t}</span><span class="block text-sm text-slate-400 truncate">${P.brief}</span></span><i data-lucide="chevron-right" class="accent w-5 h-5"></i></button></div>`;
   h+=`</div></section>`;
  });
  document.getElementById("road").innerHTML=h;
- document.getElementById("legend").innerHTML=LV.map(L=>`<span class="${L.cls} badge px-3 py-1 rounded-full text-xs font-semibold">${L.n.split(" · ")[1]}</span>`).join("");
- document.getElementById("mile").innerHTML=`<section class="l5"><div class="rounded-2xl p-6" style="background:linear-gradient(135deg,rgba(16,185,129,.12),rgba(139,92,246,.14));border:1px solid #475569"><h2 class="text-2xl font-bold flex items-center gap-2 mb-1"><i data-lucide="trophy" class="text-amber-400"></i>Final Milestone</h2><p class="text-slate-300 mb-4">By the end you should be able to (tick as you go):</p><div class="grid sm:grid-cols-2 gap-2">${MILE.map((m,i)=>`<label class="flex items-center gap-3 bg-slate-800/70 border border-slate-600 rounded-lg px-3 py-2 cursor-pointer hover:border-amber-400 transition"><input type="checkbox" class="w-4 h-4 accent-amber-400" ${ms.has(i)?"checked":""} onchange="tm(${i})"><span class="text-sm ${ms.has(i)?"line-through text-slate-400":"text-slate-100"}">${i+1}. ${m}</span></label>`).join("")}</div></div></section>`;
+ document.getElementById("legend").innerHTML=[["list-checks","32 topics"],["target","32 challenges"],["flag","5 projects"]].map(([i,t])=>`<span class="chip flex items-center gap-1.5"><i data-lucide="${i}" class="w-3.5 h-3.5 accent"></i>${t}</span>`).join("");
+ document.getElementById("mile").innerHTML=`<section class="l5"><div class="rounded-2xl p-6" style="background:linear-gradient(135deg,rgba(16,185,129,.10),rgba(9,9,11,0) 60%);border:1px solid #232328"><h2 class="text-2xl font-bold flex items-center gap-2 mb-1"><i data-lucide="trophy" class="accent"></i>Final Milestone</h2><p class="text-slate-300 mb-4">By the end you should be able to (tick as you go):</p><div class="grid sm:grid-cols-2 gap-2">${MILE.map((m,i)=>`<label class="flex items-center gap-3 bg-slate-800/70 border border-slate-600 rounded-lg px-3 py-2 cursor-pointer hover:border-emerald-500 transition"><input type="checkbox" class="w-4 h-4 accent-emerald-400" ${ms.has(i)?"checked":""} onchange="tm(${i})"><span class="text-sm ${ms.has(i)?"line-through text-slate-400":"text-slate-100"}">${i+1}. ${m}</span></label>`).join("")}</div></div></section>`;
  document.getElementById("pct").textContent=done.size+"/"+TOPICS.length;
  document.getElementById("bar").style.width=(done.size/TOPICS.length*100)+"%";
  lucide.createIcons();
 }
 const tm=i=>{ms.has(i)?ms.delete(i):ms.add(i);save();renderRoad()};
-const sec=(ic,t,b)=>`<section class="fade"><h3 class="flex items-center gap-2 font-semibold text-slate-100 mb-3"><i data-lucide="${ic}" class="w-4 h-4 accent"></i>${t}</h3>${b}</section>`;
+const sec=(ic,t,b)=>`<section class="fade"><h3 class="sh"><i data-lucide="${ic}"></i>${t}</h3>${b}</section>`;
+const frag=h=>`<ul class="frag">${h.split(/(?<=[.!?])\s+(?=[A-Z<"\\(])/).map(x=>`<li>${x}</li>`).join("")}</ul>`;
 function openD(i){
  cur=i;const x=TOPICS[i],L=LV[x.l],dr=document.getElementById("dr");
  dr.className=dr.className.replace(/\bl\d\b/g,"").trim()+" "+L.cls;
- document.getElementById("dh").innerHTML=`<span class="badge w-12 h-12 rounded-xl flex items-center justify-center shrink-0"><i data-lucide="${x.i}" class="w-6 h-6"></i></span><div class="flex-1"><div class="text-xs uppercase tracking-wider font-bold accent">${L.n.split(" · ")[0]} · Topic ${i+1} of ${TOPICS.length}</div><h2 class="text-2xl font-bold text-white">${x.t}</h2></div><button onclick="closeD()" aria-label="Close" class="p-2 rounded-lg hover:bg-slate-700 text-slate-300"><i data-lucide="x"></i></button>`;
+ document.getElementById("dh").innerHTML=`<span class="badge w-12 h-12 rounded-xl flex items-center justify-center shrink-0"><i data-lucide="${x.i}" class="w-6 h-6"></i></span><div class="flex-1"><div class="eyebrow">${L.n.split(" · ")[0]} · Topic ${i+1} of ${TOPICS.length}</div><h2 class="text-2xl font-bold text-white">${x.t}</h2></div><button onclick="closeD()" aria-label="Close" class="p-2 rounded-lg hover:bg-slate-700 text-slate-300"><i data-lucide="x"></i></button>`;
  const tabs=x.tb.map(k=>{const tb=typeof k==="string"?TB[k]:k;return `<div class="mb-3"><div class="text-xs text-slate-400 mb-1 mono">Table: <span class="accent">${tb.n}</span></div><pre class="code mono">${esc(md(tb))}</pre></div>`}).join("")||`<p class="text-sm text-slate-400 mb-3">No sample table needed for this example.</p>`;
  document.getElementById("db").innerHTML=
-  sec("lightbulb","Concept Primer",`<p class="text-slate-200 leading-relaxed [&_code]:mono [&_code]:bg-slate-900 [&_code]:px-1.5 [&_code]:rounded [&_code]:accent [&_b]:text-white">${x.p}</p>`)+
+  sec("lightbulb","Concept Primer",frag(x.p))+
   sec("list-checks","What you'll cover",`<div class="flex flex-wrap gap-2">${x.c.map(c=>`<span class="chip">${c}</span>`).join("")}</div>`)+
   sec("code-2","Syntax Blueprint",`<pre class="code mono">${hl(x.s)}</pre>`)+
-  sec("briefcase","Interactive Example Case",`<div class="rounded-xl p-4 mb-4" style="background:var(--bg);border:1px solid var(--c)"><div class="text-xs font-bold uppercase accent mb-1">Business scenario</div><p class="text-slate-100">${x.sc}</p></div><div class="text-sm font-semibold text-slate-300 mb-2">1. Sample data</div>${tabs}<div class="text-sm font-semibold text-slate-300 mb-2 mt-4">2. SQL solution</div><pre class="code mono">${hl(x.q)}</pre><button id="run" class="mt-3 px-4 py-2 rounded-lg font-semibold text-slate-900 flex items-center gap-2 hover:brightness-110" style="background:var(--c)"><i data-lucide="play" class="w-4 h-4"></i>Run query</button><div id="out" class="mt-4"></div>`);
- document.getElementById("run").onclick=()=>{document.getElementById("out").innerHTML=`<div class="text-sm font-semibold text-slate-300 mb-2 fade">3. Result · ${x.o.r.length} row${x.o.r.length>1?"s":""}</div><div class="fade">${resTable(x.o)}</div>`};
+  sec("briefcase","Interactive Example Case",`<div class="scn mb-4"><div class="eyebrow mb-1">Business scenario</div><p class="text-slate-100">${x.sc}</p></div><div class="lbl">1. Sample data</div>${tabs}<div class="lbl mt-4">2. SQL solution</div><pre class="code mono">${hl(x.q)}</pre><button id="run" class="mt-3 px-4 py-2 rounded-lg font-semibold text-slate-900 flex items-center gap-2 hover:brightness-110" style="background:var(--c)"><i data-lucide="play" class="w-4 h-4"></i>Run query</button><div id="out" class="mt-4"></div>`)+practice(i);
+ document.getElementById("run").onclick=()=>{document.getElementById("out").innerHTML=`<div class="lbl fade">3. Result · ${x.o.r.length} row${x.o.r.length>1?"s":""}</div><div class="fade">${resTable(x.o)}</div>`};
  const d=done.has(i);
  document.getElementById("df").innerHTML=`<button onclick="nav(-1)" ${i==0?"disabled":""} class="p-2 rounded-lg bg-slate-700 hover:bg-slate-600 disabled:opacity-30" aria-label="Previous"><i data-lucide="arrow-left"></i></button><button onclick="toggle()" class="flex-1 py-2 rounded-lg font-semibold flex items-center justify-center gap-2 ${d?"bg-slate-700 text-slate-100":"text-slate-900"}" ${d?"":'style="background:var(--c)"'}><i data-lucide="${d?"rotate-ccw":"check-circle-2"}" class="w-4 h-4"></i>${d?"Mark as not done":"Mark complete"}</button><button onclick="nav(1)" ${i==TOPICS.length-1?"disabled":""} class="p-2 rounded-lg bg-slate-700 hover:bg-slate-600 disabled:opacity-30" aria-label="Next"><i data-lucide="arrow-right"></i></button>`;
  document.getElementById("db").scrollTop=0;
@@ -292,6 +359,18 @@ function closeD(){const r=document.getElementById("root");r.classList.remove("op
 const nav=d=>{const n=cur+d;if(n>=0&&n<TOPICS.length)openD(n)};
 function toggle(){done.has(cur)?done.delete(cur):done.add(cur);save();renderRoad();openD(cur)}
 document.addEventListener("keydown",e=>{if(e.key==="Escape")closeD();if(document.getElementById("root").classList.contains("open")){if(e.key==="ArrowRight")nav(1);if(e.key==="ArrowLeft")nav(-1)}});
+function practice(i){const p=PR[i];return sec("target","Practice Challenge",`<div class="rounded-xl p-4 mb-3 border border-slate-700 bg-slate-900/60"><div class="eyebrow mb-1">Your turn</div><p class="text-slate-100">${p[0]}</p></div><textarea class="code mono w-full" rows="5" placeholder="Write your SQL here..." spellcheck="false" style="white-space:pre-wrap;resize:vertical"></textarea><div class="flex flex-wrap gap-2 mt-3"><button onclick="document.getElementById('hint').classList.toggle('hidden')" class="px-4 py-2 rounded-lg bg-slate-700 hover:bg-slate-600 text-slate-100 text-sm font-semibold flex items-center gap-2"><i data-lucide="lightbulb" class="w-4 h-4"></i>Show hint</button><button onclick="document.getElementById('sol').classList.toggle('hidden')" class="px-4 py-2 rounded-lg text-slate-900 text-sm font-semibold flex items-center gap-2 hover:brightness-110" style="background:var(--c)"><i data-lucide="eye" class="w-4 h-4"></i>Show solution</button></div><div id="hint" class="hidden mt-3 scn text-sm text-slate-100">Hint: ${p[1]}</div><pre id="sol" class="code mono hidden mt-3">${hl(p[2])}</pre><p class="text-xs text-slate-400 mt-2">Try it first. Paste the sample data into your own database (see Topic 2) to test your answer.</p>`)}
+function openP(li){
+ cur=-1;const P=PROJ[li],L=LV[li],dr=document.getElementById("dr");
+ dr.className=dr.className.replace(/\bl\d\b/g,"").trim()+" "+L.cls;
+ document.getElementById("dh").innerHTML=`<span class="badge w-12 h-12 rounded-xl flex items-center justify-center shrink-0"><i data-lucide="${P.ic}" class="w-6 h-6"></i></span><div class="flex-1"><div class="eyebrow">${L.n.split(" · ")[0]} · Mini-project</div><h2 class="text-2xl font-bold text-white">${P.t}</h2></div><button onclick="closeD()" aria-label="Close" class="p-2 rounded-lg hover:bg-slate-700 text-slate-300"><i data-lucide="x"></i></button>`;
+ document.getElementById("db").innerHTML=sec("flag","Project Brief",`<p class="text-slate-200 leading-relaxed">${P.brief}</p>`)+sec("list-ordered","What You'll Build",`<ol class="space-y-2">${P.steps.map((x,k)=>`<li class="flex gap-3 items-start"><span class="badge w-6 h-6 rounded-full flex items-center justify-center text-xs mono shrink-0">${k+1}</span><span class="text-slate-200">${x}</span></li>`).join("")}</ol>`)+sec("wrench","Skills Used",`<span class="chip">${P.skills}</span>`)+sec("package-check","Deliverable",`<div class="scn"><p class="text-slate-100">${P.out}</p></div><p class="text-xs text-slate-400 mt-3">Tip: publish the project on GitHub. It becomes part of your portfolio.</p>`);
+ const d=pj.has(li);
+ document.getElementById("df").innerHTML=`<button onclick="tp(${li})" class="flex-1 py-2 rounded-lg font-semibold flex items-center justify-center gap-2 ${d?"bg-slate-700 text-slate-100":"text-slate-900"}" ${d?"":'style="background:var(--c)"'}><i data-lucide="${d?"rotate-ccw":"check-circle-2"}" class="w-4 h-4"></i>${d?"Mark project as not done":"Mark project complete"}</button>`;
+ document.getElementById("db").scrollTop=0;
+ const r=document.getElementById("root");r.style.pointerEvents="auto";r.classList.add("open");lucide.createIcons();
+}
+function tp(li){pj.has(li)?pj.delete(li):pj.add(li);save();renderRoad();openP(li)}
 renderRoad();
 </script>
 </body>
