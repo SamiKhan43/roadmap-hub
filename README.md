@@ -1,6 +1,6 @@
 <div align="center">
 
-#  Interactive Learning Roadmaps
+# Interactive Learning Roadmaps
 
 **Structured, step-by-step developer roadmaps. Pick a learning path, study real-world examples, complete interactive challenges, and build production-ready projects.**
 
@@ -9,7 +9,7 @@
 ![No Build Step](https://img.shields.io/badge/build-none-lightgrey?style=for-the-badge)
 ![Hosted on GitHub Pages](https://img.shields.io/badge/hosted%20on-GitHub%20Pages-24292e?style=for-the-badge&logo=github)
 
-[Live Demo](https://YOUR-USERNAME.github.io/roadmaps/) · [Explore Roadmaps](#-available-roadmaps) · [Quick Start](#-quick-start) · [Add a New Path](#-adding-a-new-roadmap) · [Contributing](#-contributing)
+[Live Demo](https://YOUR-USERNAME.github.io/roadmaps/) · [Explore Roadmaps](#available-roadmaps) · [Quick Start](#quick-start) · [Add a New Path](#adding-a-new-roadmap) · [Contributing](#contributing)
 
 </div>
 
@@ -26,6 +26,7 @@
 - [Deployment Guide](#deployment-guide)
 - [Tech Stack](#tech-stack)
 - [Contributing](#contributing)
+- [Technical Notes](#technical-notes)
 - [License](#license)
 
 ---
@@ -77,7 +78,7 @@ This project requires absolutely no compilation, package installation, or enviro
 
 ### 1. Clone the Repository
 ```bash
-git clone https://github.com
+git clone https://github.com/YOUR-USERNAME/roadmaps.git
 cd roadmaps
 ```
 
@@ -90,8 +91,8 @@ python3 -m http.server 8000
 ```
 Once initialized, navigate to `http://localhost:8000`.
 
-> [!NOTE]  
-> An active internet connection is required to dynamically fetch utilities like Tailwind CSS and Lucide Icons from our performance CDNs.
+> [!NOTE]
+> An active internet connection is required to dynamically fetch utilities like Tailwind CSS and Lucide Icons from their CDNs.
 
 ---
 
@@ -104,11 +105,11 @@ roadmaps/
 ├── index.html        # Main dashboard and Roadmap Picker
 ├── README.md         # Repository documentation
 ├── LICENSE           # Open-source license terms
-└── sql/              
-    └── index.html    # Isolated, self-contained single-page roadmap configuration
+└── sql/
+    └── index.html    # Isolated, self-contained single-page roadmap
 ```
 
-Every learning path functions autonomously within its own directory using a single HTML engine with embedded node configuration.
+Every learning path functions autonomously within its own directory using a single HTML file with its content embedded.
 
 ---
 
@@ -116,14 +117,14 @@ Every learning path functions autonomously within its own directory using a sing
 
 Follow these steps to expand the platform with a custom learning path:
 
-### Step 1: Initialize Your Layout
-Generate your roadmap schema layout configuration into your target destination directory:
+### Step 1: Build Your Roadmap Page
+Generate your roadmap from its content file into the target directory:
 ```bash
 python build_roadmap.py roadmap.json fastapi/index.html --accent cyan --hub ../
 ```
 
 ### Step 2: Establish the Directory
-Ensure your new file is placed within its dedicated, isolated project subdirectory matching your pathway name (e.g., `fastapi/index.html`).
+Ensure your new file is placed within its own subdirectory matching your pathway name (e.g., `fastapi/index.html`).
 
 ### Step 3: Register Content on the Hub Dashboard
 Open the root `index.html` file, locate the global `ROADMAPS` array definition, and append your project entry metadata:
@@ -141,11 +142,11 @@ Open the root `index.html` file, locate the global `ROADMAPS` array definition, 
   tags: ["Backend", "Python"]
 }
 ```
-*   Ensure the `slug` perfectly mirrors your subdirectory directory name.
-*   Verify the `rgb` value matches your asset's target accent color matrix.
+*   Ensure the `slug` exactly matches your subdirectory name.
+*   Verify the `rgb` value matches your roadmap's accent color.
 
 ### Step 4: Push to Source Control
-Commit your updates and push to your remote branch. Continuous integration pipelines will reflect the changes instantly.
+Commit your updates and push to your remote branch. GitHub Pages redeploys automatically, usually within a minute or two.
 
 ---
 
@@ -157,16 +158,16 @@ Deploying to production takes less than two minutes using **GitHub Pages**:
 2. Navigate to your repository dashboard and select **Settings** ➔ **Pages**.
 3. Under the **Build and deployment** section, configure the source dropdown to **Deploy from a branch**.
 4. Set your target branch to `main` and the deployment folder to `/ (root)`, then click **Save**.
-5. Your application will be live at `https://github.io` momentarily.
+5. Your application will be live at `https://YOUR-USERNAME.github.io/roadmaps/` momentarily.
 
 ---
 
 ## Tech Stack
 
-- **Core Engine:** Vanilla HTML5, CSS3, and modern ECMA JavaScript (No compilation dependencies)
-- **Styling Architecture:** [Tailwind CSS Layout Engine](https://tailwindcss.com) (Distributed via high-speed Edge CDN)
-- **Iconography Asset Hub:** [Lucide Vector Suite](https://lucide.dev) (Distributed via Edge CDN)
-- **State Lifecycle:** Native Web `localStorage` API for real-time progress caching (100% private, client-side only, zero cookie overhead)
+- **Core Engine:** Vanilla HTML5, CSS3, and modern ECMAScript JavaScript (no compilation dependencies)
+- **Styling Architecture:** [Tailwind CSS](https://tailwindcss.com) (distributed via CDN)
+- **Iconography:** [Lucide](https://lucide.dev) (distributed via CDN)
+- **State Lifecycle:** Native Web `localStorage` API for progress caching (client-side only, no cookies)
 
 ---
 
@@ -185,19 +186,19 @@ If you spot an issue or typo within a live lesson module, please feel free to op
 
 ## Technical Notes
 
-- **Code Executions:** Code blocks, code runners, and database results inside lessons are carefully **pre-compiled and verified statically**. Clicking "Run" unlocks and previews the expected syntax results safely without running untrusted scripts on your local hardware.
-- **Data Persistence:** Clearing browser history, flushing site cookies, or utilizing Incognito windows will reset your client-side tracking state back to default.
+- **Code Execution:** Code blocks and results inside lessons are **pre-written and hand-verified**. Clicking "Run" reveals the expected output and does not execute any code on your machine.
+- **Data Persistence:** Clearing browser data or using Incognito windows will reset your client-side progress back to default.
 
 ---
 
 ## License
 
-This ecosystem is open-source software distributed under the terms of the [MIT License](LICENSE). You are free to modify, white-label, re-distribute, and scale it as needed.
+This project is open-source software distributed under the terms of the [MIT License](LICENSE). You are free to modify, redistribute, and build on it as needed.
 
 ---
 
 <div align="center">
 
-If these roadmaps helped speed up your learning journey, consider dropping a repository star to support the project!
+If these roadmaps helped speed up your learning journey, consider giving the repository a star to support the project!
 
 </div>
