@@ -1,92 +1,203 @@
-# SQL Learning Roadmap
+<div align="center">
 
-An interactive roadmap for learning SQL, starting with basic queries and moving towards advanced database concepts and practical analytics.
+#  Interactive Learning Roadmaps
 
-**Live Demo:** https://SamiKhan43.github.io/sql-roadmap/
+**Structured, step-by-step developer roadmaps. Pick a learning path, study real-world examples, complete interactive challenges, and build production-ready projects.**
 
-## Features
+[![Live Demo](https://img.shields.io/badge/demo-live-34d399?style=for-the-badge)](https://YOUR-USERNAME.github.io/roadmaps/)
+[![License: MIT](https://img.shields.io/badge/license-MIT-blue?style=for-the-badge)](LICENSE)
+![No Build Step](https://img.shields.io/badge/build-none-lightgrey?style=for-the-badge)
+![Hosted on GitHub Pages](https://img.shields.io/badge/hosted%20on-GitHub%20Pages-24292e?style=for-the-badge&logo=github)
 
-- **32 topics in 5 levels**, covering SQL from fundamentals to real-world applications.
-- **Visual roadmap** showing the learning path and topic progression.
-- **Topic details** including explanations, syntax, examples, sample tables, and expected query results.
-- **Progress tracking** to mark completed topics and milestones. Progress is saved in your browser using `localStorage`.
-- **Keyboard navigation** using `←` and `→` to switch topics and `Esc` to close a lesson.
-- **Responsive layout** with a dark theme.
-- No installation or build process required.
+[Live Demo](https://YOUR-USERNAME.github.io/roadmaps/) · [Explore Roadmaps](#-available-roadmaps) · [Quick Start](#-quick-start) · [Add a New Path](#-adding-a-new-roadmap) · [Contributing](#-contributing)
 
-## Roadmap
+</div>
 
-| Level | Topics | Coverage |
-|---|---:|---|
-| 1. Fundamentals | 1–6 | Databases and basic SQL queries |
-| 2. Intermediate | 7–14 | Functions, joins, subqueries, and DML |
-| 3. Advanced | 15–20 | CTEs, window functions, views, and database design |
-| 4. Professional | 21–27 | Transactions, indexing, optimization, and security |
-| 5. Real-World SQL & Analytics | 28–32 | Data cleaning, business analysis, projects, and interview preparation |
+---
+
+## Table of Contents
+
+- [About the Project](#about-the-project)
+- [Key Features](#key-features)
+- [Available Roadmaps](#available-roadmaps)
+- [Quick Start](#quick-start)
+- [Project Structure](#project-structure)
+- [Adding a New Roadmap](#adding-a-new-roadmap)
+- [Deployment Guide](#deployment-guide)
+- [Tech Stack](#tech-stack)
+- [Contributing](#contributing)
+- [License](#license)
+
+---
+
+## About the Project
+
+Traditional learning guides are often just overwhelming walls of links. This project reimagines documentation by transforming topics into an **interactive, guided learning timeline**. Every single level features:
+
+- A dedicated, self-contained lesson primer.
+- Real-world context and architectural blueprints.
+- A hands-on practice challenge with integrated hints.
+- A portfolio-ready mini-project to validate your skills.
+
+**The best part?** It is a zero-dependency, plain static site. With **no frameworks, no build steps, and no backend complexity**, you can spin it up locally, host it anywhere for free, and extend it in minutes.
+
+---
+
+## Key Features
+
+| Feature | Description |
+| :--- | :--- |
+| **Dynamic Roadmap Picker** | Filter and search through available paths directly from an intuitive dashboard card system. |
+| **Interactive Lesson Drawer** | Access concept overviews, multi-language syntax blueprints, and concrete, real-world analogies. |
+| **Targeted Practice Challenges** | Reinforce your learning with custom problems, progressive hints, and step-by-step solutions. |
+| **Milestone Level Projects** | Cap off each learning level by building an independent, portfolio-grade practical application. |
+| **Local Progress Tracking** | Automatically track completed topics and modules. Progress is safely saved inside your browser storage. |
+| **Contextual Theme Accents** | Enjoy a cohesive, modern dark layout where each individual path carries its own custom accent branding. |
+| **Power-User Shortcuts** | Fast keyboard navigation: press `/` to search, `←` `→` to traverse topics, and `Esc` to exit drawers. |
+| **Fully Responsive Layout** | Clean, responsive UI optimized fluidly for mobile devices, tablets, and ultra-wide desktops. |
+
+---
+
+## Available Roadmaps
+
+| Learning Path | Levels | Total Topics | Release Status |
+| :--- | :---: | :---: | :--- |
+| [SQL Fundamentals](sql/) | 5 | 32 | **Production Live** |
+| PostgreSQL Deep-Dive | — | — | In Development |
+| FastAPI Architecture | — | — | In Development |
+| Auth & Identity Management | — | — | In Development |
+
+> Note: The **SQL Roadmap** systematically navigates through core fundamentals, intermediate join mechanics, complex analytical queries, and production topics like indexing, transactions, and security practices.
+
+---
+
+## Quick Start
+
+This project requires absolutely no compilation, package installation, or environment configuration.
+
+### 1. Clone the Repository
+```bash
+git clone https://github.com
+cd roadmaps
+```
+
+### 2. Launch Local Environment
+You can double-click `index.html` to open it directly in your browser. Alternatively, run a lightweight local development server:
+
+```bash
+# Using Python 3
+python3 -m http.server 8000
+```
+Once initialized, navigate to `http://localhost:8000`.
+
+> [!NOTE]  
+> An active internet connection is required to dynamically fetch utilities like Tailwind CSS and Lucide Icons from our performance CDNs.
+
+---
 
 ## Project Structure
 
-```text
-sql-roadmap/
-├── index.html   # HTML, CSS, JavaScript, and lesson content
-└── README.md
-```
-
-## Run Locally
-
-There is no setup required.
-
-1. Clone or download the repository.
-2. Open `index.html` in your browser.
-
-An internet connection is needed to load Tailwind CSS and Lucide Icons from their CDNs.
-
-## Deploy on GitHub Pages
-
-1. Push the project files to a GitHub repository.
-2. Open the repository's **Settings → Pages**.
-3. Under **Build and deployment**, select **Deploy from a branch**.
-4. Select the `main` branch and `/ (root)` folder.
-5. Save the settings.
-
-GitHub Pages will publish the site. The URL will follow this format:
+The codebase is structured to maximize simplicity and modularity:
 
 ```text
-https://YOUR-USERNAME.github.io/REPO-NAME/
+roadmaps/
+├── index.html        # Main dashboard and Roadmap Picker
+├── README.md         # Repository documentation
+├── LICENSE           # Open-source license terms
+└── sql/              
+    └── index.html    # Isolated, self-contained single-page roadmap configuration
 ```
 
-## Editing the Roadmap
+Every learning path functions autonomously within its own directory using a single HTML engine with embedded node configuration.
 
-The lesson content is stored in the `TOPICS` array inside `index.html`.
+---
 
-Each topic contains:
+## Adding a New Roadmap
 
-- `t` — Topic title
-- `c` — Subtopics
-- `p` — Explanation
-- `s` — SQL syntax
-- `sc` — Practical scenario
-- `tb` — Sample tables
-- `q` — Example SQL query
-- `o` — Expected query output
+Follow these steps to expand the platform with a custom learning path:
 
-You can edit existing topics or add new ones directly in this array.
+### Step 1: Initialize Your Layout
+Generate your roadmap schema layout configuration into your target destination directory:
+```bash
+python build_roadmap.py roadmap.json fastapi/index.html --accent cyan --hub ../
+```
 
-## Notes
+### Step 2: Establish the Directory
+Ensure your new file is placed within its dedicated, isolated project subdirectory matching your pathway name (e.g., `fastapi/index.html`).
 
-- The **Run query** button displays predefined results. It does not execute SQL against a real database.
-- The examples primarily use PostgreSQL syntax. Some queries may need adjustments for MySQL, SQL Server, or Oracle.
+### Step 3: Register Content on the Hub Dashboard
+Open the root `index.html` file, locate the global `ROADMAPS` array definition, and append your project entry metadata:
 
-## Technologies
+```javascript
+{
+  slug: "fastapi",
+  title: "FastAPI Architecture",
+  icon: "zap",
+  rgb: "34,211,238",
+  status: "live",
+  levels: 5,
+  topics: 28,
+  desc: "Design, secure, and deploy high-performance Python APIs.",
+  tags: ["Backend", "Python"]
+}
+```
+*   Ensure the `slug` perfectly mirrors your subdirectory directory name.
+*   Verify the `rgb` value matches your asset's target accent color matrix.
 
-- HTML
-- CSS
-- Tailwind CSS
-- JavaScript
-- Lucide Icons
+### Step 4: Push to Source Control
+Commit your updates and push to your remote branch. Continuous integration pipelines will reflect the changes instantly.
 
-Tailwind CSS and Lucide Icons are loaded through CDNs.
+---
+
+## Deployment Guide
+
+Deploying to production takes less than two minutes using **GitHub Pages**:
+
+1. Push your cloned fork or repository directly to your personal GitHub profile.
+2. Navigate to your repository dashboard and select **Settings** ➔ **Pages**.
+3. Under the **Build and deployment** section, configure the source dropdown to **Deploy from a branch**.
+4. Set your target branch to `main` and the deployment folder to `/ (root)`, then click **Save**.
+5. Your application will be live at `https://github.io` momentarily.
+
+---
+
+## Tech Stack
+
+- **Core Engine:** Vanilla HTML5, CSS3, and modern ECMA JavaScript (No compilation dependencies)
+- **Styling Architecture:** [Tailwind CSS Layout Engine](https://tailwindcss.com) (Distributed via high-speed Edge CDN)
+- **Iconography Asset Hub:** [Lucide Vector Suite](https://lucide.dev) (Distributed via Edge CDN)
+- **State Lifecycle:** Native Web `localStorage` API for real-time progress caching (100% private, client-side only, zero cookie overhead)
+
+---
+
+## Contributing
+
+We welcome community collaborations! Whether you are adding a completely new roadmap, fixing a logical error, updating examples, or refining UI design:
+
+1. Fork the project repository and isolate a working branch: `git checkout -b feat/my-new-roadmap`
+2. Implement your changes and thoroughly validate behaviors in your local preview.
+3. Confirm code samples, schema definitions, and queries behave as expected.
+4. Submit a descriptive Pull Request detailing your enhancements.
+
+If you spot an issue or typo within a live lesson module, please feel free to open a bug report issue containing the topic title.
+
+---
+
+## Technical Notes
+
+- **Code Executions:** Code blocks, code runners, and database results inside lessons are carefully **pre-compiled and verified statically**. Clicking "Run" unlocks and previews the expected syntax results safely without running untrusted scripts on your local hardware.
+- **Data Persistence:** Clearing browser history, flushing site cookies, or utilizing Incognito windows will reset your client-side tracking state back to default.
+
+---
 
 ## License
 
-This project is released under the [MIT License](https://opensource.org/licenses/MIT).
+This ecosystem is open-source software distributed under the terms of the [MIT License](LICENSE). You are free to modify, white-label, re-distribute, and scale it as needed.
+
+---
+
+<div align="center">
+
+If these roadmaps helped speed up your learning journey, consider dropping a repository star to support the project!
+
+</div>
