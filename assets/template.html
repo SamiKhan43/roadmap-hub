@@ -3,6 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="icon" type="image/svg+xml" href="../logos/logo-mark.svg">
 <title>__TITLE__</title>
 <script src="https://cdn.tailwindcss.com"></script>
 <script>tailwind.config={theme:{extend:{colors:{slate:{100:"#f4f4f5",200:"#e4e4e7",300:"#d4d4d8",400:"#a1a1aa",500:"#71717a",600:"#303036",700:"#232328",800:"#141417",900:"#0c0c0e",950:"#09090b"}}}}}</script>
@@ -55,7 +56,7 @@ input[type=checkbox]{accent-color:var(--c)}.bg-acc{background:var(--c)}.ms-item:
 <body class="min-h-screen">
 <header class="sticky top-0 z-30 backdrop-blur bg-slate-900/85 border-b border-slate-700">
  <div class="max-w-6xl mx-auto px-4 py-3 flex items-center gap-4">
-  <a id="back" href="#" class="hidden items-center gap-1 text-sm text-slate-400 hover:text-white mr-1" style="transition:color 160ms"><i data-lucide="arrow-left" class="w-4 h-4"></i><span class="hidden sm:inline">All roadmaps</span></a><span class="logo"><i data-lucide="database" class="w-4 h-4"></i></span><h1 class="font-semibold tracking-tight text-base">__SHORT__ <span class="hidden sm:inline text-slate-400 font-normal text-sm">__SUB__</span></h1>
+  <a id="back" href="#" class="hidden items-center gap-1 text-sm text-slate-400 hover:text-white mr-1" style="transition:color 160ms"><i data-lucide="arrow-left" class="w-4 h-4"></i><span class="hidden sm:inline">All roadmaps</span></a><span class="logo"><img src="../logos/logo-mark.svg" alt="Roadmap Hub" class="w-5 h-5"></span><h1 class="font-semibold tracking-tight text-base">__SHORT__ <span class="hidden sm:inline text-slate-400 font-normal text-sm">__SUB__</span></h1>
   <div class="ml-auto flex items-center gap-3 w-52 sm:w-72">
    <div class="flex-1 h-2 bg-slate-700 rounded-full overflow-hidden"><div id="bar" class="h-full bg-acc transition-all duration-500" style="width:0"></div></div>
    <span id="pct" class="text-sm text-slate-300 mono">0/32</span>
