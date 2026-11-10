@@ -63,7 +63,7 @@ Traditional learning guides are often just overwhelming walls of links. This pro
 
 | Learning Path | Levels | Total Topics | Release Status |
 | :--- | :---: | :---: | :--- |
-| [SQL Fundamentals](sql/) | 5 | 32 | **Production Live** |
+| [SQL Fundamentals](https://samikhan43.github.io/roadmap-hub/sql-roadmap/) | 5 | 32 | **Production Live** |
 | PostgreSQL Deep-Dive | — | — | In Development |
 | FastAPI Architecture | — | — | In Development |
 | Auth & Identity Management | — | — | In Development |
