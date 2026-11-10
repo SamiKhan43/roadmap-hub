@@ -4,12 +4,12 @@
 
 **Structured, step-by-step developer roadmaps. Pick a learning path, study real-world examples, complete interactive challenges, and build production-ready projects.**
 
-[![Live Demo](https://img.shields.io/badge/demo-live-34d399?style=for-the-badge)](https://YOUR-USERNAME.github.io/roadmaps/)
+[![Live Demo](https://img.shields.io/badge/demo-live-34d399?style=for-the-badge)](https://samikhan43.github.io/roadmap-hub/)
 [![License: MIT](https://img.shields.io/badge/license-MIT-blue?style=for-the-badge)](LICENSE)
-![No Build Step](https://img.shields.io/badge/build-none-lightgrey?style=for-the-badge)
+[![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen?style=for-the-badge)](CONTRIBUTING.md)
 ![Hosted on GitHub Pages](https://img.shields.io/badge/hosted%20on-GitHub%20Pages-24292e?style=for-the-badge&logo=github)
 
-[Live Demo](https://YOUR-USERNAME.github.io/roadmaps/) · [Explore Roadmaps](#available-roadmaps) · [Quick Start](#quick-start) · [Add a New Path](#adding-a-new-roadmap) · [Contributing](#contributing)
+[Live Demo](https://samikhan43.github.io/roadmap-hub/) · [Explore Roadmaps](#available-roadmaps) · [Quick Start](#quick-start) · [Add a New Path](#adding-a-new-roadmap) · [Contributing](#contributing)
 
 </div>
 
@@ -40,7 +40,7 @@ Traditional learning guides are often just overwhelming walls of links. This pro
 - A hands-on practice challenge with integrated hints.
 - A portfolio-ready mini-project to validate your skills.
 
-**The best part?** It is a zero-dependency, plain static site. With **no frameworks, no build steps, and no backend complexity**, you can spin it up locally, host it anywhere for free, and extend it in minutes.
+**The best part?** It is a zero-dependency, plain static site. With **no frameworks and no backend complexity**, you can open it locally, host it anywhere for free, and extend it in minutes. Learners need nothing installed. Contributors write one small JSON file per topic, and a tiny Python script turns those files into the pages.
 
 ---
 
@@ -56,6 +56,7 @@ Traditional learning guides are often just overwhelming walls of links. This pro
 | **Contextual Theme Accents** | Enjoy a cohesive, modern dark layout where each individual path carries its own custom accent branding. |
 | **Power-User Shortcuts** | Fast keyboard navigation: press `/` to search, `←` `→` to traverse topics, and `Esc` to exit drawers. |
 | **Fully Responsive Layout** | Clean, responsive UI optimized fluidly for mobile devices, tablets, and ultra-wide desktops. |
+| **Contributor-Friendly** | One JSON file per topic, a ready-made template, and automatic validation on every pull request. |
 
 ---
 
@@ -74,12 +75,12 @@ Traditional learning guides are often just overwhelming walls of links. This pro
 
 ## Quick Start
 
-This project requires absolutely no compilation, package installation, or environment configuration.
+Viewing the roadmaps requires no compilation, package installation, or environment configuration.
 
 ### 1. Clone the Repository
 ```bash
-git clone https://github.com/YOUR-USERNAME/roadmaps.git
-cd roadmaps
+git clone https://github.com/samikhan43/roadmap-hub.git
+cd roadmap-hub
 ```
 
 ### 2. Launch Local Environment
@@ -101,12 +102,25 @@ Once initialized, navigate to `http://localhost:8000`.
 The codebase is structured to maximize simplicity and modularity:
 
 ```text
-roadmaps/
-├── index.html        # Main dashboard and Roadmap Picker
-├── README.md         # Repository documentation
-├── LICENSE           # Open-source license terms
-└── sql/
-    └── index.html    # Isolated, self-contained single-page roadmap
+roadmap-hub/
+├── index.html            # Main dashboard and Roadmap Picker
+├── README.md             # Repository documentation
+├── CONTRIBUTING.md       # How to add or fix a topic
+├── CODE_OF_CONDUCT.md    # Community standards
+├── LICENSE               # Open-source license terms
+├── sql-roadmap/
+│   └── index.html        # Self-contained single-page roadmap
+├── content/              # Source files for community roadmaps
+│   └── <roadmap>/
+│       ├── roadmap.json  # Title, levels, projects, milestones
+│       └── topics/       # One JSON file per topic
+├── _template/            # Starter roadmap copied by --new
+├── scripts/
+│   ├── build.py          # Builds <roadmap>/index.html from content/
+│   └── build_roadmap.py  # Page generator
+├── assets/template.html  # Shared page layout
+├── docs/                 # Example roadmap file
+└── .github/              # Issue forms, PR template, validation workflow
 ```
 
 Every learning path functions autonomously within its own directory using a single HTML file with its content embedded.
@@ -117,14 +131,17 @@ Every learning path functions autonomously within its own directory using a sing
 
 Follow these steps to expand the platform with a custom learning path:
 
-### Step 1: Build Your Roadmap Page
-Generate your roadmap from its content file into the target directory:
+### Step 1: Create the Roadmap From the Template
 ```bash
-python build_roadmap.py roadmap.json fastapi/index.html --accent cyan --hub ../
+python3 scripts/build.py --new fastapi
 ```
+This creates `content/fastapi/` with a starter `roadmap.json` and four placeholder topics. Edit `roadmap.json` (title, levels, level projects, milestones, accent colour) and the files in `topics/`. A full roadmap usually has 4 to 5 levels and 20 to 35 topics. Add more levels by adding entries to `levels`, and use the matching `"l"` number in each topic file.
 
-### Step 2: Establish the Directory
-Ensure your new file is placed within its own subdirectory matching your pathway name (e.g., `fastapi/index.html`).
+### Step 2: Build Your Roadmap Page
+```bash
+python3 scripts/build.py fastapi
+```
+This writes `fastapi/index.html` (with an "All roadmaps" link back to the hub). Fix any error the script prints, then open the page to check it.
 
 ### Step 3: Register Content on the Hub Dashboard
 Open the root `index.html` file, locate the global `ROADMAPS` array definition, and append your project entry metadata:
@@ -144,9 +161,10 @@ Open the root `index.html` file, locate the global `ROADMAPS` array definition, 
 ```
 *   Ensure the `slug` exactly matches your subdirectory name.
 *   Verify the `rgb` value matches your roadmap's accent color.
+*   Update the row in the [Available Roadmaps](#available-roadmaps) table.
 
 ### Step 4: Push to Source Control
-Commit your updates and push to your remote branch. GitHub Pages redeploys automatically, usually within a minute or two.
+Commit your updates (including the generated `fastapi/index.html`) and push to your remote branch. GitHub Pages redeploys automatically, usually within a minute or two.
 
 ---
 
@@ -158,29 +176,35 @@ Deploying to production takes less than two minutes using **GitHub Pages**:
 2. Navigate to your repository dashboard and select **Settings** ➔ **Pages**.
 3. Under the **Build and deployment** section, configure the source dropdown to **Deploy from a branch**.
 4. Set your target branch to `main` and the deployment folder to `/ (root)`, then click **Save**.
-5. Your application will be live at `https://YOUR-USERNAME.github.io/roadmaps/` momentarily.
+5. Your application will be live at `https://samikhan43.github.io/roadmap-hub/` momentarily.
 
 ---
 
 ## Tech Stack
 
-- **Core Engine:** Vanilla HTML5, CSS3, and modern ECMAScript JavaScript (no compilation dependencies)
+- **Core Engine:** Vanilla HTML5, CSS3, and modern ECMAScript JavaScript (no compilation dependencies for learners)
 - **Styling Architecture:** [Tailwind CSS](https://tailwindcss.com) (distributed via CDN)
 - **Iconography:** [Lucide](https://lucide.dev) (distributed via CDN)
 - **State Lifecycle:** Native Web `localStorage` API for progress caching (client-side only, no cookies)
+- **Content Tooling:** A small Python 3 build script and GitHub Actions validation for contributors
 
 ---
 
 ## Contributing
 
-We welcome community collaborations! Whether you are adding a completely new roadmap, fixing a logical error, updating examples, or refining UI design:
+We welcome community collaborations! Whether you are adding a completely new roadmap, a new topic, fixing a logical error, or updating examples:
 
-1. Fork the project repository and isolate a working branch: `git checkout -b feat/my-new-roadmap`
-2. Implement your changes and thoroughly validate behaviors in your local preview.
-3. Confirm code samples, schema definitions, and queries behave as expected.
-4. Submit a descriptive Pull Request detailing your enhancements.
+1. Fork the project repository and isolate a working branch: `git checkout -b topic/my-new-topic`
+2. Copy `_template/_TOPIC_TEMPLATE.json` to `content/<roadmap>/topics/NN-short-name.json` and fill in every field.
+3. Run `python3 scripts/build.py <roadmap>` and preview the page locally.
+4. Confirm code samples and outputs behave as expected, and that the practice question can be solved from the lesson alone.
+5. Commit your topic file **and** the rebuilt `<roadmap>/index.html`, then submit a descriptive Pull Request.
 
-If you spot an issue or typo within a live lesson module, please feel free to open a bug report issue containing the topic title.
+A GitHub Action rebuilds every roadmap on each pull request and fails if a topic file is invalid or a generated page is out of date. Read [CONTRIBUTING.md](CONTRIBUTING.md) for the field guide and quality checklist.
+
+Not ready to write a topic? Open a **Topic request** issue. If you spot an error in a live lesson, open a **Content error** issue containing the topic title.
+
+> The SQL roadmap is currently a standalone page. Corrections to it are welcome through an issue or a pull request that edits `sql-roadmap/index.html` directly.
 
 ---
 
@@ -188,6 +212,7 @@ If you spot an issue or typo within a live lesson module, please feel free to op
 
 - **Code Execution:** Code blocks and results inside lessons are **pre-written and hand-verified**. Clicking "Run" reveals the expected output and does not execute any code on your machine.
 - **Data Persistence:** Clearing browser data or using Incognito windows will reset your client-side progress back to default.
+- **Generated Files:** Files named `index.html` inside roadmap folders built from `content/` are generated. Edit the JSON sources, then rebuild.
 
 ---
 
