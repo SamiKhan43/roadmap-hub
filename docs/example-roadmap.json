@@ -1,0 +1,94 @@
+{
+ "slug": "fastapi-mini",
+ "title": "FastAPI Roadmap (mini example)",
+ "short": "FastAPI Roadmap",
+ "sub": "Mini example",
+ "eyebrow": "Learning path \u00b7 Backend",
+ "heroTitle": "Build APIs, one step at a time.",
+ "heroText": "A minimal example showing how a non-SQL roadmap is described.",
+ "footnote": "Examples assume Python 3.10+ and FastAPI 0.110+.",
+ "lang": "python",
+ "labels": {
+  "data": "Setup",
+  "solution": "Code",
+  "run": "Show response",
+  "result": "Response",
+  "placeholder": "Write your code here...",
+  "practiceNote": "Run it locally with: uvicorn main:app --reload"
+ },
+ "tables": {},
+ "levels": [
+  {
+   "name": "FastAPI Basics",
+   "goal": "Create and run your first endpoints.",
+   "icon": "rocket",
+   "project": {
+    "t": "Todo API",
+    "ic": "list-todo",
+    "brief": "Build a small CRUD API and test it from the docs page.",
+    "steps": [
+     "Create the project and install FastAPI",
+     "Add GET and POST routes",
+     "Validate input with a Pydantic model"
+    ],
+    "skills": "Topics 1-2",
+    "out": "A main.py file and a short README."
+   }
+  }
+ ],
+ "topics": [
+  {
+   "l": 0,
+   "i": "play",
+   "t": "Your First Endpoint",
+   "c": [
+    "Install FastAPI",
+    "Create an app",
+    "Path operations",
+    "Auto docs"
+   ],
+   "p": "FastAPI turns Python functions into web endpoints. Think of each function as a menu item the server can serve. The decorator says which URL and method triggers it.",
+   "s": "from fastapi import FastAPI\n\napp = FastAPI()\n\n@app.get(\"/path\")\ndef handler():\n    return {\"key\": \"value\"}",
+   "sc": "Expose a health-check endpoint a monitoring tool can call.",
+   "tb": [],
+   "q": "from fastapi import FastAPI\n\napp = FastAPI()\n\n@app.get(\"/health\")\ndef health():\n    return {\"status\": \"ok\"}",
+   "o": {
+    "text": "GET /health  ->  200 OK\n{\"status\": \"ok\"}"
+   },
+   "pr": [
+    "Add a GET /hello endpoint that returns {\"message\": \"Hello, World\"}.",
+    "Copy the health endpoint and change the path and return value.",
+    "@app.get(\"/hello\")\ndef hello():\n    return {\"message\": \"Hello, World\"}"
+   ],
+   "lang": "python"
+  },
+  {
+   "l": 0,
+   "i": "shield-check",
+   "t": "Request Validation",
+   "c": [
+    "Pydantic models",
+    "Type hints",
+    "Automatic 422 errors"
+   ],
+   "p": "A Pydantic model is a bouncer for request bodies. Wrong types are rejected before your code runs. FastAPI returns a clear 422 error automatically.",
+   "s": "from pydantic import BaseModel\n\nclass Item(BaseModel):\n    name: str\n    price: float\n\n@app.post(\"/items\")\ndef create(item: Item):\n    return item",
+   "sc": "Accept a new product only when price is a number.",
+   "tb": [],
+   "q": "class Item(BaseModel):\n    name: str\n    price: float\n\n@app.post(\"/items\")\ndef create(item: Item):\n    return item",
+   "o": {
+    "text": "POST /items {\"name\": \"Pen\", \"price\": \"abc\"}\n-> 422 Unprocessable Entity (price: value is not a valid float)"
+   },
+   "pr": [
+    "Add an optional description field (string) to Item.",
+    "Use Optional[str] with a default of None.",
+    "from typing import Optional\n\nclass Item(BaseModel):\n    name: str\n    price: float\n    description: Optional[str] = None"
+   ],
+   "lang": "python"
+  }
+ ],
+ "milestones": [
+  "Run a FastAPI app locally",
+  "Validate request bodies with Pydantic"
+ ]
+}

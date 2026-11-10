@@ -1,5 +1,7 @@
 <div align="center">
 
+<img src="logos/logo-horizontal.svg" alt="Roadmap Hub" width="290">
+
 # Interactive Learning Roadmaps
 
 **Structured, step-by-step developer roadmaps. Pick a learning path, study real-world examples, complete interactive challenges, and build production-ready projects.**
@@ -105,6 +107,11 @@ The codebase is structured to maximize simplicity and modularity:
 roadmap-hub/
 ├── index.html            # Main dashboard and Roadmap Picker
 ├── README.md             # Repository documentation
+├── logos/                # Project logo assets
+│   ├── logo-horizontal.svg
+│   ├── logo-horizontal-dark.svg
+│   ├── logo-mark.svg
+│   └── logo-mark-512.png
 ├── CONTRIBUTING.md       # How to add or fix a topic
 ├── CODE_OF_CONDUCT.md    # Community standards
 ├── LICENSE               # Open-source license terms
@@ -124,6 +131,8 @@ roadmap-hub/
 ```
 
 Every learning path functions autonomously within its own directory using a single HTML file with its content embedded.
+
+The dashboard uses `logos/logo-horizontal-dark.svg`, while roadmap pages and the browser favicon use `logos/logo-mark.svg`. Use `logos/logo-horizontal.svg` on light backgrounds, such as this README.
 
 ---
 

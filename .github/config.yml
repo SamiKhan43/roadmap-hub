@@ -1,0 +1,5 @@
+blank_issues_enabled: false
+contact_links:
+  - name: Read the contributing guide
+    url: https://github.com/YOUR-USERNAME/my-roadmap/blob/main/CONTRIBUTING.md
+    about: How to add or fix a topic with a pull request.

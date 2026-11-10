@@ -1,0 +1,41 @@
+name: Topic request
+description: Suggest a topic that should be added to the roadmap
+title: "[Topic] "
+labels: ["topic request"]
+body:
+  - type: input
+    id: title
+    attributes:
+      label: Topic title
+      placeholder: e.g. Error handling
+    validations:
+      required: true
+  - type: dropdown
+    id: level
+    attributes:
+      label: Suggested level
+      options:
+        - Fundamentals
+        - Intermediate
+        - Advanced
+        - Not sure
+    validations:
+      required: true
+  - type: textarea
+    id: why
+    attributes:
+      label: Why is it needed?
+      description: What would a learner be able to do after this topic?
+    validations:
+      required: true
+  - type: textarea
+    id: subtopics
+    attributes:
+      label: Sub-topics to cover
+      placeholder: One per line
+  - type: checkboxes
+    id: write
+    attributes:
+      label: Can you write it?
+      options:
+        - label: I would like to write this topic myself (I will open a pull request)

@@ -1,0 +1,17 @@
+{
+  "l": 0,
+  "i": "book-open",
+  "t": "Topic Title",
+  "c": ["Sub-topic one", "Sub-topic two", "Sub-topic three"],
+  "p": "Two to four short sentences. Use <b>bold</b> for key terms and <code>code</code> for names. Include one real-world analogy.",
+  "s": "generic_structure(<placeholder>, <placeholder>)",
+  "sc": "One sentence describing a realistic business scenario for the example below.",
+  "tb": [],
+  "q": "# the worked example (real, runnable code)\nprint(\"hello\")",
+  "o": { "text": "hello" },
+  "pr": [
+    "Practice question the learner can solve using only this lesson.",
+    "A hint that nudges without giving the answer away.",
+    "print(\"the full, runnable solution\")"
+  ]
+}

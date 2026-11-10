@@ -1,0 +1,17 @@
+{
+  "l": 0,
+  "i": "play",
+  "t": "REPLACE: First Concept",
+  "c": ["REPLACE: sub-topic one", "REPLACE: sub-topic two", "REPLACE: sub-topic three"],
+  "p": "REPLACE: two to four short sentences. Use <b>bold</b> for key terms and <code>code</code> for names. Include one real-world analogy.",
+  "s": "generic_structure(<placeholder>, <placeholder>)",
+  "sc": "REPLACE: one sentence describing a realistic scenario for the example.",
+  "tb": [],
+  "q": "# REPLACE: worked example (real, runnable code)\nprint(\"hello\")",
+  "o": { "text": "hello" },
+  "pr": [
+    "REPLACE: practice question solvable from this lesson alone.",
+    "REPLACE: a hint that nudges without revealing the answer.",
+    "print(\"REPLACE: full runnable solution\")"
+  ]
+}
