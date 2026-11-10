@@ -1,0 +1,55 @@
+{
+  "slug": "my-roadmap",
+  "accent": "sky",
+  "title": "My Community Roadmap",
+  "short": "My Roadmap",
+  "sub": "Community edition",
+  "eyebrow": "Learning path · Community driven",
+  "heroTitle": "Learn it step by step, together.",
+  "heroText": "A community-built roadmap. Each level has short lessons, a practice challenge and a <b>portfolio-ready mini-project</b>. Spot a mistake or a gap? Send a pull request.",
+  "footnote": "Replace this line with your assumptions (tool versions, OS, sample data). Outputs are pre-written and hand-verified.",
+  "lang": "python",
+  "labels": {
+    "data": "Setup",
+    "solution": "Code",
+    "run": "Show result",
+    "result": "Result",
+    "scenario": "Scenario",
+    "placeholder": "Write your answer here...",
+    "practiceNote": "Try it locally, then compare with the solution."
+  },
+  "tables": {},
+  "levels": [
+    {
+      "name": "Fundamentals",
+      "goal": "REPLACE: one sentence on what the learner can do after this level.",
+      "icon": "sprout",
+      "project": {
+        "t": "REPLACE: Level 1 project name",
+        "ic": "folder-kanban",
+        "brief": "REPLACE: one or two sentences describing the mini-project.",
+        "steps": ["REPLACE: step 1", "REPLACE: step 2", "REPLACE: step 3", "REPLACE: step 4", "REPLACE: step 5"],
+        "skills": "Topics 1-2",
+        "out": "REPLACE: the deliverable (a file or a repo)."
+      }
+    },
+    {
+      "name": "Intermediate",
+      "goal": "REPLACE: one sentence on what the learner can do after this level.",
+      "icon": "layers",
+      "project": {
+        "t": "REPLACE: Level 2 project name",
+        "ic": "puzzle",
+        "brief": "REPLACE: one or two sentences describing the mini-project.",
+        "steps": ["REPLACE: step 1", "REPLACE: step 2", "REPLACE: step 3", "REPLACE: step 4", "REPLACE: step 5"],
+        "skills": "Topics 3-4",
+        "out": "REPLACE: the deliverable (a file or a repo)."
+      }
+    }
+  ],
+  "milestones": [
+    "REPLACE: I can do X",
+    "REPLACE: I can do Y",
+    "REPLACE: I can ship Z"
+  ]
+}
