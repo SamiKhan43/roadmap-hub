@@ -61,11 +61,12 @@ input{transition:border-color 160ms var(--ease)}
 <script>
 /* ===== ADD NEW ROADMAPS HERE =====
    slug    = folder name (must match the folder containing that roadmap's index.html)
+   key     = (optional) the roadmap's own slug, used to read saved progress; defaults to slug
    accent  = same colour you built the roadmap with (r,g,b)
    status  = "live" or "soon"; levels/topics = numbers shown on the card (live only)
    tags    = used by the filter chips and search                                  */
 const ROADMAPS=[
- {slug:"sql",title:"SQL",icon:"database",rgb:"52,211,153",status:"live",levels:5,topics:32,
+ {slug:"sql-roadmap",key:"sql",title:"SQL",icon:"database",rgb:"52,211,153",status:"live",levels:5,topics:32,
   desc:"From your first SELECT to window functions, indexing, transactions and interview prep.",tags:["Database","Beginner to Pro"]},
  {slug:"postgres",title:"PostgreSQL",icon:"server",rgb:"56,189,248",status:"soon",
   desc:"Server setup, advanced types, performance tuning, replication and backups.",tags:["Database"]},
@@ -78,7 +79,7 @@ const ROADMAPS=[
 const $=id=>document.getElementById(id);
 let filter="All",term="";
 const tagsAll=["All","Live","Coming soon",...[...new Set(ROADMAPS.flatMap(r=>r.tags))]];
-function progress(r){try{const d=JSON.parse(localStorage.getItem("rm:"+r.slug+":t")||"[]");return r.topics?Math.min(100,Math.round(d.length/r.topics*100)):0}catch(e){return 0}}
+function progress(r){try{const d=JSON.parse(localStorage.getItem("rm:"+(r.key||r.slug)+":t")||"[]");return r.topics?Math.min(100,Math.round(d.length/r.topics*100)):0}catch(e){return 0}}
 const match=r=>{
  const t=(r.title+" "+r.desc+" "+r.tags.join(" ")).toLowerCase();
  if(term&&!t.includes(term))return false;
