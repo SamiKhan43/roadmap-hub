@@ -1,0 +1,27 @@
+name: Validate roadmaps
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.x"
+      - name: Build and validate every roadmap in content/
+        run: |
+          if ls content/*/roadmap.json >/dev/null 2>&1; then
+            python scripts/build.py --check
+          else
+            echo "No content-based roadmaps yet, nothing to validate."
+          fi
+      - name: Warn about unfinished placeholders
+        run: |
+          if grep -rl "REPLACE:" content 2>/dev/null; then
+            echo "::warning::Some files in content/ still contain REPLACE: placeholders."
+          fi
