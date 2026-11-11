@@ -50,6 +50,30 @@ table.res tr:last-child td{border-bottom:0}.null{color:#71717a;font-style:italic
 input[type=checkbox]{accent-color:var(--c)}.bg-acc{background:var(--c)}.ms-item:hover{border-color:var(--c)}
 ::-webkit-scrollbar{height:8px;width:8px}::-webkit-scrollbar-thumb{background:#2a2a30;border-radius:8px}::-webkit-scrollbar-thumb:hover{background:#3f3f46}
 .fade{animation:f 260ms var(--ease) both}@keyframes f{from{opacity:0;transform:translateY(6px)}to{opacity:1}}
+.milestone-card{position:relative;overflow:hidden;padding:clamp(1.25rem,3vw,2rem);border:1px solid rgba(var(--rgb),.24);border-radius:1.25rem;background:radial-gradient(ellipse at 100% 0,rgba(var(--rgb),.14),transparent 42%),linear-gradient(145deg,#14191a,#0d0e10 68%);box-shadow:0 1px 0 rgba(255,255,255,.04) inset,0 20px 55px -35px rgba(var(--rgb),.3)}
+.milestone-card:before{content:"";position:absolute;inset:0 15% auto;height:1px;background:linear-gradient(90deg,transparent,rgba(var(--rgb),.8),transparent)}
+.milestone-head{display:flex;align-items:flex-start;justify-content:space-between;gap:1rem;margin-bottom:1.25rem}
+.milestone-title{display:flex;align-items:flex-start;gap:1rem}
+.milestone-icon{width:3rem;height:3rem;flex:none;display:grid;place-items:center;border:1px solid rgba(var(--rgb),.3);border-radius:.875rem;background:rgba(var(--rgb),.1);color:var(--c)}
+.milestone-title h2{margin:.35rem 0 .25rem;color:#fafafa;font-size:1.5rem;font-weight:700;letter-spacing:-.03em;line-height:1.2}
+.milestone-title p{margin:0;color:#a1a1aa;font-size:.875rem}
+.milestone-count{flex:none;padding:.35rem .7rem;border:1px solid rgba(var(--rgb),.25);border-radius:999px;background:rgba(var(--rgb),.08);color:var(--c);font-size:.75rem;font-weight:600;white-space:nowrap}
+.milestone-progress{height:.375rem;margin:1.25rem 0 1rem;overflow:hidden;border-radius:999px;background:#232328}
+.milestone-progress span{display:block;height:100%;border-radius:inherit;background:linear-gradient(90deg,rgba(var(--rgb),.7),var(--c));transition:width 240ms var(--ease)}
+.milestone-list{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,19rem),1fr));gap:.625rem}
+.milestone-item{min-height:3.75rem;display:flex;align-items:center;gap:.75rem;padding:.75rem .875rem;border:1px solid #303036;border-radius:.75rem;background:rgba(9,9,11,.48);cursor:pointer;transition:border-color var(--t) var(--ease),background var(--t) var(--ease),transform var(--t) var(--ease)}
+.milestone-item:hover{transform:translateY(-1px);border-color:rgba(var(--rgb),.45);background:rgba(var(--rgb),.05)}
+.milestone-item input{width:1rem;height:1rem;flex:none;accent-color:var(--c)}
+.milestone-number{width:1.75rem;height:1.75rem;flex:none;display:grid;place-items:center;border:1px solid #3f3f46;border-radius:.5rem;color:#a1a1aa;font-family:ui-monospace,monospace;font-size:.6875rem}
+.milestone-text{flex:1;color:#e4e4e7;font-size:.8125rem;line-height:1.45}
+.milestone-check{width:1rem;height:1rem;flex:none;color:var(--c);opacity:0;transform:scale(.8);transition:opacity var(--t) var(--ease),transform var(--t) var(--ease)}
+.milestone-item.is-done{border-color:rgba(var(--rgb),.3);background:rgba(var(--rgb),.07)}
+.milestone-item.is-done .milestone-number{border-color:rgba(var(--rgb),.35);color:var(--c)}
+.milestone-item.is-done .milestone-text{color:#a1a1aa;text-decoration:line-through;text-decoration-color:rgba(var(--rgb),.55)}
+.milestone-item.is-done .milestone-check{opacity:1;transform:scale(1)}
+.milestone-foot{display:flex;align-items:center;gap:.5rem;margin-top:1rem;color:#a1a1aa;font-size:.75rem}
+.milestone-foot i{width:1rem;height:1rem;color:var(--c)}
+@media(max-width:600px){.milestone-head{flex-direction:column}.milestone-count{align-self:flex-start}}
 @media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
 </style>
 </head>
@@ -115,7 +139,9 @@ function renderRoad(){
  });
  document.getElementById("road").innerHTML=h;
  document.getElementById("legend").innerHTML=[["list-checks",TOPICS.length+" topics"],["target",TOPICS.length+" challenges"],["flag",PROJ.length+" projects"]].map(([i,t])=>`<span class="chip flex items-center gap-1.5"><i data-lucide="${i}" class="w-3.5 h-3.5 accent"></i>${t}</span>`).join("");
- document.getElementById("mile").innerHTML=`<section class="l5"><div class="rounded-2xl p-6" style="background:linear-gradient(135deg,rgba(var(--rgb),.10),rgba(9,9,11,0) 60%);border:1px solid #232328"><h2 class="text-2xl font-bold flex items-center gap-2 mb-1"><i data-lucide="trophy" class="accent"></i>Final Milestone</h2><p class="text-slate-300 mb-4">By the end you should be able to (tick as you go):</p><div class="grid sm:grid-cols-2 gap-2">${MILE.map((m,i)=>`<label class="flex items-center gap-3 bg-slate-800/70 border border-slate-600 rounded-lg px-3 py-2 cursor-pointer ms-item transition"><input type="checkbox" class="w-4 h-4 acc-cb" ${ms.has(i)?"checked":""} onchange="tm(${i})"><span class="text-sm ${ms.has(i)?"line-through text-slate-400":"text-slate-100"}">${i+1}. ${m}</span></label>`).join("")}</div></div></section>`;
+ const milestonePercent=MILE.length?Math.round(ms.size/MILE.length*100):0;
+ const roadmapName=R.short.replace(/ Roadmap$/,"");
+ document.getElementById("mile").innerHTML=`<section class="milestone-card"><div class="milestone-head"><div class="milestone-title"><span class="milestone-icon"><i data-lucide="trophy" class="w-6 h-6"></i></span><div><div class="eyebrow">Career-ready checkpoint</div><h2>Final Milestone</h2><p>Bring your ${roadmapName} skills together. Check off each capability as you build it.</p></div></div><span class="milestone-count">${ms.size} / ${MILE.length} complete</span></div><div class="milestone-progress" role="progressbar" aria-label="Final milestone progress" aria-valuemin="0" aria-valuemax="${MILE.length}" aria-valuenow="${ms.size}"><span style="width:${milestonePercent}%"></span></div><div class="milestone-list">${MILE.map((m,i)=>`<label class="milestone-item ${ms.has(i)?"is-done":""}"><input type="checkbox" ${ms.has(i)?"checked":""} onchange="tm(${i})"><span class="milestone-number">${String(i+1).padStart(2,"0")}</span><span class="milestone-text">${m}</span><i data-lucide="check" class="milestone-check"></i></label>`).join("")}</div><div class="milestone-foot"><i data-lucide="${milestonePercent===100?"badge-check":"list-checks"}"></i><span>${milestonePercent===100?"Every milestone checked off. Keep building and sharing your work.":"Your progress is saved automatically on this device."}</span></div></section>`;
  document.getElementById("pct").textContent=done.size+"/"+TOPICS.length;
  document.getElementById("bar").style.width=(done.size/TOPICS.length*100)+"%";
  lucide.createIcons();
