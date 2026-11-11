@@ -30,31 +30,57 @@ a.card:hover .go{color:rgb(var(--rgb));transform:translateX(3px)}
 .bar{height:4px;border-radius:4px;background:#232328;overflow:hidden}.bar>i{display:block;height:100%;background:rgb(var(--rgb));transition:width 400ms var(--ease)}
 input{transition:border-color 160ms var(--ease)}
 :focus-visible{outline:2px solid #fafafa;outline-offset:2px;border-radius:.5rem}
+html{scroll-behavior:smooth;scroll-padding-top:4.5rem}
+.nav-link{display:block;padding:.375rem .75rem;border-radius:.5rem;color:#a1a1aa;font-size:.875rem;transition:background .15s,color .15s}
+.nav-link:hover,.nav-link:focus-visible{background:rgba(255,255,255,.08);color:#fff;outline:none}
+.nav-link[aria-current="true"]{background:rgba(255,255,255,.1);color:#fff}
 @media (prefers-reduced-motion:reduce){*{transition:none!important}}
+@media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
 </style>
 </head>
 <body class="min-h-screen">
-<header class="border-b border-slate-700">
- <div class="max-w-6xl mx-auto px-4 py-4 flex items-center gap-3">
-  <a href="./" aria-label="Roadmap Hub home"><img src="logos/logo-horizontal-dark.svg" alt="Roadmap Hub" class="h-8 w-auto"></a>
-  <span id="count" class="ml-auto text-sm text-slate-400"></span>
- </div>
+<header class="sticky top-0 z-50 border-b border-white/10 bg-zinc-950/80 backdrop-blur">
+ <nav class="max-w-6xl mx-auto px-4 py-3 flex items-center justify-between" aria-label="Main">
+  <a href="./" class="flex items-center" aria-label="Roadmap Hub home"><img src="logos/logo-horizontal-dark.svg" alt="Roadmap Hub" class="h-7 w-auto"></a>
+  <ul class="hidden items-center gap-1 md:flex">
+   <li><a class="nav-link" href="#roadmaps">Roadmaps</a></li>
+   <li><a class="nav-link" href="#how-it-works">How it works</a></li>
+   <li><a class="nav-link" href="#progress">Progress</a></li>
+   <li><a class="nav-link inline-flex items-center gap-1" href="https://github.com/samikhan43/roadmap-hub" target="_blank" rel="noopener noreferrer">GitHub <i data-lucide="arrow-up-right" class="h-4 w-4"></i></a></li>
+  </ul>
+  <span id="count" class="ml-auto mr-2 text-sm text-slate-400 md:ml-0 md:mr-0" aria-live="polite"></span>
+  <button id="nav-toggle" type="button" class="rounded-lg p-2 text-zinc-300 hover:bg-white/10 md:hidden"
+          aria-label="Open menu" aria-expanded="false" aria-controls="nav-menu">
+   <i data-lucide="menu" class="h-6 w-6" id="icon-open"></i>
+   <i data-lucide="x" class="hidden h-6 w-6" id="icon-close"></i>
+  </button>
+ </nav>
+ <ul id="nav-menu" class="hidden space-y-1 border-t border-white/10 px-2 py-2 md:hidden">
+  <li><a class="nav-link py-2.5" href="#roadmaps">Roadmaps</a></li>
+  <li><a class="nav-link py-2.5" href="#how-it-works">How it works</a></li>
+  <li><a class="nav-link py-2.5" href="#progress">Progress</a></li>
+  <li><a class="nav-link py-2.5" href="https://github.com/samikhan43/roadmap-hub" target="_blank" rel="noopener noreferrer">GitHub</a></li>
+ </ul>
 </header>
 <main class="max-w-6xl mx-auto px-4 py-12">
- <div class="mb-10 max-w-2xl">
+ <section id="how-it-works" class="mb-10 max-w-2xl">
   <div class="eyebrow mb-3">Developer learning paths</div>
   <h1 class="text-4xl sm:text-5xl font-semibold text-white mb-4" style="letter-spacing:-.03em;line-height:1.1">Pick a roadmap. Master it step by step.</h1>
   <p class="text-slate-400 text-lg">Each roadmap has lessons, worked examples, practice challenges and a project per level. Your progress is saved in this browser.</p>
- </div>
- <div class="flex flex-col sm:flex-row gap-3 sm:items-center mb-8">
-  <label class="relative flex-1 max-w-md">
-   <i data-lucide="search" class="w-4 h-4 text-slate-400 absolute left-3 top-1/2 -translate-y-1/2"></i>
-   <input id="q" type="search" placeholder="Search roadmaps  (press /)" autocomplete="off" class="w-full bg-slate-900 border border-slate-700 rounded-lg pl-9 pr-3 py-2 text-sm text-slate-100 placeholder-slate-500 focus:border-slate-400">
-  </label>
-  <div id="filters" class="flex flex-wrap gap-2"></div>
- </div>
- <div id="grid" class="grid gap-4 sm:grid-cols-2 lg:grid-cols-3"></div>
- <p id="empty" class="hidden text-center text-slate-400 py-16">No roadmaps match your search.</p>
+ </section>
+ <section id="roadmaps" aria-label="Available roadmaps">
+  <div class="flex flex-col sm:flex-row gap-3 sm:items-center mb-8">
+   <label class="relative flex-1 max-w-md">
+    <i data-lucide="search" class="w-4 h-4 text-slate-400 absolute left-3 top-1/2 -translate-y-1/2"></i>
+    <input id="q" type="search" placeholder="Search roadmaps  (press /)" autocomplete="off" class="w-full bg-slate-900 border border-slate-700 rounded-lg pl-9 pr-3 py-2 text-sm text-slate-100 placeholder-slate-500 focus:border-slate-400">
+   </label>
+   <div id="filters" class="flex flex-wrap gap-2"></div>
+  </div>
+  <div id="progress">
+   <div id="grid" class="grid gap-4 sm:grid-cols-2 lg:grid-cols-3"></div>
+  </div>
+  <p id="empty" class="hidden text-center text-slate-400 py-16">No roadmaps match your search.</p>
+ </section>
 </main>
 <footer class="max-w-6xl mx-auto px-4 pb-12 text-center text-sm text-slate-500">Built with plain HTML, Tailwind CSS and Lucide. Hosted on GitHub Pages.</footer>
 
@@ -113,6 +139,41 @@ $("q").addEventListener("input",e=>{term=e.target.value.trim().toLowerCase();ren
 document.addEventListener("keydown",e=>{if(e.key==="/"&&document.activeElement.tagName!=="INPUT"){e.preventDefault();$("q").focus()}});
 window.addEventListener("pageshow",render);
 render();
+</script>
+<script>
+(() => {
+ const btn=document.getElementById("nav-toggle");
+ const menu=document.getElementById("nav-menu");
+ const iconOpen=document.getElementById("icon-open");
+ const iconClose=document.getElementById("icon-close");
+ const setOpen=open=>{
+  menu.classList.toggle("hidden",!open);
+  iconOpen.classList.toggle("hidden",open);
+  iconClose.classList.toggle("hidden",!open);
+  btn.setAttribute("aria-expanded",String(open));
+  btn.setAttribute("aria-label",open?"Close menu":"Open menu");
+ };
+
+ btn.addEventListener("click",()=>setOpen(menu.classList.contains("hidden")));
+ menu.addEventListener("click",e=>{if(e.target.closest("a"))setOpen(false)});
+ document.addEventListener("keydown",e=>{if(e.key==="Escape")setOpen(false)});
+ window.matchMedia("(min-width: 768px)").addEventListener("change",e=>{if(e.matches)setOpen(false)});
+
+ const links=document.querySelectorAll('.nav-link[href^="#"]');
+ const sections=[...links].map(link=>document.querySelector(link.getAttribute("href"))).filter(Boolean);
+ if("IntersectionObserver" in window&&sections.length){
+  const observer=new IntersectionObserver(entries=>{
+   const visible=entries.find(entry=>entry.isIntersecting);
+   if(!visible)return;
+   links.forEach(link=>{
+    if(link.getAttribute("href")==="#"+visible.target.id)link.setAttribute("aria-current","true");
+    else link.removeAttribute("aria-current");
+   });
+  },{rootMargin:"-40% 0px -55% 0px"});
+  sections.forEach(section=>observer.observe(section));
+ }
+ if(window.lucide)window.lucide.createIcons();
+})();
 </script>
 </body>
 </html>
