@@ -12,6 +12,7 @@
 :root{--c:#22d3ee;--rgb:34,211,238;--bg:rgba(var(--rgb),.08);--line:#232328;--ease:cubic-bezier(.2,.8,.2,1);--t:160ms}
 *{-webkit-font-smoothing:antialiased}
 html{scroll-behavior:smooth;scroll-padding-top:4.5rem}
+html.drawer-open{overflow:hidden}
 .nav-link{display:block;padding:.375rem .75rem;border-radius:.5rem;color:#a1a1aa;font-size:.875rem;transition:background .15s,color .15s}
 .nav-link:hover,.nav-link:focus-visible{background:rgba(255,255,255,.08);color:#fff;outline:none}
 .nav-link[aria-current="true"]{background:rgba(255,255,255,.1);color:#fff}
@@ -123,7 +124,7 @@ input[type=checkbox]{accent-color:var(--c)}.bg-acc{background:var(--c)}.ms-item:
  <div class="ov absolute inset-0 bg-black/60" onclick="closeD()"></div>
  <aside id="dr" class="drawer absolute right-0 top-0 h-full w-full max-w-2xl bg-slate-800 border-l border-slate-600 shadow-2xl flex flex-col" style="pointer-events:auto">
   <div id="dh" class="p-5 border-b border-slate-600 flex items-start gap-3"></div>
-  <div id="db" class="flex-1 overflow-y-auto p-5 space-y-7"></div>
+  <div id="db" class="min-h-0 flex-1 overflow-y-auto p-5 space-y-7"></div>
   <div id="df" class="p-4 border-t border-slate-600 flex items-center gap-2"></div>
  </aside>
 </div>
@@ -187,9 +188,9 @@ function openD(i){
  const d=done.has(i);
  document.getElementById("df").innerHTML=`<button onclick="nav(-1)" ${i==0?"disabled":""} class="p-2 rounded-lg bg-slate-700 hover:bg-slate-600 disabled:opacity-30" aria-label="Previous"><i data-lucide="arrow-left"></i></button><button onclick="toggle()" class="flex-1 py-2 rounded-lg font-semibold flex items-center justify-center gap-2 ${d?"bg-slate-700 text-slate-100":"text-slate-900"}" ${d?"":'style="background:var(--c)"'}><i data-lucide="${d?"rotate-ccw":"check-circle-2"}" class="w-4 h-4"></i>${d?"Mark as not done":"Mark complete"}</button><button onclick="nav(1)" ${i==TOPICS.length-1?"disabled":""} class="p-2 rounded-lg bg-slate-700 hover:bg-slate-600 disabled:opacity-30" aria-label="Next"><i data-lucide="arrow-right"></i></button>`;
  document.getElementById("db").scrollTop=0;
- const r=document.getElementById("root");r.style.pointerEvents="auto";r.classList.add("open");lucide.createIcons();
+ const r=document.getElementById("root");r.style.pointerEvents="auto";r.classList.add("open");document.documentElement.classList.add("drawer-open");lucide.createIcons();
 }
-function closeD(){const r=document.getElementById("root");r.classList.remove("open");setTimeout(()=>{if(!r.classList.contains("open"))r.style.pointerEvents="none"},350)}
+function closeD(){const r=document.getElementById("root");r.classList.remove("open");setTimeout(()=>{if(!r.classList.contains("open")){r.style.pointerEvents="none";document.documentElement.classList.remove("drawer-open")}},350)}
 const nav=d=>{const n=cur+d;if(n>=0&&n<TOPICS.length)openD(n)};
 function toggle(){done.has(cur)?done.delete(cur):done.add(cur);save();renderRoad();openD(cur)}
 document.addEventListener("keydown",e=>{if(e.key==="Escape")closeD();if(document.getElementById("root").classList.contains("open")){if(e.key==="ArrowRight")nav(1);if(e.key==="ArrowLeft")nav(-1)}});
@@ -202,7 +203,7 @@ function openP(li){
  const d=pj.has(li);
  document.getElementById("df").innerHTML=`<button onclick="tp(${li})" class="flex-1 py-2 rounded-lg font-semibold flex items-center justify-center gap-2 ${d?"bg-slate-700 text-slate-100":"text-slate-900"}" ${d?"":'style="background:var(--c)"'}><i data-lucide="${d?"rotate-ccw":"check-circle-2"}" class="w-4 h-4"></i>${d?"Mark project as not done":"Mark project complete"}</button>`;
  document.getElementById("db").scrollTop=0;
- const r=document.getElementById("root");r.style.pointerEvents="auto";r.classList.add("open");lucide.createIcons();
+ const r=document.getElementById("root");r.style.pointerEvents="auto";r.classList.add("open");document.documentElement.classList.add("drawer-open");lucide.createIcons();
 }
 function tp(li){pj.has(li)?pj.delete(li):pj.add(li);save();renderRoad();openP(li)}
 if(R.hub){const b=document.getElementById("back");b.href=R.hub;b.classList.remove("hidden");b.classList.add("flex")}
