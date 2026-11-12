@@ -67,11 +67,11 @@ Traditional learning guides are often just overwhelming walls of links. This pro
 | Learning Path | Levels | Total Topics | Release Status |
 | :--- | :---: | :---: | :--- |
 | [SQL Fundamentals](https://samikhan43.github.io/roadmap-hub/sql-roadmap/) | 5 | 32 | **Production Live** |
-| PostgreSQL Deep-Dive | — | — | In Development |
+| [PostgreSQL Roadmap](https://samikhan43.github.io/roadmap-hub/postgres-roadmap/) | 5 | 39 | **Production Live** |
 | [FastAPI Roadmap](https://samikhan43.github.io/roadmap-hub/fastapi-roadmap/) | 6 | 39 | **Production Live** |
 | Auth & Identity Management | — | — | In Development |
 
-> Note: The **SQL Roadmap** systematically navigates through core fundamentals, intermediate join mechanics, complex analytical queries, and production topics like indexing, transactions, and security practices.
+> The **SQL Roadmap** covers SQL fundamentals, joins, analytical queries, indexing, transactions, and security. The **PostgreSQL Roadmap** progresses from `psql` and database architecture through schema design, performance, replication, and production operations.
 
 ---
 
@@ -117,6 +117,10 @@ roadmap-hub/
 ├── LICENSE               # Open-source license terms
 ├── sql-roadmap/
 │   └── index.html        # Self-contained single-page roadmap
+├── postgres-roadmap/
+│   └── index.html        # PostgreSQL roadmap (5 levels, 39 topics)
+├── fastapi-roadmap/
+│   └── index.html        # FastAPI roadmap (6 levels, 39 topics)
 ├── content/              # Source files for community roadmaps
 │   └── <roadmap>/
 │       ├── roadmap.json  # Title, levels, projects, milestones
@@ -130,7 +134,7 @@ roadmap-hub/
 └── .github/              # Issue forms, PR template, validation workflow
 ```
 
-Every learning path functions autonomously within its own directory using a single HTML file with its content embedded.
+Each published roadmap page is self-contained in its own directory, with its content embedded in a single HTML file.
 
 The dashboard uses `logos/logo-horizontal-dark.svg`, while roadmap pages and the browser favicon use `logos/logo-mark.svg`. Use `logos/logo-horizontal.svg` on light backgrounds, such as this README.
 
