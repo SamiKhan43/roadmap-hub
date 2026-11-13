@@ -73,11 +73,17 @@ Traditional learning guides are often just overwhelming walls of links. This pro
 
 > The **SQL Roadmap** covers SQL fundamentals, joins, analytical queries, indexing, transactions, and security. The **PostgreSQL Roadmap** progresses from `psql` and database architecture through schema design, performance, replication, and production operations.
 
+## Setup Guides
+
+The [Setup Guides page](https://samikhan43.github.io/roadmap-hub/setup-guides/) is separate from the learning roadmaps and is featured on the homepage. Guide cards open dedicated pages that render the Markdown source, including tables, links, lists, and copyable, syntax-highlighted code examples. The PostgreSQL guide's source of truth is `POSTGRESQL_GUIDE.md`.
+
+To add another guide, add its Markdown file and one metadata entry in `setup-guides/guides.js`. The guide catalog and shared reader use this registry; no generated page or rebuild is needed.
+
 ---
 
 ## Quick Start
 
-Viewing the roadmaps requires no compilation, package installation, or environment configuration.
+Viewing the roadmaps requires no compilation, package installation, or environment configuration. To load Markdown setup guides locally, use the local development server below; browsers block local-file JavaScript from fetching Markdown files when the site is opened directly as `file://`.
 
 ### 1. Clone the Repository
 ```bash
@@ -121,6 +127,11 @@ roadmap-hub/
 │   └── index.html        # PostgreSQL roadmap (5 levels, 39 topics)
 ├── fastapi-roadmap/
 │   └── index.html        # FastAPI roadmap (6 levels, 39 topics)
+├── setup-guides/
+│   ├── guides.js         # Shared metadata registry for setup guides
+│   ├── index.html        # Setup guide catalog
+│   └── guide.html        # Shared Markdown guide reader
+├── POSTGRESQL_GUIDE.md   # PostgreSQL setup guide
 ├── content/              # Source files for community roadmaps
 │   └── <roadmap>/
 │       ├── roadmap.json  # Title, levels, projects, milestones

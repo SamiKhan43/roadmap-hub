@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="Practical setup guides for databases and developer tools used in Roadmap Hub projects.">
+<link rel="icon" type="image/svg+xml" href="../logos/logo-mark.svg">
+<title>Setup Guides | Roadmap Hub</title>
+<script src="https://cdn.tailwindcss.com/3.4.17"></script>
+<script>tailwind.config={theme:{extend:{colors:{slate:{100:"#f4f4f5",200:"#e4e4e7",300:"#d4d4d8",400:"#a1a1aa",500:"#8a8a93",600:"#303036",700:"#232328",800:"#141417",900:"#0c0c0e",950:"#09090b"}}}}}</script>
+<style>
+:root{--line:#27272c;--line-strong:#3f3f46;--accent:#67e8f9;--ease:cubic-bezier(.2,.8,.2,1)}
+*{-webkit-font-smoothing:antialiased}
+html{scroll-behavior:smooth;scroll-padding-top:5rem}
+body{background:#09090b;color:#e4e4e7;font-family:ui-sans-serif,system-ui,-apple-system,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;line-height:1.65;letter-spacing:-.011em}
+.nav-link{display:block;padding:.5rem .75rem;color:#b4b4bd;font-size:.875rem;transition:color .15s}
+.nav-link:hover,.nav-link:focus-visible{color:#fff}
+:focus-visible{outline:2px solid var(--accent);outline-offset:3px}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:.5rem;min-height:2.75rem;padding:.5rem .9rem;border:1px solid var(--line-strong);color:#e4e4e7;font-size:.875rem;font-weight:600;transition:background .16s,border-color .16s}
+.btn:hover{border-color:#8a8a93;background:#141417}
+.btn-primary{background:#fafafa;border-color:#fafafa;color:#09090b}
+.btn-primary:hover{background:#e4e4e7;border-color:#e4e4e7}
+.eyebrow{color:var(--accent);font-size:.7rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase}
+.guide-card{position:relative;display:flex;flex-direction:column;gap:1rem;min-height:15rem;padding:1.5rem;border-radius:1rem;background:linear-gradient(180deg,#131316,#0f0f12);border:1px solid var(--line);box-shadow:0 1px 0 rgba(255,255,255,.03) inset;transition:border-color 160ms var(--ease),box-shadow 200ms var(--ease),transform 160ms var(--ease);overflow:hidden}
+.guide-card:before{content:"";position:absolute;inset:0 0 auto;height:2px;background:linear-gradient(90deg,transparent,rgb(var(--rgb)),transparent);opacity:0;transition:opacity 200ms var(--ease)}
+.guide-card:hover{transform:translateY(-2px);border-color:rgba(var(--rgb),.55);box-shadow:0 1px 0 rgba(255,255,255,.04) inset,0 16px 40px -18px rgba(var(--rgb),.5)}
+.guide-card:hover:before{opacity:1}
+.guide-card p{color:#b4b4bd;font-size:.84rem;line-height:1.65}
+.guide-tag{display:inline-flex;align-items:center;border:1px solid #3f3f46;padding:.15rem .55rem;color:#a1a1aa;font-size:.68rem}
+.guide-icon{flex:none;width:2.75rem;height:2.75rem;border-radius:.75rem;display:flex;align-items:center;justify-content:center;background:rgba(var(--rgb),.12);border:1px solid rgba(var(--rgb),.35);color:rgb(var(--rgb))}
+.guide-card-link{display:inline-flex;align-items:center;gap:.375rem;min-height:2.5rem;margin-top:auto;padding:.375rem .875rem;border:1px solid #3f3f46;border-radius:.625rem;color:#f4f4f5;font-size:.875rem;font-weight:600;transition:background .16s,border-color .16s,color .16s}
+.guide-card:hover .guide-card-link{background:rgb(var(--rgb));border-color:rgb(var(--rgb));color:#09090b}
+@media(prefers-reduced-motion:reduce){*,*:before{scroll-behavior:auto!important;transition:none!important}.guide-card:hover{transform:none}}
+</style>
+<link rel="stylesheet" href="../assets/roadmap-hub-theme.css">
+</head>
+<body class="min-h-screen">
+<a href="#guides" class="sr-only focus:not-sr-only focus:fixed focus:left-3 focus:top-3 focus:z-[60] focus:bg-white focus:px-3 focus:py-2 focus:text-sm focus:font-semibold focus:text-zinc-950">Skip to setup guides</a>
+<header class="sticky top-0 z-40 border-b border-white/10 bg-zinc-950/85 backdrop-blur">
+ <nav class="mx-auto flex min-h-14 max-w-6xl items-center justify-between gap-3 px-4" aria-label="Main">
+  <a href="../index.html" class="flex min-h-11 items-center" aria-label="Roadmap Hub home"><img src="../logos/logo-horizontal-dark.svg" alt="Roadmap Hub" class="h-7 w-auto"></a>
+  <div class="hidden items-center gap-1 md:flex">
+   <a class="nav-link" href="../index.html#roadmaps">Roadmaps</a>
+   <a class="nav-link" href="../backend-engineer-journey/index.html">Backend journey</a>
+   <a class="nav-link" href="#guides" aria-current="page">Setup guides</a>
+  </div>
+  <button id="nav-toggle" type="button" class="flex h-11 w-11 items-center justify-center text-zinc-300 hover:text-white md:hidden" aria-label="Open menu" aria-expanded="false" aria-controls="nav-menu">Menu</button>
+ </nav>
+ <div id="nav-menu" class="hidden border-t border-white/10 px-2 py-2 md:hidden">
+  <a class="nav-link py-3" href="../index.html#roadmaps">Roadmaps</a>
+  <a class="nav-link py-3" href="../backend-engineer-journey/index.html">Backend Engineer Journey</a>
+  <a class="nav-link py-3" href="#guides">Setup guides</a>
+ </div>
+</header>
+
+<main class="mx-auto max-w-6xl px-4">
+ <section class="my-10 max-w-4xl border-b border-[#27272c] pb-8 sm:my-14" aria-labelledby="page-title">
+  <div class="max-w-3xl">
+   <p class="eyebrow mb-3">Reference library · Developer setup</p>
+   <h1 id="page-title" class="mb-4 text-4xl font-semibold text-white sm:text-5xl" style="letter-spacing:-.035em;line-height:1.08">Setup Guides</h1>
+   <p class="mb-3 max-w-2xl text-base text-slate-300">Practical, step-by-step guides to install, configure, and manage the tools and technologies used in backend development.</p>
+   <p class="mb-6 max-w-2xl text-sm text-slate-400">Each guide stays in Markdown, so it is easy to edit, review and extend with another setup topic.</p>
+   <a href="#guides" class="btn btn-primary">Browse guides <span aria-hidden="true">↓</span></a>
+  </div>
+ </section>
+
+ <section id="guides" class="mb-16 scroll-mt-24" aria-labelledby="guides-title">
+  <div class="mb-7 max-w-3xl">
+   <p class="eyebrow mb-2">01 — Guides</p>
+   <h2 id="guides-title" class="mb-2 text-2xl font-semibold text-white" style="letter-spacing:-.02em">Get your development environment ready</h2>
+   <p class="text-sm text-slate-400">Start with the guide that matches your current project. New guides can cover other databases, runtimes, editors or development tools.</p>
+  </div>
+  <div id="guide-list" class="grid gap-4 sm:grid-cols-2 lg:grid-cols-3"></div>
+ </section>
+
+ <section class="mb-16 border-t border-[#27272c] pt-6" aria-labelledby="add-guide-title">
+  <p class="eyebrow mb-2">For contributors</p>
+  <h2 id="add-guide-title" class="mb-2 text-xl font-semibold text-white">Adding another setup guide</h2>
+  <p class="max-w-3xl text-sm text-slate-400">Add the guide Markdown file and register its metadata in <code class="text-slate-300">guides.js</code>. The homepage, catalog, and shared reader use that same entry, so no page rebuild is needed.</p>
+ </section>
+</main>
+<footer class="mx-auto max-w-6xl px-4 pb-10 text-center text-sm text-slate-400">
+ <a href="../index.html" class="font-semibold text-slate-300 underline underline-offset-4 hover:text-white">Back to Roadmap Hub</a>
+ <p class="mt-2">Step-by-step notes for getting the tools behind your projects ready.</p>
+</footer>
+
+<script src="guides.js"></script>
+<script src="https://unpkg.com/lucide@0.468.0/dist/umd/lucide.min.js"></script>
+<script>
+const guides=window.SETUP_GUIDES||[];
+document.getElementById("guide-list").innerHTML=guides.map(guide=>`
+ <article class="guide-card" style="--rgb:${guide.rgb}">
+  <div class="flex items-start gap-3">
+   <span class="guide-icon"><i data-lucide="${guide.icon}" class="h-5 w-5" aria-hidden="true"></i></span>
+   <div class="min-w-0 flex-1">
+    <h3 class="text-lg font-semibold text-white">${guide.title}</h3>
+    <span class="guide-tag mt-2">${guide.difficulty} · Setup guide</span>
+   </div>
+  </div>
+  <p>${guide.description}</p>
+  <a class="guide-card-link" href="guide.html?id=${encodeURIComponent(guide.id)}">Open setup guide <i data-lucide="arrow-right" class="h-4 w-4" aria-hidden="true"></i></a>
+ </article>`).join("");
+if(window.lucide)window.lucide.createIcons();
+const menu=document.getElementById("nav-menu"),button=document.getElementById("nav-toggle");
+function setMenuOpen(open){menu.classList.toggle("hidden",!open);button.setAttribute("aria-expanded",String(open));button.setAttribute("aria-label",open?"Close menu":"Open menu");button.textContent=open?"Close":"Menu"}
+button.addEventListener("click",()=>setMenuOpen(menu.classList.contains("hidden")));
+menu.addEventListener("click",event=>{if(event.target.closest("a"))setMenuOpen(false)});
+document.addEventListener("keydown",event=>{if(event.key==="Escape")setMenuOpen(false)});
+window.matchMedia("(min-width: 768px)").addEventListener("change",event=>{if(event.matches)setMenuOpen(false)});
+</script>
+</body>
+</html>
