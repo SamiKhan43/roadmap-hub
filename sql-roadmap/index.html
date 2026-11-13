@@ -5,9 +5,9 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <link rel="icon" type="image/svg+xml" href="../logos/logo-mark.svg">
 <title>Complete SQL Learning Roadmap</title>
-<script src="https://cdn.tailwindcss.com"></script>
-<script>tailwind.config={theme:{extend:{colors:{slate:{100:"#f4f4f5",200:"#e4e4e7",300:"#d4d4d8",400:"#a1a1aa",500:"#71717a",600:"#303036",700:"#232328",800:"#141417",900:"#0c0c0e",950:"#09090b"}}}}}</script>
-<script src="https://unpkg.com/lucide@latest"></script>
+<script src="https://cdn.tailwindcss.com/3.4.17"></script>
+<script>tailwind.config={theme:{extend:{colors:{slate:{100:"#f4f4f5",200:"#e4e4e7",300:"#d4d4d8",400:"#a1a1aa",500:"#8a8a93",600:"#303036",700:"#232328",800:"#141417",900:"#0c0c0e",950:"#09090b"}}}}}</script>
+<script src="https://unpkg.com/lucide@0.468.0/dist/umd/lucide.min.js"></script>
 <style>
 :root{--c:#34d399;--rgb:52,211,153;--bg:rgba(var(--rgb),.08);--line:#232328;--ease:cubic-bezier(.2,.8,.2,1);--t:160ms}
 *{-webkit-font-smoothing:antialiased}
@@ -39,11 +39,11 @@ button:focus-visible,input:focus-visible,textarea:focus-visible{outline:2px soli
 .open .ov{opacity:1;pointer-events:auto}
 .code{background:#060608;border:1px solid var(--line);border-radius:.625rem;padding:1rem 1.125rem;overflow-x:auto;font-size:.8125rem;line-height:1.7;color:#e4e4e7;white-space:pre}
 textarea.code:focus{border-color:rgba(var(--rgb),.5)}
-.kw{color:var(--c);font-weight:600}.st{color:#e6c07b}.nm{color:#7dd3fc}.cm{color:#71717a;font-style:italic}
+.kw{color:var(--c);font-weight:600}.st{color:#e6c07b}.nm{color:#7dd3fc}.cm{color:#9a9aa4;font-style:italic}
 table.res{border-collapse:collapse;width:100%;font-size:.8125rem}
 table.res th{background:rgba(var(--rgb),.06);color:var(--c);text-align:left;padding:.625rem .875rem;border-bottom:1px solid var(--line);font-size:.6875rem;letter-spacing:.06em;text-transform:uppercase;font-weight:600;white-space:nowrap}
 table.res td{padding:.5rem .875rem;border-bottom:1px solid #1b1b20;color:#e4e4e7}
-table.res tr:last-child td{border-bottom:0}.null{color:#71717a;font-style:italic}
+table.res tr:last-child td{border-bottom:0}.null{color:#9a9aa4;font-style:italic}
 .chip{background:#141417;border:1px solid var(--line);color:#d4d4d8;font-size:.75rem;padding:.25rem .625rem;border-radius:999px;line-height:1.4}
 .scn{background:var(--bg);border:1px solid rgba(var(--rgb),.2);border-radius:.75rem;padding:1rem 1.125rem}
 .frag{list-style:none;margin:0;padding:0;display:grid;gap:.625rem}
@@ -79,9 +79,25 @@ input[type=checkbox]{accent-color:var(--c)}.bg-acc{background:var(--c)}.ms-item:
 .milestone-foot i{width:1rem;height:1rem;color:var(--c)}
 @media(max-width:600px){.milestone-head{flex-direction:column}.milestone-count{align-self:flex-start}}
 @media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}html{scroll-behavior:auto}}
+
+/* ---- UI upgrade ---- */
+.cta-btn{display:inline-flex;align-items:center;gap:.5rem;min-height:2.75rem;padding:.5rem 1.125rem;border-radius:.625rem;background:var(--c);color:#09090b;font-weight:600;font-size:.9375rem;transition:filter 160ms var(--ease),transform 120ms var(--ease)}
+.cta-btn:hover{filter:brightness(1.1)}.cta-btn:active{transform:scale(.97)}
+.up-next{display:inline-block;margin-bottom:.125rem;padding:0 .5rem;border-radius:999px;border:1px solid rgba(var(--rgb),.4);background:var(--bg);color:var(--c);font-size:.6875rem;font-weight:600;line-height:1.6}
+.row.next .card{border-color:rgba(var(--rgb),.55)}
+.row.next .node{border-color:var(--c);box-shadow:0 0 0 4px rgba(var(--rgb),.12)}
+.jump-chip{flex:none;display:inline-flex;align-items:center;min-height:2.5rem;max-width:16rem;padding:.25rem .875rem;border-radius:999px;border:1px solid #3f3f46;background:#141417;color:#d4d4d8;font-size:.875rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;transition:border-color 160ms var(--ease)}
+.jump-chip:hover{border-color:var(--c)}
+#jump{scrollbar-width:none}
+.drawer{height:100dvh}
+#df{padding-bottom:calc(1rem + env(safe-area-inset-bottom,0px))}
+.card:active{transform:scale(.995)}
+section[id^=level-]{scroll-margin-top:4.5rem}
+@media (prefers-reduced-motion:reduce){.cta-btn:active,.card:active{transform:none}}
 </style>
 </head>
 <body class="min-h-screen">
+<a href="#roadmaps" class="sr-only focus:not-sr-only focus:fixed focus:left-3 focus:top-3 focus:z-50 focus:rounded-lg focus:bg-white focus:px-3 focus:py-2 focus:text-sm focus:font-semibold focus:text-zinc-950">Skip to roadmap</a>
 <header class="sticky top-0 z-30 backdrop-blur bg-slate-900/85 border-b border-slate-700">
  <nav class="max-w-6xl mx-auto px-4 py-3 flex items-center justify-between gap-3" aria-label="Main">
   <div class="flex items-center gap-3">
@@ -94,27 +110,27 @@ input[type=checkbox]{accent-color:var(--c)}.bg-acc{background:var(--c)}.ms-item:
    <li><a class="nav-link" href="#progress">Progress</a></li>
    <li><a class="nav-link inline-flex items-center gap-1" href="https://github.com/samikhan43/roadmap-hub" target="_blank" rel="noopener noreferrer">GitHub <i data-lucide="arrow-up-right" class="h-4 w-4"></i></a></li>
   </ul>
-  <div class="ml-auto flex items-center gap-3 sm:w-48 md:ml-0">
-   <div class="hidden sm:block flex-1 h-2 bg-slate-700 rounded-full overflow-hidden"><div id="bar" class="h-full bg-acc transition-all duration-500" style="width:0"></div></div>
+  <div class="ml-auto flex items-center gap-3 w-32 sm:w-48 md:ml-0">
+   <div class="flex-1 h-2 bg-slate-700 rounded-full overflow-hidden"><div id="bar" class="h-full bg-acc transition-all duration-500" style="width:0"></div></div>
    <span id="pct" class="text-xs sm:text-sm text-slate-300 mono">0/32</span>
   </div>
-  <button id="nav-toggle" type="button" class="rounded-lg p-2 text-zinc-300 hover:bg-white/10 md:hidden"
+  <button id="nav-toggle" type="button" class="-mr-2 flex h-11 w-11 items-center justify-center rounded-lg text-zinc-300 hover:bg-white/10 md:hidden"
           aria-label="Open menu" aria-expanded="false" aria-controls="nav-menu">
    <i data-lucide="menu" class="h-6 w-6" id="icon-open"></i>
    <i data-lucide="x" class="hidden h-6 w-6" id="icon-close"></i>
   </button>
  </nav>
  <ul id="nav-menu" class="hidden space-y-1 border-t border-white/10 px-2 py-2 md:hidden">
-  <li><a class="nav-link py-2.5" href="#roadmaps">Roadmaps</a></li>
-  <li><a class="nav-link py-2.5" href="#how-it-works">How it works</a></li>
-  <li><a class="nav-link py-2.5" href="#progress">Progress</a></li>
-  <li><a class="nav-link py-2.5" href="https://github.com/samikhan43/roadmap-hub" target="_blank" rel="noopener noreferrer">GitHub</a></li>
+  <li><a class="nav-link py-3" href="#roadmaps">Roadmaps</a></li>
+  <li><a class="nav-link py-3" href="#how-it-works">How it works</a></li>
+  <li><a class="nav-link py-3" href="#progress">Progress</a></li>
+  <li><a class="nav-link py-3" href="https://github.com/samikhan43/roadmap-hub" target="_blank" rel="noopener noreferrer">GitHub</a></li>
  </ul>
 </header>
 <main class="max-w-4xl mx-auto px-4 py-10">
- <section id="how-it-works" class="mb-8"><div class="eyebrow mb-3">Learning path · Beginner to Professional</div><h1 class="text-4xl sm:text-5xl font-semibold text-white mb-4" style="letter-spacing:-.03em;line-height:1.1">Master SQL, one step at a time.</h1><p class="text-slate-400 text-lg max-w-2xl" style="line-height:1.65">Follow a clear path from your first <span class="mono accent">SELECT</span> to production-grade analytics. Open any node for a lesson, an example and a practice challenge.</p></section>
+ <section id="how-it-works" class="mb-8"><div class="eyebrow mb-3">Learning path · Beginner to Professional</div><h1 class="text-4xl sm:text-5xl font-semibold text-white mb-4" style="letter-spacing:-.03em;line-height:1.1">Master SQL, one step at a time.</h1><p class="text-slate-400 text-lg max-w-2xl" style="line-height:1.65">Follow a clear path from your first <span class="mono accent">SELECT</span> to production-grade analytics. Open any node for a lesson, an example and a practice challenge.</p><div class="mt-6"><button id="cta" type="button" class="cta-btn"></button></div></section>
  <section id="roadmaps" aria-label="SQL learning roadmap">
-  <div id="legend" class="flex flex-wrap gap-2 mb-10"></div>
+  <div id="legend" class="flex flex-wrap gap-2 mb-4"></div><nav id="jump" aria-label="Jump to level" class="mb-10 flex gap-2 overflow-x-auto pb-1"></nav>
   <div id="progress"><div id="road"></div></div>
   <div id="mile"></div>
   <section class="mt-10 rounded-2xl p-6 sm:p-8" style="background:radial-gradient(ellipse at 100% 0,rgba(var(--rgb),.14),transparent 45%),linear-gradient(145deg,#141419,#0d0d10);border:1px solid rgba(var(--rgb),.24)">
@@ -131,7 +147,7 @@ input[type=checkbox]{accent-color:var(--c)}.bg-acc{background:var(--c)}.ms-item:
 </main>
 <div id="root" class="fixed inset-0 z-40" style="pointer-events:none">
  <div class="ov absolute inset-0 bg-black/60" onclick="closeD()"></div>
- <aside id="dr" class="drawer absolute right-0 top-0 h-full w-full max-w-2xl bg-slate-800 border-l border-slate-600 shadow-2xl flex flex-col" style="pointer-events:auto">
+ <aside id="dr" role="dialog" aria-modal="true" aria-labelledby="dtitle" class="drawer absolute right-0 top-0 h-full w-full max-w-2xl bg-slate-800 border-l border-slate-600 shadow-2xl flex flex-col" style="pointer-events:auto">
   <div id="dh" class="p-5 border-b border-slate-600 flex items-start gap-3"></div>
   <div id="db" class="min-h-0 flex-1 overflow-y-auto p-5 space-y-7"></div>
   <div id="df" class="p-4 border-t border-slate-600 flex items-center gap-2"></div>
@@ -165,7 +181,7 @@ function renderRoad(){
  let h="",n=0;
  LV.forEach((L,li)=>{
   const items=TOPICS.map((x,i)=>[x,i]).filter(([x])=>x.l===li),dn=items.filter(([,i])=>done.has(i)).length;
-  h+=`<section class="${L.cls} mb-12"><div class="flex flex-wrap items-center gap-3 mb-1"><span class="badge w-10 h-10 rounded-lg flex items-center justify-center"><i data-lucide="${L.ic}" class="w-5 h-5"></i></span><div class="flex-1"><div class="eyebrow mb-1">${L.n.split(" · ")[0]}</div><h2 class="text-2xl font-semibold tracking-tight text-white" style="line-height:1.2">${L.n.split(" · ")[1]}</h2></div><span class="ml-auto mono text-sm text-slate-300">${dn}/${items.length}${pj.has(li)?" · project ✓":""}</span></div><p class="text-slate-400 text-sm mb-6 pl-[3.25rem]"><b class="text-slate-300 font-medium">Goal:</b> ${L.g}</p><div class="relative pl-14"><div class="line absolute left-[22px] top-0 bottom-0 w-0.5"></div>`;
+  h+=`<section id="level-${li+1}" class="${L.cls} mb-12"><div class="flex flex-wrap items-center gap-3 mb-1"><span class="badge w-10 h-10 rounded-lg flex items-center justify-center"><i data-lucide="${L.ic}" class="w-5 h-5"></i></span><div class="flex-1"><div class="eyebrow mb-1">${L.n.split(" · ")[0]}</div><h2 class="text-2xl font-semibold tracking-tight text-white" style="line-height:1.2">${L.n.split(" · ")[1]}</h2></div><span class="ml-auto mono text-sm text-slate-300">${dn}/${items.length}${pj.has(li)?" · project ✓":""}</span></div><p class="text-slate-400 text-sm mb-6 pl-[3.25rem]"><b class="text-slate-300 font-medium">Goal:</b> ${L.g}</p><div class="relative pl-14"><div class="line absolute left-[22px] top-0 bottom-0 w-0.5"></div>`;
   for(const [x,i] of items){n++;
    h+=`<div class="row relative mb-4 ${done.has(i)?"done":""}"><div class="node absolute -left-14 top-3 w-11 h-11 rounded-full flex items-center justify-center z-10">${done.has(i)?'<i data-lucide="check" class="w-5 h-5"></i>':`<span class="mono font-bold text-sm">${n}</span>`}</div><button class="card rounded-xl p-4 flex items-center gap-4" onclick="openD(${i})"><span class="badge w-10 h-10 rounded-lg flex items-center justify-center shrink-0"><i data-lucide="${x.i}" class="w-5 h-5"></i></span><span class="flex-1 min-w-0"><span class="block font-semibold text-slate-100">${x.t}</span><span class="block text-sm text-slate-400 truncate">${x.c.slice(0,4).join(" · ")}</span></span><i data-lucide="chevron-right" class="accent w-5 h-5"></i></button></div>`;}
   const P=PROJ[li];
@@ -186,31 +202,31 @@ const frag=h=>`<ul class="frag">${h.split(/(?<=[.!?])\s+(?=[A-Z<"\\(])/).map(x=>
 function openD(i){
  cur=i;const x=TOPICS[i],L=LV[x.l],dr=document.getElementById("dr");
  dr.className=dr.className.replace(/\bl\d\b/g,"").trim()+" "+L.cls;
- document.getElementById("dh").innerHTML=`<span class="badge w-12 h-12 rounded-xl flex items-center justify-center shrink-0"><i data-lucide="${x.i}" class="w-6 h-6"></i></span><div class="flex-1"><div class="eyebrow">${L.n.split(" · ")[0]} · Topic ${i+1} of ${TOPICS.length}</div><h2 class="text-2xl font-bold text-white">${x.t}</h2></div><button onclick="closeD()" aria-label="Close" class="p-2 rounded-lg hover:bg-slate-700 text-slate-300"><i data-lucide="x"></i></button>`;
+ document.getElementById("dh").innerHTML=`<span class="badge w-12 h-12 rounded-xl flex items-center justify-center shrink-0"><i data-lucide="${x.i}" class="w-6 h-6"></i></span><div class="flex-1"><div class="eyebrow">${L.n.split(" · ")[0]} · Topic ${i+1} of ${TOPICS.length}</div><h2 id="dtitle" class="text-2xl font-bold text-white">${x.t}</h2></div><button id="dclose" onclick="closeD()" aria-label="Close" class="flex h-11 w-11 shrink-0 items-center justify-center rounded-lg hover:bg-slate-700 text-slate-300"><i data-lucide="x"></i></button>`;
  const tabs=(x.tb.length?`<div class="lbl">${LB.data}</div>`:"")+x.tb.map(k=>{const tb=typeof k==="string"?R.tables[k]:k;return `<div class="mb-3"><div class="text-xs text-slate-400 mb-1 mono">Table: <span class="accent">${tb.n}</span></div><pre class="code mono">${esc(md(tb))}</pre></div>`}).join("");
  document.getElementById("db").innerHTML=
   sec("lightbulb","Concept Primer",frag(x.p))+
   sec("list-checks","What you'll cover",`<div class="flex flex-wrap gap-2">${x.c.map(c=>`<span class="chip">${c}</span>`).join("")}</div>`)+
   sec("code-2","Syntax Blueprint",`<pre class="code mono">${hl(x.s,x.lang)}</pre>`)+
-  sec("briefcase","Interactive Example Case",`<div class="scn mb-4"><div class="eyebrow mb-1">${LB.scenario}</div><p class="text-slate-100">${x.sc}</p></div>${tabs}<div class="lbl mt-4">${LB.solution}</div><pre class="code mono">${hl(x.q,x.lang)}</pre><button id="run" class="mt-3 px-4 py-2 rounded-lg font-semibold text-slate-900 flex items-center gap-2 hover:brightness-110" style="background:var(--c)"><i data-lucide="play" class="w-4 h-4"></i>${LB.run}</button><div id="out" class="mt-4"></div>`)+practice(i);
+  sec("briefcase","Interactive Example Case",`<div class="scn mb-4"><div class="eyebrow mb-1">${LB.scenario}</div><p class="text-slate-100">${x.sc}</p></div>${tabs}<div class="lbl mt-4">${LB.solution}</div><pre class="code mono">${hl(x.q,x.lang)}</pre><button id="run" class="mt-3 px-4 py-3 rounded-lg font-semibold text-slate-900 flex items-center gap-2 hover:brightness-110" style="background:var(--c)"><i data-lucide="play" class="w-4 h-4"></i>${LB.run}</button><div id="out" class="mt-4"></div>`)+practice(i);
  document.getElementById("run").onclick=()=>{document.getElementById("out").innerHTML=`<div class="lbl fade">${LB.result}${x.o.r?" · "+x.o.r.length+" row"+(x.o.r.length>1?"s":""):""}</div><div class="fade">${resTable(x.o)}</div>`};
  const d=done.has(i);
- document.getElementById("df").innerHTML=`<button onclick="nav(-1)" ${i==0?"disabled":""} class="p-2 rounded-lg bg-slate-700 hover:bg-slate-600 disabled:opacity-30" aria-label="Previous"><i data-lucide="arrow-left"></i></button><button onclick="toggle()" class="flex-1 py-2 rounded-lg font-semibold flex items-center justify-center gap-2 ${d?"bg-slate-700 text-slate-100":"text-slate-900"}" ${d?"":'style="background:var(--c)"'}><i data-lucide="${d?"rotate-ccw":"check-circle-2"}" class="w-4 h-4"></i>${d?"Mark as not done":"Mark complete"}</button><button onclick="nav(1)" ${i==TOPICS.length-1?"disabled":""} class="p-2 rounded-lg bg-slate-700 hover:bg-slate-600 disabled:opacity-30" aria-label="Next"><i data-lucide="arrow-right"></i></button>`;
+ document.getElementById("df").innerHTML=`<button onclick="nav(-1)" ${i==0?"disabled":""} class="flex h-11 w-11 shrink-0 items-center justify-center rounded-lg bg-slate-700 hover:bg-slate-600 disabled:opacity-40" aria-label="Previous"><i data-lucide="arrow-left"></i></button><button onclick="toggle()" class="flex-1 py-3 rounded-lg font-semibold flex items-center justify-center gap-2 ${d?"bg-slate-700 text-slate-100":"text-slate-900"}" ${d?"":'style="background:var(--c)"'}><i data-lucide="${d?"rotate-ccw":"check-circle-2"}" class="w-4 h-4"></i>${d?"Mark as not done":"Mark complete"}</button><button onclick="nav(1)" ${i==TOPICS.length-1?"disabled":""} class="flex h-11 w-11 shrink-0 items-center justify-center rounded-lg bg-slate-700 hover:bg-slate-600 disabled:opacity-40" aria-label="Next"><i data-lucide="arrow-right"></i></button>`;
  document.getElementById("db").scrollTop=0;
  const r=document.getElementById("root");r.style.pointerEvents="auto";r.classList.add("open");document.documentElement.classList.add("drawer-open");lucide.createIcons();
 }
 function closeD(){const r=document.getElementById("root");r.classList.remove("open");setTimeout(()=>{if(!r.classList.contains("open")){r.style.pointerEvents="none";document.documentElement.classList.remove("drawer-open")}},350)}
 const nav=d=>{const n=cur+d;if(n>=0&&n<TOPICS.length)openD(n)};
 function toggle(){done.has(cur)?done.delete(cur):done.add(cur);save();renderRoad();openD(cur)}
-document.addEventListener("keydown",e=>{if(e.key==="Escape")closeD();if(document.getElementById("root").classList.contains("open")){if(e.key==="ArrowRight")nav(1);if(e.key==="ArrowLeft")nav(-1)}});
-function practice(i){const p=PR[i];return sec("target","Practice Challenge",`<div class="rounded-xl p-4 mb-3 border border-slate-700 bg-slate-900/60"><div class="eyebrow mb-1">Your turn</div><p class="text-slate-100">${p[0]}</p></div><textarea class="code mono w-full" rows="5" placeholder="${LB.placeholder}" spellcheck="false" style="white-space:pre-wrap;resize:vertical"></textarea><div class="flex flex-wrap gap-2 mt-3"><button onclick="document.getElementById('hint').classList.toggle('hidden')" class="px-4 py-2 rounded-lg bg-slate-700 hover:bg-slate-600 text-slate-100 text-sm font-semibold flex items-center gap-2"><i data-lucide="lightbulb" class="w-4 h-4"></i>Show hint</button><button onclick="document.getElementById('sol').classList.toggle('hidden')" class="px-4 py-2 rounded-lg text-slate-900 text-sm font-semibold flex items-center gap-2 hover:brightness-110" style="background:var(--c)"><i data-lucide="eye" class="w-4 h-4"></i>Show solution</button></div><div id="hint" class="hidden mt-3 scn text-sm text-slate-100">Hint: ${p[1]}</div><pre id="sol" class="code mono hidden mt-3">${hl(p[2],TOPICS[i].lang)}</pre><p class="text-xs text-slate-400 mt-2">${LB.practiceNote}</p>`)}
+document.addEventListener("keydown",e=>{if(e.key==="Escape")closeD();if(document.getElementById("root").classList.contains("open")&&!/^(TEXTAREA|INPUT)$/.test(e.target.tagName)){if(e.key==="ArrowRight")nav(1);if(e.key==="ArrowLeft")nav(-1)}});
+function practice(i){const p=PR[i];return sec("target","Practice Challenge",`<div class="rounded-xl p-4 mb-3 border border-slate-700 bg-slate-900/60"><div class="eyebrow mb-1">Your turn</div><p class="text-slate-100">${p[0]}</p></div><textarea class="code mono w-full" rows="5" placeholder="${LB.placeholder}" spellcheck="false" style="white-space:pre-wrap;resize:vertical"></textarea><div class="flex flex-wrap gap-2 mt-3"><button aria-expanded="false" onclick="tg(this,'hint')" class="px-4 py-3 rounded-lg bg-slate-700 hover:bg-slate-600 text-slate-100 text-sm font-semibold flex items-center gap-2"><i data-lucide="lightbulb" class="w-4 h-4"></i>Show hint</button><button aria-expanded="false" onclick="tg(this,'sol')" class="px-4 py-3 rounded-lg text-slate-900 text-sm font-semibold flex items-center gap-2 hover:brightness-110" style="background:var(--c)"><i data-lucide="eye" class="w-4 h-4"></i>Show solution</button></div><div id="hint" class="hidden mt-3 scn text-sm text-slate-100">Hint: ${p[1]}</div><pre id="sol" class="code mono hidden mt-3">${hl(p[2],TOPICS[i].lang)}</pre><p class="text-xs text-slate-400 mt-2">${LB.practiceNote}</p>`)}
 function openP(li){
  cur=-1;const P=PROJ[li],L=LV[li],dr=document.getElementById("dr");
  dr.className=dr.className.replace(/\bl\d\b/g,"").trim()+" "+L.cls;
- document.getElementById("dh").innerHTML=`<span class="badge w-12 h-12 rounded-xl flex items-center justify-center shrink-0"><i data-lucide="${P.ic}" class="w-6 h-6"></i></span><div class="flex-1"><div class="eyebrow">${L.n.split(" · ")[0]} · Mini-project</div><h2 class="text-2xl font-bold text-white">${P.t}</h2></div><button onclick="closeD()" aria-label="Close" class="p-2 rounded-lg hover:bg-slate-700 text-slate-300"><i data-lucide="x"></i></button>`;
+ document.getElementById("dh").innerHTML=`<span class="badge w-12 h-12 rounded-xl flex items-center justify-center shrink-0"><i data-lucide="${P.ic}" class="w-6 h-6"></i></span><div class="flex-1"><div class="eyebrow">${L.n.split(" · ")[0]} · Mini-project</div><h2 id="dtitle" class="text-2xl font-bold text-white">${P.t}</h2></div><button id="dclose" onclick="closeD()" aria-label="Close" class="flex h-11 w-11 shrink-0 items-center justify-center rounded-lg hover:bg-slate-700 text-slate-300"><i data-lucide="x"></i></button>`;
  document.getElementById("db").innerHTML=sec("flag","Project Brief",`<p class="text-slate-200 leading-relaxed">${P.brief}</p>`)+sec("list-ordered","What You'll Build",`<ol class="space-y-2">${P.steps.map((x,k)=>`<li class="flex gap-3 items-start"><span class="badge w-6 h-6 rounded-full flex items-center justify-center text-xs mono shrink-0">${k+1}</span><span class="text-slate-200">${x}</span></li>`).join("")}</ol>`)+sec("wrench","Skills Used",`<span class="chip">${P.skills}</span>`)+sec("package-check","Deliverable",`<div class="scn"><p class="text-slate-100">${P.out}</p></div><p class="text-xs text-slate-400 mt-3">Tip: publish the project on GitHub. It becomes part of your portfolio.</p>`);
  const d=pj.has(li);
- document.getElementById("df").innerHTML=`<button onclick="tp(${li})" class="flex-1 py-2 rounded-lg font-semibold flex items-center justify-center gap-2 ${d?"bg-slate-700 text-slate-100":"text-slate-900"}" ${d?"":'style="background:var(--c)"'}><i data-lucide="${d?"rotate-ccw":"check-circle-2"}" class="w-4 h-4"></i>${d?"Mark project as not done":"Mark project complete"}</button>`;
+ document.getElementById("df").innerHTML=`<button onclick="tp(${li})" class="flex-1 py-3 rounded-lg font-semibold flex items-center justify-center gap-2 ${d?"bg-slate-700 text-slate-100":"text-slate-900"}" ${d?"":'style="background:var(--c)"'}><i data-lucide="${d?"rotate-ccw":"check-circle-2"}" class="w-4 h-4"></i>${d?"Mark project as not done":"Mark project complete"}</button>`;
  document.getElementById("db").scrollTop=0;
  const r=document.getElementById("root");r.style.pointerEvents="auto";r.classList.add("open");document.documentElement.classList.add("drawer-open");lucide.createIcons();
 }
@@ -251,6 +267,44 @@ renderRoad();
   sections.forEach(section=>observer.observe(section));
  }
  if(window.lucide)window.lucide.createIcons();
+})();
+</script>
+
+<script>
+(()=>{
+ const $=id=>document.getElementById(id);let last=null;
+ const _oD=openD,_oP=openP,_cD=closeD,_rr=renderRoad;
+ const lock=on=>document.querySelectorAll('header,main').forEach(x=>x.inert=on);
+ const wrap=f=>function(...a){
+  const was=$('root').classList.contains('open');
+  if(!was)last=document.activeElement;
+  f(...a);
+  $('dr').inert=false;lock(true);
+  if(!was){const c=$('dclose');if(c)c.focus({preventScroll:true})}
+ };
+ openD=wrap(_oD);openP=wrap(_oP);
+ closeD=function(){_cD();lock(false);$('dr').inert=true;if(last&&last.isConnected)last.focus({preventScroll:true})};
+ $('dr').inert=true;
+ window.tg=(b,id)=>{const el=$(id);el.classList.toggle('hidden');b.setAttribute('aria-expanded',String(!el.classList.contains('hidden')))};
+ renderRoad=function(){
+  _rr();
+  const pct=Math.round(done.size/TOPICS.length*100),bar=$('bar');
+  if(bar&&bar.parentElement){const p=bar.parentElement;p.setAttribute('role','progressbar');p.setAttribute('aria-label','Roadmap progress');p.setAttribute('aria-valuemin','0');p.setAttribute('aria-valuemax','100');p.setAttribute('aria-valuenow',pct)}
+  const nx=document.querySelector('#road .row:not(.done) > button.card[onclick^="openD("]');
+  let target=0,label='All topics complete. Review from the start';
+  if(nx){
+   target=+/openD\((\d+)\)/.exec(nx.getAttribute('onclick'))[1];
+   nx.closest('.row').classList.add('next');
+   nx.querySelector('.flex-1').insertAdjacentHTML('afterbegin','<span class="up-next">Up next</span>');
+   label=(done.size?'Continue: ':'Start with: ')+TOPICS[target].t;
+  }
+  const cta=$('cta');
+  if(cta){cta.innerHTML='<i data-lucide="'+(done.size?'play':'arrow-right')+'" class="w-4 h-4" aria-hidden="true"></i><span></span>';cta.lastElementChild.textContent=label;cta.onclick=()=>openD(target)}
+  const j=$('jump');
+  if(j)j.innerHTML=LV.map((L,i)=>'<a class="jump-chip" href="#level-'+(i+1)+'">'+(i+1)+'. '+esc(L.n.split(' \u00b7 ')[1])+'</a>').join('');
+  lucide.createIcons();
+ };
+ renderRoad();
 })();
 </script>
 </body>
