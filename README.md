@@ -69,7 +69,7 @@ Traditional learning guides are often just overwhelming walls of links. This pro
 | [SQL Fundamentals](https://samikhan43.github.io/roadmap-hub/sql-roadmap/) | 5 | 32 | **Production Live** |
 | [PostgreSQL Roadmap](https://samikhan43.github.io/roadmap-hub/postgres-roadmap/) | 5 | 39 | **Production Live** |
 | [FastAPI Roadmap](https://samikhan43.github.io/roadmap-hub/fastapi-roadmap/) | 6 | 39 | **Production Live** |
-| Auth & Identity Management | — | — | In Development |
+| .[Auth Roadmap](https://samikhan43.github.io/roadmap-hub/Auth-roadmap/) | 6 | 26 | **Production Live** |
 
 > The **SQL Roadmap** covers SQL fundamentals, joins, analytical queries, indexing, transactions, and security. The **PostgreSQL Roadmap** progresses from `psql` and database architecture through schema design, performance, replication, and production operations.
 
