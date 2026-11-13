@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="A practical setup guide for backend development tools.">
+<link rel="icon" type="image/svg+xml" href="../logos/logo-mark.svg">
+<title>Setup Guide | Roadmap Hub</title>
+<script src="https://cdn.tailwindcss.com/3.4.17"></script>
+<script>tailwind.config={theme:{extend:{colors:{slate:{100:"#f4f4f5",200:"#e4e4e7",300:"#d4d4d8",400:"#a1a1aa",500:"#8a8a93",600:"#303036",700:"#232328",800:"#141417",900:"#0c0c0e",950:"#09090b"}}}}}</script>
+<style>
+:root{--line:#27272c;--line-strong:#3f3f46;--accent:#67e8f9;--ease:cubic-bezier(.2,.8,.2,1)}
+*{-webkit-font-smoothing:antialiased}
+html{scroll-behavior:smooth;scroll-padding-top:5rem}
+body{background:#09090b;color:#e4e4e7;font-family:ui-sans-serif,system-ui,-apple-system,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;line-height:1.65;letter-spacing:-.011em}
+.mono,code,pre{font-family:ui-monospace,"SF Mono","JetBrains Mono",Menlo,Consolas,monospace;letter-spacing:0}
+.nav-link{display:block;padding:.5rem .75rem;color:#b4b4bd;font-size:.875rem;transition:color .15s}
+.nav-link:hover,.nav-link:focus-visible{color:#fff}
+:focus-visible{outline:2px solid var(--accent);outline-offset:3px}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:.5rem;min-height:2.75rem;padding:.5rem .9rem;border:1px solid var(--line-strong);color:#e4e4e7;font-size:.875rem;font-weight:600;transition:background .16s,border-color .16s}
+.btn:hover{border-color:#8a8a93;background:#141417}
+.eyebrow{color:var(--accent);font-size:.7rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase}
+.guide-layout{display:grid;grid-template-columns:minmax(0,1fr);gap:2rem}
+.guide-toc{border:1px solid var(--line);background:#111114;padding:1rem}
+.guide-toc a{display:block;padding:.35rem 0;color:#a1a1aa;font-size:.78rem;line-height:1.45;text-decoration:none}
+.guide-toc a:hover{color:#fff}
+.guide-toc a[data-level="3"]{padding-left:.8rem;color:#8a8a93}
+.markdown-body{min-width:0;color:#d4d4d8;font-size:.94rem;line-height:1.8}
+.markdown-body>*{max-width:52rem}
+.markdown-body h1,.markdown-body h2,.markdown-body h3,.markdown-body h4{color:#fafafa;font-weight:650;letter-spacing:-.02em;line-height:1.3;scroll-margin-top:6rem}
+.markdown-body h1{margin:0 0 1.5rem;font-size:clamp(1.8rem,4vw,2.5rem)}
+.markdown-body h2{margin:2.5rem 0 .75rem;padding-top:1.1rem;border-top:1px solid var(--line);font-size:1.45rem}
+.markdown-body h3{margin:1.7rem 0 .55rem;font-size:1.1rem}
+.markdown-body h4{margin:1.25rem 0 .45rem;font-size:1rem}
+.markdown-body p{margin:.75rem 0}
+.markdown-body ul,.markdown-body ol{margin:.75rem 0;padding-left:1.5rem}
+.markdown-body ul{list-style:disc}
+.markdown-body ol{list-style:decimal}
+.markdown-body li{padding:.12rem 0}
+.markdown-body li>ul,.markdown-body li>ol{margin:.2rem 0}
+.markdown-body a{color:#a5f3fc;text-decoration:underline;text-decoration-color:#3f3f46;text-underline-offset:3px}
+.markdown-body a:hover{color:white}
+.markdown-body strong{color:#fafafa;font-weight:650}
+.markdown-body :not(pre)>code{padding:.12rem .35rem;border:1px solid #303036;border-radius:.35rem;background:#141417;color:#a5f3fc;font-size:.86em}
+.markdown-body pre{position:relative;margin:1rem 0 1.25rem;overflow:auto;border:1px solid #303036;border-radius:.75rem;background:#060608;padding:2.7rem 1.1rem 1rem;color:#e4e4e7;font-size:.81rem;line-height:1.7;tab-size:2}
+.markdown-body pre code{font:inherit;white-space:pre}
+.code-toolbar{position:absolute;top:.5rem;right:.5rem;z-index:1}
+.copy-code{min-height:2rem;border:1px solid #3f3f46;border-radius:.35rem;background:#141417;padding:.2rem .55rem;color:#d4d4d8;font:inherit;font-size:.7rem;cursor:pointer}
+.copy-code:hover{border-color:#71717a;color:#fff}
+.tok-keyword{color:#67e8f9;font-weight:600}.tok-string{color:#e6c07b}.tok-number{color:#7dd3fc}.tok-comment{color:#71717a;font-style:italic}.tok-command{color:#86efac}
+.table-wrap{max-width:100%;margin:1rem 0 1.25rem;overflow-x:auto;border:1px solid #303036;border-radius:.65rem}
+.markdown-body table{width:100%;border-collapse:collapse;font-size:.82rem;line-height:1.55}
+.markdown-body th{background:#141417;color:#fafafa;text-align:left;font-weight:650}
+.markdown-body th,.markdown-body td{padding:.6rem .8rem;border-bottom:1px solid #27272c}
+.markdown-body tr:last-child td{border-bottom:0}
+.markdown-body hr{height:1px;margin:2rem 0;border:0;background:#303036}
+.markdown-body blockquote{margin:1rem 0;border-left:2px solid #67e8f9;padding:.25rem 1rem;color:#a1a1aa}
+.guide-status{border:1px solid #3f3f46;background:#111114;padding:1rem;color:#d4d4d8}
+.guide-status[hidden]{display:none}
+@media(min-width:1024px){.guide-layout{grid-template-columns:minmax(0,1fr) 15rem}.guide-toc{grid-column:2;grid-row:1;position:sticky;top:5.5rem;align-self:start;max-height:calc(100vh - 6rem);overflow:auto}.markdown-body{grid-column:1;grid-row:1}}
+@media(prefers-reduced-motion:reduce){*,*:before{scroll-behavior:auto!important;transition:none!important}}
+</style>
+<link rel="stylesheet" href="../assets/roadmap-hub-theme.css">
+</head>
+<body class="min-h-screen">
+<a href="#guide-content" class="sr-only focus:not-sr-only focus:fixed focus:left-3 focus:top-3 focus:z-[60] focus:bg-white focus:px-3 focus:py-2 focus:text-sm focus:font-semibold focus:text-zinc-950">Skip to guide content</a>
+<header class="sticky top-0 z-40 border-b border-white/10 bg-zinc-950/85 backdrop-blur">
+ <nav class="mx-auto flex min-h-14 max-w-6xl items-center justify-between gap-3 px-4" aria-label="Main">
+  <a href="../index.html" class="flex min-h-11 items-center" aria-label="Roadmap Hub home"><img src="../logos/logo-horizontal-dark.svg" alt="Roadmap Hub" class="h-7 w-auto"></a>
+  <div class="flex items-center gap-1">
+   <a class="nav-link" href="../index.html#setup-guides">Setup Guides</a>
+   <a class="nav-link" href="index.html">All guides</a>
+  </div>
+ </nav>
+</header>
+<main class="mx-auto max-w-6xl px-4">
+ <section class="my-8 border-b border-[#27272c] pb-5 sm:my-10" aria-labelledby="page-title">
+  <p class="eyebrow mb-2">Setup guide</p>
+  <h1 id="page-title" class="mb-2 text-3xl font-semibold text-white sm:text-4xl" style="letter-spacing:-.03em">Loading guide…</h1>
+  <p id="guide-description" class="max-w-3xl text-sm text-slate-400"></p>
+ </section>
+ <div id="guide-status" class="guide-status mb-6" role="status" aria-live="polite" hidden></div>
+ <div class="guide-layout mb-16">
+   <aside class="guide-toc" aria-label="On this page">
+    <details id="toc-details" open>
+     <summary class="cursor-pointer text-sm font-semibold text-white">On this page</summary>
+     <nav id="guide-toc" class="mt-2"></nav>
+    </details>
+   </aside>
+   <article id="guide-content" class="markdown-body" aria-label="Setup guide content"></article>
+ </div>
+</main>
+<footer class="mx-auto max-w-6xl px-4 pb-10 text-center text-sm text-slate-400">
+ <a href="index.html" class="font-semibold text-slate-300 underline underline-offset-4 hover:text-white">Back to setup guides</a>
+ <span aria-hidden="true"> · </span>
+ <a href="../index.html" class="font-semibold text-slate-300 underline underline-offset-4 hover:text-white">Roadmap Hub home</a>
+</footer>
+<script src="guides.js"></script>
+<script>
+const escapeHtml=value=>value.replace(/[&<>"']/g,char=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[char]));
+const guide=window.SETUP_GUIDES.find(item=>item.id===new URLSearchParams(location.search).get("id"));
+const content=document.getElementById("guide-content"),status=document.getElementById("guide-status");
+function fail(message){status.textContent=message;status.hidden=false}
+function safeHref(raw){
+ const href=raw.trim();
+ if(/^(https?:|mailto:|#)/i.test(href))return href;
+ if(/^(\/|\.\/|\.\.\/|[\w.-]+(?:\/|$))/i.test(href)){
+  const resolved=new URL(href,new URL(guide.markdown,location.href));
+  return ["http:","https:","file:"].includes(resolved.protocol)?resolved.href:null;
+ }
+ return null;
+}
+function inlineMarkdown(value){
+ const codes=[];
+ let text=value.replace(/`([^`]+)`/g,(_,code)=>{const token=`\u0000${codes.length}\u0000`;codes.push(`<code>${escapeHtml(code)}</code>`);return token});
+ text=escapeHtml(text);
+ text=text.replace(/\[([^\]]+)\]\(([^)]+)\)/g,(_,label,href)=>{
+  const safe=safeHref(href);
+  return safe?`<a href="${escapeHtml(safe)}"${/^https?:/i.test(safe)?' target="_blank" rel="noopener noreferrer"':""}>${label}</a>`:label;
+ });
+ text=text.replace(/\*\*(.+?)\*\*/g,"<strong>$1</strong>").replace(/\*(.+?)\*/g,"<em>$1</em>");
+ return text.replace(/\u0000(\d+)\u0000/g,(_,index)=>codes[Number(index)]);
+}
+function slugify(text,counts){
+ const base=text.toLowerCase().replace(/<[^>]*>/g,"").replace(/&[^;]+;/g,"").replace(/[^\p{L}\p{N}]+/gu,"-").replace(/^-|-$/g,"")||"section";
+ const count=counts.get(base)||0;counts.set(base,count+1);return count?`${base}-${count+1}`:base;
+}
+function highlight(code,language){
+ const lang=language.toLowerCase();
+ const escaped=escapeHtml(code);
+ if(!["bash","sh","shell","sql","python","py","json"].includes(lang))return escaped;
+ let text=escaped;
+ const comments=lang==="sql"?/--.*$/gm:/#.*/gm;
+ const strings=/"(?:\\.|[^"\\])*"|'(?:\\.|[^'\\])*'/g;
+ const protectedParts=[];
+ const protect=(pattern,kind)=>{text=text.replace(pattern,match=>{const token=String.fromCharCode(0xe000+protectedParts.length);protectedParts.push({value:match,kind});return token})};
+ protect(strings,"string");
+ protect(comments,"comment");
+ if(lang==="sql"){
+  text=text.replace(/\b(SELECT|FROM|WHERE|INSERT|INTO|VALUES|UPDATE|SET|DELETE|CREATE|TABLE|DATABASE|ROLE|PRIMARY|KEY|FOREIGN|REFERENCES|NOT|NULL|UNIQUE|DEFAULT|AND|OR|AS|JOIN|ON|GROUP|BY|ORDER|LIMIT|RETURNING|GENERATED|ALWAYS|IDENTITY|NUMERIC|BIGINT|SERIAL|BEGIN|COMMIT|ROLLBACK|GRANT|REVOKE|ALTER|DROP|CASCADE)\b/gi,'<span class="tok-keyword">$1</span>');
+ }else if(lang==="bash"||lang==="sh"||lang==="shell"){
+  text=text.replace(/\b(docker|psql|pg_dump|pg_restore|python3|cd|echo|export|set|source|sudo|grep|cat|mkdir|chmod|curl)\b/g,'<span class="tok-command">$1</span>');
+  text=text.replace(/\b(-[a-zA-Z][\w-]*|--[a-zA-Z][\w-]*)\b/g,'<span class="tok-keyword">$1</span>');
+ }else if(lang==="json"){
+  text=text.replace(/(&quot;[^&]*?&quot;)(?=\s*:)/g,'<span class="tok-keyword">$1</span>');
+ }else{
+  text=text.replace(/\b(def|class|import|from|as|if|else|elif|for|while|return|try|except|with|True|False|None|print|raise)\b/g,'<span class="tok-keyword">$1</span>');
+ }
+ text=text.replace(/\b\d+(?:\.\d+)?\b/g,'<span class="tok-number">$&</span>');
+ return text.replace(/[\uE000-\uF8FF]/g,token=>{
+  const part=protectedParts[token.charCodeAt(0)-0xe000];
+  return `<span class="tok-${part.kind}">${part.value}</span>`;
+ });
+}
+function splitTableRow(line){
+ return line.trim().replace(/^\|/,"").replace(/\|$/,"").split(/(?<!\\)\|/).map(cell=>cell.trim().replace(/\\\|/g,"|"));
+}
+function isTableSeparator(line){return /^\s*\|?[\s:|-]+\|?\s*$/.test(line)&&line.includes("-")}
+function renderMarkdown(markdown){
+ const lines=markdown.replace(/\r\n?/g,"\n").split("\n"),counts=new Map(),headings=[];
+ let html="",index=0;
+ const startsBlock=line=>/^\s*(#{1,6}\s|```|~~~|>|[-*+]\s|\d+[.)]\s|---+\s*$)/.test(line);
+ while(index<lines.length){
+  const line=lines[index];
+  if(!line.trim()){index++;continue}
+  const fence=line.match(/^\s*(```+|~~~+)\s*([\w+-]*)\s*$/);
+  if(fence){
+   const code=[];index++;
+   while(index<lines.length&&!lines[index].trimStart().startsWith(fence[1][0].repeat(fence[1].length)))code.push(lines[index++]);
+   if(index<lines.length)index++;
+   const lang=fence[2]||"text",raw=code.join("\n");
+   html+=`<pre><div class="code-toolbar"><button class="copy-code" type="button" aria-label="Copy ${escapeHtml(lang)} code">Copy</button></div><code class="language-${escapeHtml(lang)}">${highlight(raw,lang)}</code></pre>`;
+   continue;
+  }
+  const heading=line.match(/^(#{1,6})\s+(.+?)\s*#*\s*$/);
+  if(heading){
+   const level=heading[1].length,label=inlineMarkdown(heading[2]),id=slugify(label,counts);
+   if(level!==1)html+=`<h${level} id="${id}">${label}</h${level}>`;
+   if(level===2||level===3)headings.push({id,label:heading[2].replace(/`([^`]+)`/g,"$1"),level});
+   index++;continue;
+  }
+  if(index+1<lines.length&&line.includes("|")&&isTableSeparator(lines[index+1])){
+   const headers=splitTableRow(line);index+=2;const rows=[];
+   while(index<lines.length&&lines[index].includes("|")&&lines[index].trim())rows.push(splitTableRow(lines[index++]));
+   html+='<div class="table-wrap"><table><thead><tr>'+headers.map(cell=>`<th scope="col">${inlineMarkdown(cell)}</th>`).join("")+'</tr></thead><tbody>'+rows.map(row=>"<tr>"+headers.map((_,cellIndex)=>`<td>${inlineMarkdown(row[cellIndex]||"")}</td>`).join("")+"</tr>").join("")+"</tbody></table></div>";
+   continue;
+  }
+  if(/^\s*---+\s*$/.test(line)){html+="<hr>";index++;continue}
+  if(/^\s*>/.test(line)){
+   const quote=[];while(index<lines.length&&/^\s*>/.test(lines[index]))quote.push(lines[index++].replace(/^\s*>\s?/,""));
+   html+="<blockquote><p>"+inlineMarkdown(quote.join(" "))+"</p></blockquote>";continue;
+  }
+  const list=line.match(/^(\s*)([-*+]|\d+[.)])\s+(.+)$/);
+  if(list){
+   const ordered=/^\d/.test(list[2]),tag=ordered?"ol":"ul",baseIndent=list[1].length,items=[];
+   while(index<lines.length){
+    const item=lines[index].match(/^(\s*)([-*+]|\d+[.)])\s+(.+)$/);
+    if(!item||item[1].length!==baseIndent||/^\d/.test(item[2])!==ordered)break;
+    items.push(`<li>${inlineMarkdown(item[3])}</li>`);index++;
+   }
+   html+=`<${tag}>${items.join("")}</${tag}>`;continue;
+  }
+  const paragraph=[line];index++;
+  while(index<lines.length&&lines[index].trim()&&!startsBlock(lines[index])&&!(lines[index].includes("|")&&index+1<lines.length&&isTableSeparator(lines[index+1]))){paragraph.push(lines[index++])}
+  html+=`<p>${inlineMarkdown(paragraph.join(" "))}</p>`;
+ }
+ content.innerHTML=html;
+ document.getElementById("guide-toc").innerHTML=headings.map(item=>`<a href="#${item.id}" data-level="${item.level}">${escapeHtml(item.label)}</a>`).join("");
+}
+async function loadGuide(){
+ if(!guide){document.title="Guide not found | Roadmap Hub";document.getElementById("page-title").textContent="Guide not found";fail("This setup guide does not exist. Browse the available guides to choose another.");return}
+ document.title=`${guide.title} | Roadmap Hub`;
+ document.getElementById("page-title").textContent=guide.title;
+ document.getElementById("guide-description").textContent=guide.description;
+ try{
+  const response=await fetch(guide.markdown);
+  if(!response.ok)throw new Error(`The Markdown file returned HTTP ${response.status}.`);
+  renderMarkdown(await response.text());
+  content.addEventListener("click",async event=>{
+   const button=event.target.closest(".copy-code");
+   if(!button)return;
+   const code=button.closest("pre").querySelector("code").textContent;
+   try{
+    if(navigator.clipboard&&window.isSecureContext)await navigator.clipboard.writeText(code);
+    else{
+     const field=document.createElement("textarea");field.value=code;field.style.position="fixed";field.style.opacity="0";document.body.append(field);field.select();
+     const copied=document.execCommand("copy");field.remove();if(!copied)throw new Error("Copy command was rejected.");
+    }
+    button.textContent="Copied";setTimeout(()=>{button.textContent="Copy"},1500);
+   }
+   catch(error){button.textContent="Copy failed";button.title="Clipboard access was denied by the browser."}
+  });
+ }catch(error){
+  fail(location.protocol==="file:"?"To render this Markdown guide locally, start a static server from the repository root with `python3 -m http.server 8000`, then open http://localhost:8000/setup-guides/guide.html?id="+encodeURIComponent(guide.id)+".":`Could not load the Markdown source: ${error.message}`);
+ }
+}
+const tocDetails=document.getElementById("toc-details"),wideLayout=window.matchMedia("(min-width: 1024px)");
+tocDetails.open=wideLayout.matches;
+wideLayout.addEventListener("change",event=>{tocDetails.open=event.matches});
+loadGuide();
+</script>
+</body>
+</html>
