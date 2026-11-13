@@ -11,11 +11,11 @@
 <style>
 :root{--line:#27272c;--line-strong:#3f3f46;--ease:cubic-bezier(.2,.8,.2,1)}
 *{-webkit-font-smoothing:antialiased}
-body{background:#09090b radial-gradient(60% 380px at 50% -80px,rgba(255,255,255,.07),transparent) no-repeat;color:#e4e4e7;font-family:ui-sans-serif,system-ui,-apple-system,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;line-height:1.65;letter-spacing:-.011em}
+body{background:#09090b radial-gradient(60% 380px at 50% -80px,rgba(255,255,255,.07),transparent) no-repeat;color:#e4e4e7;font-family:ui-sans-serif,system-ui,-apple-system,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif}
 .mono{font-family:ui-monospace,"SF Mono","JetBrains Mono",Menlo,Consolas,monospace;letter-spacing:0;font-variant-numeric:tabular-nums}
 
 /* Buttons */
-.btn{display:inline-flex;align-items:center;justify-content:center;gap:.5rem;min-height:2.75rem;padding:.5rem 1.125rem;border-radius:.625rem;font-size:.9375rem;font-weight:600;line-height:1.2;border:1px solid var(--line-strong);color:#e4e4e7;transition:background 160ms var(--ease),border-color 160ms var(--ease),transform 120ms var(--ease)}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:.5rem;min-height:2.75rem;padding:.5rem 1.125rem;border-radius:.625rem;font-size:.9375rem;font-weight:600;line-height:1.2;border:1px solid var(--line-strong);background:transparent;color:#e4e4e7;transition:border-color 160ms var(--ease),background-color 160ms var(--ease),transform 160ms var(--ease)}
 .btn:hover{border-color:#71717a;background:rgba(255,255,255,.05)}
 .btn:active{transform:scale(.97)}
 .btn-primary{background:#fafafa;border-color:#fafafa;color:#09090b}
@@ -24,24 +24,25 @@ body{background:#09090b radial-gradient(60% 380px at 50% -80px,rgba(255,255,255,
 /* Filter chips: status group, divider, topic group */
 #filters{scrollbar-width:none}
 #filters::-webkit-scrollbar{display:none}
-.chip{flex:none;background:#141417;border:1px solid var(--line-strong);color:#d4d4d8;font-size:.875rem;min-height:2.5rem;padding:.25rem .875rem;border-radius:999px;line-height:1.4;display:inline-flex;align-items:center;cursor:pointer;transition:background 160ms var(--ease),border-color 160ms var(--ease),color 160ms var(--ease),transform 120ms var(--ease)}
+.chip{flex:none;background:#141417;border:1px solid var(--line-strong);color:#d4d4d8;font-size:.875rem;min-height:2.5rem;padding:.25rem .875rem;border-radius:999px;line-height:1.4;display:inline-flex;align-items:center;justify-content:center;gap:.375rem;cursor:pointer;transition:border-color 160ms var(--ease),background-color 160ms var(--ease),transform 160ms var(--ease)}
 .chip:hover{border-color:#71717a;background:#1b1b1f}
 .chip:active{transform:scale(.96)}
 .chip.on{background:#fafafa;color:#09090b;border-color:#fafafa;font-weight:600}
 .sep{flex:none;align-self:center;width:1px;height:1.25rem;background:var(--line-strong);margin:0 .25rem}
 
 /* Cards */
-.card{--rgb:52,211,153;position:relative;display:flex;flex-direction:column;gap:1rem;padding:1.5rem;border-radius:1rem;background:linear-gradient(180deg,#131316,#0f0f12);border:1px solid var(--line);box-shadow:0 1px 0 rgba(255,255,255,.03) inset;transition:border-color 160ms var(--ease),box-shadow 200ms var(--ease),transform 160ms var(--ease);overflow:hidden}
+.card{--rgb:52,211,153;position:relative;display:flex;flex-direction:column;gap:1rem;padding:1.5rem;border-radius:1rem;background:linear-gradient(180deg,rgba(var(--rgb),.06),rgba(19,19,22,.96)),linear-gradient(180deg,#131316,#0f0f12);border:1px solid var(--line);box-shadow:0 1px 0 rgba(255,255,255,.03) inset,0 1px 2px rgba(0,0,0,.4);transition:border-color 160ms var(--ease),background 160ms var(--ease),box-shadow 160ms var(--ease),transform 160ms var(--ease);cursor:pointer;text-align:left;width:100%}
 .card:before{content:"";position:absolute;inset:0 0 auto 0;height:2px;background:linear-gradient(90deg,transparent,rgb(var(--rgb)),transparent);opacity:0;transition:opacity 200ms var(--ease)}
-a.card:hover{transform:translateY(-2px);border-color:rgba(var(--rgb),.55);box-shadow:0 1px 0 rgba(255,255,255,.04) inset,0 16px 40px -18px rgba(var(--rgb),.5)}
+a.card:hover{transform:translateY(-2px);border-color:rgba(var(--rgb),.7);box-shadow:0 1px 0 rgba(255,255,255,.04) inset,0 0 0 1px rgba(var(--rgb),.18),0 18px 40px -20px rgba(var(--rgb),.7)}
 a.card:hover:before{opacity:1}
 a.card:active{transform:translateY(0) scale(.995)}
 a.card:hover .go{transform:translateX(3px)}
-a.card:hover .cta{background:rgb(var(--rgb));border-color:rgb(var(--rgb));color:#09090b}
+a.card:hover .cta{background:rgb(var(--rgb));border-color:rgb(var(--rgb));color:#09090b;box-shadow:0 12px 22px -14px rgba(var(--rgb),.8)}
+a.card:hover .ico{background:rgba(var(--rgb),.12);border-color:rgba(var(--rgb),.45);color:rgb(var(--rgb))}
 a.card:focus-visible{outline-offset:3px}
 .go{transition:transform 160ms var(--ease)}
-.cta{display:inline-flex;align-items:center;justify-content:center;gap:.375rem;min-height:2.5rem;padding:.375rem .875rem;border-radius:.625rem;border:1px solid var(--line-strong);font-size:.875rem;font-weight:600;color:#f4f4f5;transition:background 160ms var(--ease),color 160ms var(--ease),border-color 160ms var(--ease)}
-.ico{flex:none;width:2.75rem;height:2.75rem;border-radius:.75rem;display:flex;align-items:center;justify-content:center;background:rgba(var(--rgb),.12);border:1px solid rgba(var(--rgb),.35);color:rgb(var(--rgb))}
+.cta{display:inline-flex;align-items:center;justify-content:center;gap:.375rem;min-height:2.5rem;padding:.375rem .875rem;border-radius:.625rem;border:1px solid var(--line-strong);font-size:.875rem;font-weight:600;line-height:1.2;background:transparent;color:#e4e4e7;transition:background-color 160ms var(--ease),border-color 160ms var(--ease),transform 160ms var(--ease),color 160ms var(--ease),box-shadow 160ms var(--ease)}
+.ico{flex:none;width:2.75rem;height:2.75rem;border-radius:.75rem;display:flex;align-items:center;justify-content:center;background:rgba(var(--rgb),.12);border:1px solid rgba(var(--rgb),.35);color:rgb(var(--rgb));transition:background-color 160ms var(--ease),border-color 160ms var(--ease),color 160ms var(--ease)}
 .pill{flex:none;font-size:.75rem;font-weight:600;padding:.125rem .625rem;border-radius:999px;border:1px solid;line-height:1.5}
 .meta{font-size:.8125rem;color:#a1a1aa;display:inline-flex;align-items:center;gap:.375rem}
 .bar{height:6px;border-radius:6px;background:#27272c;overflow:hidden}
@@ -52,10 +53,11 @@ a.card:focus-visible{outline-offset:3px}
 .card.soon .ico{background:transparent;border-color:var(--line-strong);color:#d4d4d8}
 
 /* Resume row */
-.resume{--rgb:52,211,153;display:flex;align-items:center;gap:1rem;padding:1rem 1.125rem;border-radius:.875rem;border:1px solid var(--line-strong);background:#111114;transition:border-color 160ms var(--ease),background 160ms var(--ease),transform 120ms var(--ease)}
-.resume:hover{border-color:rgba(var(--rgb),.6);background:#151519}
+.resume{--rgb:52,211,153;display:flex;align-items:center;gap:1rem;padding:1rem 1.125rem;border-radius:.875rem;border:1px solid var(--line-strong);background:#111114;transition:border-color 160ms var(--ease),background-color 160ms var(--ease),transform 160ms var(--ease),box-shadow 160ms var(--ease)}
+.resume:hover{border-color:rgba(var(--rgb),.6);background:linear-gradient(180deg,rgba(var(--rgb),.08),#151519);box-shadow:0 0 0 1px rgba(var(--rgb),.12)}
 .resume:active{transform:scale(.99)}
 .resume:hover .go{transform:translateX(3px)}
+.resume:hover .ico{background:rgba(var(--rgb),.12);border-color:rgba(var(--rgb),.35)}
 
 input{transition:border-color 160ms var(--ease),box-shadow 160ms var(--ease)}
 input:hover{border-color:#71717a}
@@ -73,209 +75,3 @@ html{scroll-behavior:smooth;scroll-padding-top:4.5rem}
 </style>
 </head>
 <body class="min-h-screen">
-<a href="#roadmaps" class="sr-only focus:not-sr-only focus:fixed focus:left-3 focus:top-3 focus:z-[60] focus:rounded-lg focus:bg-white focus:px-3 focus:py-2 focus:text-sm focus:font-semibold focus:text-zinc-950">Skip to roadmaps</a>
-<header class="sticky top-0 z-50 border-b border-white/10 bg-zinc-950/80 backdrop-blur">
- <nav class="max-w-6xl mx-auto px-4 h-14 flex items-center justify-between" aria-label="Main">
-  <a href="./" class="flex items-center min-h-[2.75rem]" aria-label="Roadmap Hub home"><img src="logos/logo-horizontal-dark.svg" alt="Roadmap Hub" class="h-7 w-auto"></a>
-  <ul class="hidden items-center gap-1 md:flex">
-   <li><a class="nav-link" href="#roadmaps">Roadmaps</a></li>
-   <li><a class="nav-link" href="#how-it-works">How it works</a></li>
-   <li><a class="nav-link" href="#progress">Progress</a></li>
-   <li><a class="nav-link inline-flex items-center gap-1" href="https://github.com/samikhan43/roadmap-hub" target="_blank" rel="noopener noreferrer">GitHub <i data-lucide="arrow-up-right" class="h-4 w-4"></i><span class="sr-only">(opens in a new tab)</span></a></li>
-  </ul>
-  <button id="nav-toggle" type="button" class="-mr-2 flex h-11 w-11 items-center justify-center rounded-lg text-zinc-300 hover:bg-white/10 md:hidden"
-          aria-label="Open menu" aria-expanded="false" aria-controls="nav-menu">
-   <i data-lucide="menu" class="h-6 w-6" id="icon-open"></i>
-   <i data-lucide="x" class="hidden h-6 w-6" id="icon-close"></i>
-  </button>
- </nav>
- <ul id="nav-menu" class="hidden space-y-1 border-t border-white/10 px-2 py-2 md:hidden">
-  <li><a class="nav-link py-3" href="#roadmaps">Roadmaps</a></li>
-  <li><a class="nav-link py-3" href="#how-it-works">How it works</a></li>
-  <li><a class="nav-link py-3" href="#progress">Progress</a></li>
-  <li><a class="nav-link py-3" href="https://github.com/samikhan43/roadmap-hub" target="_blank" rel="noopener noreferrer">GitHub<span class="sr-only"> (opens in a new tab)</span></a></li>
- </ul>
-</header>
-
-<main class="max-w-6xl mx-auto px-4">
- <!-- Hero -->
- <section class="pt-14 pb-10 sm:pt-20 sm:pb-14 max-w-3xl" aria-labelledby="hero-title">
-  <p class="text-sm font-medium text-slate-400 mb-4">Free developer learning paths</p>
-  <h1 id="hero-title" class="text-4xl sm:text-6xl font-semibold text-white mb-5" style="letter-spacing:-.035em;line-height:1.05">Pick a roadmap.<br class="hidden sm:block"> Master it step by step.</h1>
-  <p class="text-slate-300 text-lg max-w-xl mb-8">Lessons, worked examples, practice challenges and a project at every level. Your progress is saved in this browser.</p>
-  <div class="flex flex-wrap gap-3">
-   <a href="#roadmaps" class="btn btn-primary">Browse roadmaps <i data-lucide="arrow-down" class="h-4 w-4"></i></a>
-   <a href="#how-it-works" class="btn">See how it works</a>
-  </div>
- </section>
-
- <!-- Continue where you left off (filled by resume()) -->
- <section id="resume" class="hidden mb-12" aria-labelledby="resume-title">
-  <h2 id="resume-title" class="text-lg font-semibold text-white mb-3">Continue where you left off</h2>
-  <div id="resume-list" class="grid gap-3 md:grid-cols-2"></div>
- </section>
-
- <!-- Roadmaps -->
- <section id="roadmaps" aria-labelledby="roadmaps-title" class="mb-20">
-  <div class="flex items-baseline justify-between gap-4 mb-4">
-   <h2 id="roadmaps-title" class="text-2xl font-semibold text-white" style="letter-spacing:-.02em">All roadmaps</h2>
-   <span id="count" class="text-sm text-slate-400 text-right" aria-live="polite"></span>
-  </div>
-  <div class="flex flex-col gap-3 mb-8 lg:flex-row lg:items-center">
-   <label class="relative block w-full lg:max-w-sm lg:flex-none">
-    <span class="sr-only">Search roadmaps</span>
-    <i data-lucide="search" class="w-4 h-4 text-slate-400 absolute left-3.5 top-1/2 -translate-y-1/2 pointer-events-none"></i>
-    <input id="q" type="search" placeholder="Search roadmaps  (press /)" autocomplete="off" class="w-full h-11 bg-slate-900 border border-[#3f3f46] rounded-lg pl-10 pr-3 text-base sm:text-sm text-slate-100 placeholder-slate-400 focus:border-slate-300">
-   </label>
-   <div id="filters" role="group" aria-label="Filter roadmaps" class="-mx-4 flex flex-nowrap gap-2 overflow-x-auto px-4 pb-1 lg:mx-0 lg:flex-wrap lg:overflow-visible lg:px-0 lg:pb-0"></div>
-  </div>
-  <div id="progress">
-   <div id="grid" class="grid gap-4 sm:grid-cols-2 lg:grid-cols-3"></div>
-  </div>
-  <p id="empty" class="hidden text-center text-slate-300 py-16">No roadmaps match your search. Try a different word or clear the filter.</p>
- </section>
-
- <!-- How it works -->
- <section id="how-it-works" class="mb-20" aria-labelledby="how-title">
-  <h2 id="how-title" class="text-2xl font-semibold text-white mb-2" style="letter-spacing:-.02em">How it works</h2>
-  <p class="text-slate-300 mb-8 max-w-xl">Three steps from your first lesson to a finished project.</p>
-  <ol class="grid gap-4 md:grid-cols-3">
-   <li class="rounded-2xl border border-[#27272c] bg-[#111114] p-6">
-    <div class="flex items-center gap-3 mb-3"><span class="mono flex h-8 w-8 items-center justify-center rounded-full border border-[#3f3f46] text-sm text-white" aria-hidden="true">1</span><i data-lucide="search" class="h-5 w-5 text-slate-300" aria-hidden="true"></i></div>
-    <h3 class="text-base font-semibold text-white mb-1">Pick a roadmap</h3>
-    <p class="text-sm text-slate-300">Search or filter by topic. Each roadmap is split into levels, from first steps to professional practice.</p>
-   </li>
-   <li class="rounded-2xl border border-[#27272c] bg-[#111114] p-6">
-    <div class="flex items-center gap-3 mb-3"><span class="mono flex h-8 w-8 items-center justify-center rounded-full border border-[#3f3f46] text-sm text-white" aria-hidden="true">2</span><i data-lucide="layers" class="h-5 w-5 text-slate-300" aria-hidden="true"></i></div>
-    <h3 class="text-base font-semibold text-white mb-1">Learn level by level</h3>
-    <p class="text-sm text-slate-300">Read each lesson, follow the worked examples, then solve the practice challenges.</p>
-   </li>
-   <li class="rounded-2xl border border-[#27272c] bg-[#111114] p-6">
-    <div class="flex items-center gap-3 mb-3"><span class="mono flex h-8 w-8 items-center justify-center rounded-full border border-[#3f3f46] text-sm text-white" aria-hidden="true">3</span><i data-lucide="list-checks" class="h-5 w-5 text-slate-300" aria-hidden="true"></i></div>
-    <h3 class="text-base font-semibold text-white mb-1">Build and track progress</h3>
-    <p class="text-sm text-slate-300">Finish a project at each level. Progress is saved in this browser, so you can pick up where you stopped.</p>
-   </li>
-  </ol>
- </section>
-
- <!-- Community -->
- <section class="mb-16 rounded-2xl border border-white/10 bg-gradient-to-br from-zinc-900 to-zinc-950 p-6 sm:p-8" aria-labelledby="community-title">
-  <p class="text-sm font-medium text-slate-400 mb-2">Built by learners, for learners</p>
-  <h2 id="community-title" class="text-2xl font-semibold text-white mb-2" style="letter-spacing:-.02em">Help shape the next roadmap</h2>
-  <p class="max-w-2xl text-slate-300 mb-6">Suggest a topic, improve a lesson, or help build a new learning path with the community.</p>
-  <div class="flex flex-wrap gap-3">
-   <a href="https://github.com/samikhan43/roadmap-hub/issues/new?template=topic-request.yml" target="_blank" rel="noopener noreferrer" class="btn btn-primary">Suggest a topic <i data-lucide="arrow-up-right" class="h-4 w-4"></i><span class="sr-only">(opens in a new tab)</span></a>
-   <a href="https://github.com/samikhan43/roadmap-hub/blob/main/CONTRIBUTING.md" target="_blank" rel="noopener noreferrer" class="btn">Contribution guide <i data-lucide="arrow-up-right" class="h-4 w-4"></i><span class="sr-only">(opens in a new tab)</span></a>
-  </div>
- </section>
-</main>
-<footer class="max-w-6xl mx-auto px-4 pb-12 text-center text-sm text-slate-400">Built with plain HTML, Tailwind CSS and Lucide. Hosted on GitHub Pages.</footer>
-
-<script>
-/* ===== ADD NEW ROADMAPS HERE =====
-   slug    = folder name (must match the folder containing that roadmap's index.html)
-   key     = (optional) the roadmap's own slug, used to read saved progress; defaults to slug
-   accent  = same colour you built the roadmap with (r,g,b)
-   status  = "live" or "soon"; levels/topics = numbers shown on the card (live only)
-   tags    = used by the filter chips and search                                  */
-const ROADMAPS=[
- {slug:"sql-roadmap",key:"sql",title:"SQL",icon:"database",rgb:"52,211,153",status:"live",levels:5,topics:32,
-  desc:"From your first SELECT to window functions, indexing, transactions and interview prep.",tags:["Database","Beginner to Pro"]},
- {slug:"postgres-roadmap",key:"postgresql",title:"PostgreSQL",icon:"database",rgb:"129,140,248",status:"live",levels:5,topics:39,
-  desc:"From psql and schema design to indexing, transactions, JSONB, replication and production operations.",tags:["Database","Beginner to Professional"]},
- {slug:"fastapi-roadmap",key:"fastapi",title:"FastAPI",icon:"zap",rgb:"34,211,238",status:"live",levels:6,topics:39,
-  desc:"Build, validate, secure and deploy modern Python APIs.",tags:["Backend","Python"]},
- {slug:"Auth-roadmap",key:"auth",title:"Authentication & Authorization",icon:"lock-keyhole",rgb:"251,191,36",status:"live",levels:6,topics:26,
-  desc:"From passwords and sessions to OAuth/OIDC, MFA, authorization policies, federation and multi-tenant IAM.",tags:["Backend","Security","Beginner to Senior"]}
-];
-
-const $=id=>document.getElementById(id);
-let filter="All",term="";
-const tagsAll=["All","Live","Coming soon",...[...new Set(ROADMAPS.flatMap(r=>r.tags))]];
-function progress(r){try{const d=JSON.parse(localStorage.getItem("rm:"+(r.key||r.slug)+":t")||"[]");return r.topics?Math.min(100,Math.round(d.length/r.topics*100)):0}catch(e){return 0}}
-const match=r=>{
- const t=(r.title+" "+r.desc+" "+r.tags.join(" ")).toLowerCase();
- if(term&&!t.includes(term))return false;
- if(filter==="All")return true;
- if(filter==="Live")return r.status==="live";
- if(filter==="Coming soon")return r.status==="soon";
- return r.tags.includes(filter)};
-function card(r){
- const live=r.status==="live",p=live?progress(r):0;
- const label=!live?"Coming soon":p>=100?"Completed":p>0?"In progress":"Live";
- const pillStyle=live?`color:rgb(${r.rgb});border-color:rgba(${r.rgb},.4);background:rgba(${r.rgb},.1)`:"color:#d4d4d8;border-color:#3f3f46";
- const inner=`<div class="flex items-start gap-3"><span class="ico"><i data-lucide="${r.icon}" class="w-5 h-5" aria-hidden="true"></i></span><div class="flex-1 min-w-0"><h3 class="text-xl font-semibold text-white" style="line-height:1.25;letter-spacing:-.02em">${r.title}</h3><div class="mt-1 text-xs text-slate-400">${r.tags.join(" · ")}</div></div>
-  <span class="pill" style="${pillStyle}">${label}</span></div>
-  <p class="text-slate-300 text-sm" style="line-height:1.65">${r.desc}</p>
-  <div class="mt-auto flex flex-col gap-4 pt-1">
-   ${live?`<div class="flex items-center gap-4"><span class="meta"><i data-lucide="layers" class="w-3.5 h-3.5" aria-hidden="true"></i>${r.levels} levels</span><span class="meta"><i data-lucide="list-checks" class="w-3.5 h-3.5" aria-hidden="true"></i>${r.topics} topics</span></div>
-   <div><div class="flex justify-between text-xs text-slate-300 mb-1.5"><span>${p?"Your progress":"Not started"}</span><span class="mono">${p}%</span></div><div class="bar" role="progressbar" aria-label="${r.title} progress" aria-valuemin="0" aria-valuemax="100" aria-valuenow="${p}"><i style="width:${p}%"></i></div></div>
-   <span class="cta self-start"><span>${p>=100?"Review roadmap":p?"Continue":"Start roadmap"}</span><i data-lucide="arrow-right" class="go w-4 h-4" aria-hidden="true"></i></span>`
-   :`<div class="meta"><i data-lucide="clock" class="w-3.5 h-3.5" aria-hidden="true"></i>In the works. Suggest it on GitHub to move it up the list.</div>`}
-  </div>`;
- return live?`<a href="${r.slug}/" class="card" style="--rgb:${r.rgb}">${inner}</a>`:`<div class="card soon" style="--rgb:${r.rgb}">${inner}</div>`}
-function render(){
- const list=ROADMAPS.filter(match);
- $("grid").innerHTML=list.map(card).join("");
- $("empty").classList.toggle("hidden",list.length>0);
- const live=ROADMAPS.filter(r=>r.status==="live").length;
- $("count").textContent=live+" live · "+(ROADMAPS.length-live)+" coming soon";
- $("filters").innerHTML=tagsAll.map((t,i)=>`${i===3?'<span class="sep" aria-hidden="true"></span>':""}<button type="button" class="chip ${t===filter?"on":""}" data-t="${t}" aria-pressed="${t===filter}">${t}</button>`).join("");
- lucide.createIcons();
-}
-/* Continue where you left off: reads the same progress() as the cards */
-function resume(){
- const items=ROADMAPS.filter(r=>r.status==="live").map(r=>({r,p:progress(r)})).filter(x=>x.p>0)
-  .sort((a,b)=>(a.p>=100)-(b.p>=100)||b.p-a.p);
- $("resume").classList.toggle("hidden",!items.length);
- $("resume-list").innerHTML=items.map(({r,p})=>`<a href="${r.slug}/" class="resume" style="--rgb:${r.rgb}">
-  <span class="ico"><i data-lucide="${r.icon}" class="w-5 h-5" aria-hidden="true"></i></span>
-  <span class="flex-1 min-w-0"><span class="flex items-baseline justify-between gap-3"><span class="font-semibold text-white truncate">${r.title}</span><span class="mono text-xs text-slate-300">${p}%</span></span>
-  <span class="bar mt-2 block"><i style="width:${p}%"></i></span></span>
-  <span class="text-sm font-semibold text-white inline-flex items-center gap-1">${p>=100?"Review":"Continue"}<i data-lucide="arrow-right" class="go w-4 h-4" aria-hidden="true"></i></span></a>`).join("");
- lucide.createIcons();
-}
-$("filters").addEventListener("click",e=>{const b=e.target.closest("button");if(b){filter=b.dataset.t;render()}});
-$("q").addEventListener("input",e=>{term=e.target.value.trim().toLowerCase();render()});
-document.addEventListener("keydown",e=>{if(e.key==="/"&&document.activeElement.tagName!=="INPUT"){e.preventDefault();$("q").focus()}});
-window.addEventListener("pageshow",()=>{render();resume()});
-render();
-resume();
-</script>
-<script>
-(() => {
- const btn=document.getElementById("nav-toggle");
- const menu=document.getElementById("nav-menu");
- const iconOpen=document.getElementById("icon-open");
- const iconClose=document.getElementById("icon-close");
- const setOpen=open=>{
-  menu.classList.toggle("hidden",!open);
-  iconOpen.classList.toggle("hidden",open);
-  iconClose.classList.toggle("hidden",!open);
-  btn.setAttribute("aria-expanded",String(open));
-  btn.setAttribute("aria-label",open?"Close menu":"Open menu");
- };
-
- btn.addEventListener("click",()=>setOpen(menu.classList.contains("hidden")));
- menu.addEventListener("click",e=>{if(e.target.closest("a"))setOpen(false)});
- document.addEventListener("keydown",e=>{if(e.key==="Escape")setOpen(false)});
- window.matchMedia("(min-width: 768px)").addEventListener("change",e=>{if(e.matches)setOpen(false)});
-
- const links=document.querySelectorAll('.nav-link[href^="#"]');
- const sections=[...links].map(link=>document.querySelector(link.getAttribute("href"))).filter(Boolean);
- if("IntersectionObserver" in window&&sections.length){
-  const observer=new IntersectionObserver(entries=>{
-   const visible=entries.find(entry=>entry.isIntersecting);
-   if(!visible)return;
-   links.forEach(link=>{
-    if(link.getAttribute("href")==="#"+visible.target.id)link.setAttribute("aria-current","true");
-    else link.removeAttribute("aria-current");
-   });
-  },{rootMargin:"-40% 0px -55% 0px"});
-  sections.forEach(section=>observer.observe(section));
- }
- if(window.lucide)window.lucide.createIcons();
-})();
-</script>
-</body>
-</html>
