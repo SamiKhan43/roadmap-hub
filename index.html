@@ -5,93 +5,171 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <link rel="icon" type="image/svg+xml" href="logos/logo-mark.svg">
 <title>Learning Roadmaps</title>
-<script src="https://cdn.tailwindcss.com"></script>
-<script>tailwind.config={theme:{extend:{colors:{slate:{100:"#f4f4f5",200:"#e4e4e7",300:"#d4d4d8",400:"#a1a1aa",500:"#71717a",600:"#303036",700:"#232328",800:"#141417",900:"#0c0c0e",950:"#09090b"}}}}}</script>
-<script src="https://unpkg.com/lucide@latest"></script>
+<script src="https://cdn.tailwindcss.com/3.4.17"></script>
+<script>tailwind.config={theme:{extend:{colors:{slate:{100:"#f4f4f5",200:"#e4e4e7",300:"#d4d4d8",400:"#a1a1aa",500:"#8a8a93",600:"#303036",700:"#232328",800:"#141417",900:"#0c0c0e",950:"#09090b"}}}}}</script>
+<script src="https://unpkg.com/lucide@0.468.0/dist/umd/lucide.min.js"></script>
 <style>
-:root{--line:#232328;--ease:cubic-bezier(.2,.8,.2,1)}
+:root{--line:#27272c;--line-strong:#3f3f46;--ease:cubic-bezier(.2,.8,.2,1)}
 *{-webkit-font-smoothing:antialiased}
 body{background:#09090b radial-gradient(60% 380px at 50% -80px,rgba(255,255,255,.07),transparent) no-repeat;color:#e4e4e7;font-family:ui-sans-serif,system-ui,-apple-system,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;line-height:1.65;letter-spacing:-.011em}
-.mono{font-family:ui-monospace,"SF Mono","JetBrains Mono",Menlo,Consolas,monospace;letter-spacing:0}
-.eyebrow{font-size:.6875rem;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:#a1a1aa;line-height:1.2}
-.chip{background:#141417;border:1px solid var(--line);color:#d4d4d8;font-size:.75rem;padding:.25rem .625rem;border-radius:999px;line-height:1.4;display:inline-flex;align-items:center;gap:.375rem;cursor:pointer;transition:all 160ms var(--ease)}
-.chip:hover{border-color:#3f3f46}
-.chip.on{background:#fafafa;color:#09090b;border-color:#fafafa}
-.card{--rgb:52,211,153;position:relative;display:flex;flex-direction:column;gap:1rem;padding:1.5rem;border-radius:1rem;background:linear-gradient(180deg,#131316,#0f0f12);border:1px solid var(--line);box-shadow:0 1px 0 rgba(255,255,255,.03) inset,0 1px 2px rgba(0,0,0,.4);transition:border-color 160ms var(--ease),box-shadow 200ms var(--ease),transform 160ms var(--ease);overflow:hidden}
-.card:before{content:"";position:absolute;inset:0 0 auto 0;height:1px;background:linear-gradient(90deg,transparent,rgba(var(--rgb),.6),transparent);opacity:0;transition:opacity 200ms var(--ease)}
-a.card:hover{transform:translateY(-2px);border-color:rgba(var(--rgb),.5);box-shadow:0 1px 0 rgba(255,255,255,.04) inset,0 0 0 1px rgba(var(--rgb),.12),0 16px 40px -16px rgba(var(--rgb),.45)}
+.mono{font-family:ui-monospace,"SF Mono","JetBrains Mono",Menlo,Consolas,monospace;letter-spacing:0;font-variant-numeric:tabular-nums}
+
+/* Buttons */
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:.5rem;min-height:2.75rem;padding:.5rem 1.125rem;border-radius:.625rem;font-size:.9375rem;font-weight:600;line-height:1.2;border:1px solid var(--line-strong);color:#e4e4e7;transition:background 160ms var(--ease),border-color 160ms var(--ease),transform 120ms var(--ease)}
+.btn:hover{border-color:#71717a;background:rgba(255,255,255,.05)}
+.btn:active{transform:scale(.97)}
+.btn-primary{background:#fafafa;border-color:#fafafa;color:#09090b}
+.btn-primary:hover{background:#e4e4e7;border-color:#e4e4e7}
+
+/* Filter chips: status group, divider, topic group */
+#filters{scrollbar-width:none}
+#filters::-webkit-scrollbar{display:none}
+.chip{flex:none;background:#141417;border:1px solid var(--line-strong);color:#d4d4d8;font-size:.875rem;min-height:2.5rem;padding:.25rem .875rem;border-radius:999px;line-height:1.4;display:inline-flex;align-items:center;cursor:pointer;transition:background 160ms var(--ease),border-color 160ms var(--ease),color 160ms var(--ease),transform 120ms var(--ease)}
+.chip:hover{border-color:#71717a;background:#1b1b1f}
+.chip:active{transform:scale(.96)}
+.chip.on{background:#fafafa;color:#09090b;border-color:#fafafa;font-weight:600}
+.sep{flex:none;align-self:center;width:1px;height:1.25rem;background:var(--line-strong);margin:0 .25rem}
+
+/* Cards */
+.card{--rgb:52,211,153;position:relative;display:flex;flex-direction:column;gap:1rem;padding:1.5rem;border-radius:1rem;background:linear-gradient(180deg,#131316,#0f0f12);border:1px solid var(--line);box-shadow:0 1px 0 rgba(255,255,255,.03) inset;transition:border-color 160ms var(--ease),box-shadow 200ms var(--ease),transform 160ms var(--ease);overflow:hidden}
+.card:before{content:"";position:absolute;inset:0 0 auto 0;height:2px;background:linear-gradient(90deg,transparent,rgb(var(--rgb)),transparent);opacity:0;transition:opacity 200ms var(--ease)}
+a.card:hover{transform:translateY(-2px);border-color:rgba(var(--rgb),.55);box-shadow:0 1px 0 rgba(255,255,255,.04) inset,0 16px 40px -18px rgba(var(--rgb),.5)}
 a.card:hover:before{opacity:1}
-a.card:hover .go{color:rgb(var(--rgb));transform:translateX(3px)}
-.go{transition:all 160ms var(--ease)}
-.ico{width:2.75rem;height:2.75rem;border-radius:.75rem;display:flex;align-items:center;justify-content:center;background:rgba(var(--rgb),.1);border:1px solid rgba(var(--rgb),.3);color:rgb(var(--rgb))}
-.pill{font-size:.6875rem;font-weight:600;letter-spacing:.04em;text-transform:uppercase;padding:.125rem .5rem;border-radius:999px;border:1px solid}
-.soon{opacity:.62}
+a.card:active{transform:translateY(0) scale(.995)}
+a.card:hover .go{transform:translateX(3px)}
+a.card:hover .cta{background:rgb(var(--rgb));border-color:rgb(var(--rgb));color:#09090b}
+a.card:focus-visible{outline-offset:3px}
+.go{transition:transform 160ms var(--ease)}
+.cta{display:inline-flex;align-items:center;justify-content:center;gap:.375rem;min-height:2.5rem;padding:.375rem .875rem;border-radius:.625rem;border:1px solid var(--line-strong);font-size:.875rem;font-weight:600;color:#f4f4f5;transition:background 160ms var(--ease),color 160ms var(--ease),border-color 160ms var(--ease)}
+.ico{flex:none;width:2.75rem;height:2.75rem;border-radius:.75rem;display:flex;align-items:center;justify-content:center;background:rgba(var(--rgb),.12);border:1px solid rgba(var(--rgb),.35);color:rgb(var(--rgb))}
+.pill{flex:none;font-size:.75rem;font-weight:600;padding:.125rem .625rem;border-radius:999px;border:1px solid;line-height:1.5}
 .meta{font-size:.8125rem;color:#a1a1aa;display:inline-flex;align-items:center;gap:.375rem}
-.bar{height:4px;border-radius:4px;background:#232328;overflow:hidden}.bar>i{display:block;height:100%;background:rgb(var(--rgb));transition:width 400ms var(--ease)}
-input{transition:border-color 160ms var(--ease)}
+.bar{height:6px;border-radius:6px;background:#27272c;overflow:hidden}
+.bar>i{display:block;height:100%;border-radius:6px;background:rgb(var(--rgb));transition:width 400ms var(--ease)}
+
+/* Coming soon: full contrast, signalled by dashed border instead of opacity */
+.card.soon{background:transparent;border-style:dashed;border-color:var(--line-strong);box-shadow:none}
+.card.soon .ico{background:transparent;border-color:var(--line-strong);color:#d4d4d8}
+
+/* Resume row */
+.resume{--rgb:52,211,153;display:flex;align-items:center;gap:1rem;padding:1rem 1.125rem;border-radius:.875rem;border:1px solid var(--line-strong);background:#111114;transition:border-color 160ms var(--ease),background 160ms var(--ease),transform 120ms var(--ease)}
+.resume:hover{border-color:rgba(var(--rgb),.6);background:#151519}
+.resume:active{transform:scale(.99)}
+.resume:hover .go{transform:translateX(3px)}
+
+input{transition:border-color 160ms var(--ease),box-shadow 160ms var(--ease)}
+input:hover{border-color:#71717a}
 :focus-visible{outline:2px solid #fafafa;outline-offset:2px;border-radius:.5rem}
 html{scroll-behavior:smooth;scroll-padding-top:4.5rem}
-.nav-link{display:block;padding:.375rem .75rem;border-radius:.5rem;color:#a1a1aa;font-size:.875rem;transition:background .15s,color .15s}
-.nav-link:hover,.nav-link:focus-visible{background:rgba(255,255,255,.08);color:#fff;outline:none}
+.nav-link{display:block;padding:.5rem .75rem;border-radius:.5rem;color:#b4b4bd;font-size:.875rem;transition:background .15s,color .15s}
+.nav-link:hover,.nav-link:focus-visible{background:rgba(255,255,255,.08);color:#fff}
 .nav-link[aria-current="true"]{background:rgba(255,255,255,.1);color:#fff}
-@media (prefers-reduced-motion:reduce){*{transition:none!important}}
-@media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
+@media (prefers-reduced-motion:reduce){
+ *,*:before{transition:none!important;animation:none!important}
+ html{scroll-behavior:auto}
+ a.card:hover,a.card:active,.btn:active,.chip:active,.resume:active{transform:none}
+ a.card:hover .go,.resume:hover .go{transform:none}
+}
 </style>
 </head>
 <body class="min-h-screen">
+<a href="#roadmaps" class="sr-only focus:not-sr-only focus:fixed focus:left-3 focus:top-3 focus:z-[60] focus:rounded-lg focus:bg-white focus:px-3 focus:py-2 focus:text-sm focus:font-semibold focus:text-zinc-950">Skip to roadmaps</a>
 <header class="sticky top-0 z-50 border-b border-white/10 bg-zinc-950/80 backdrop-blur">
- <nav class="max-w-6xl mx-auto px-4 py-3 flex items-center justify-between" aria-label="Main">
-  <a href="./" class="flex items-center" aria-label="Roadmap Hub home"><img src="logos/logo-horizontal-dark.svg" alt="Roadmap Hub" class="h-7 w-auto"></a>
+ <nav class="max-w-6xl mx-auto px-4 h-14 flex items-center justify-between" aria-label="Main">
+  <a href="./" class="flex items-center min-h-[2.75rem]" aria-label="Roadmap Hub home"><img src="logos/logo-horizontal-dark.svg" alt="Roadmap Hub" class="h-7 w-auto"></a>
   <ul class="hidden items-center gap-1 md:flex">
    <li><a class="nav-link" href="#roadmaps">Roadmaps</a></li>
    <li><a class="nav-link" href="#how-it-works">How it works</a></li>
    <li><a class="nav-link" href="#progress">Progress</a></li>
-   <li><a class="nav-link inline-flex items-center gap-1" href="https://github.com/samikhan43/roadmap-hub" target="_blank" rel="noopener noreferrer">GitHub <i data-lucide="arrow-up-right" class="h-4 w-4"></i></a></li>
+   <li><a class="nav-link inline-flex items-center gap-1" href="https://github.com/samikhan43/roadmap-hub" target="_blank" rel="noopener noreferrer">GitHub <i data-lucide="arrow-up-right" class="h-4 w-4"></i><span class="sr-only">(opens in a new tab)</span></a></li>
   </ul>
-  <span id="count" class="ml-auto mr-2 text-sm text-slate-400 md:ml-0 md:mr-0" aria-live="polite"></span>
-  <button id="nav-toggle" type="button" class="rounded-lg p-2 text-zinc-300 hover:bg-white/10 md:hidden"
+  <button id="nav-toggle" type="button" class="-mr-2 flex h-11 w-11 items-center justify-center rounded-lg text-zinc-300 hover:bg-white/10 md:hidden"
           aria-label="Open menu" aria-expanded="false" aria-controls="nav-menu">
    <i data-lucide="menu" class="h-6 w-6" id="icon-open"></i>
    <i data-lucide="x" class="hidden h-6 w-6" id="icon-close"></i>
   </button>
  </nav>
  <ul id="nav-menu" class="hidden space-y-1 border-t border-white/10 px-2 py-2 md:hidden">
-  <li><a class="nav-link py-2.5" href="#roadmaps">Roadmaps</a></li>
-  <li><a class="nav-link py-2.5" href="#how-it-works">How it works</a></li>
-  <li><a class="nav-link py-2.5" href="#progress">Progress</a></li>
-  <li><a class="nav-link py-2.5" href="https://github.com/samikhan43/roadmap-hub" target="_blank" rel="noopener noreferrer">GitHub</a></li>
+  <li><a class="nav-link py-3" href="#roadmaps">Roadmaps</a></li>
+  <li><a class="nav-link py-3" href="#how-it-works">How it works</a></li>
+  <li><a class="nav-link py-3" href="#progress">Progress</a></li>
+  <li><a class="nav-link py-3" href="https://github.com/samikhan43/roadmap-hub" target="_blank" rel="noopener noreferrer">GitHub<span class="sr-only"> (opens in a new tab)</span></a></li>
  </ul>
 </header>
-<main class="max-w-6xl mx-auto px-4 py-12">
- <section id="how-it-works" class="mb-10 max-w-2xl">
-  <div class="eyebrow mb-3">Developer learning paths</div>
-  <h1 class="text-4xl sm:text-5xl font-semibold text-white mb-4" style="letter-spacing:-.03em;line-height:1.1">Pick a roadmap. Master it step by step.</h1>
-  <p class="text-slate-400 text-lg">Each roadmap has lessons, worked examples, practice challenges and a project per level. Your progress is saved in this browser.</p>
+
+<main class="max-w-6xl mx-auto px-4">
+ <!-- Hero -->
+ <section class="pt-14 pb-10 sm:pt-20 sm:pb-14 max-w-3xl" aria-labelledby="hero-title">
+  <p class="text-sm font-medium text-slate-400 mb-4">Free developer learning paths</p>
+  <h1 id="hero-title" class="text-4xl sm:text-6xl font-semibold text-white mb-5" style="letter-spacing:-.035em;line-height:1.05">Pick a roadmap.<br class="hidden sm:block"> Master it step by step.</h1>
+  <p class="text-slate-300 text-lg max-w-xl mb-8">Lessons, worked examples, practice challenges and a project at every level. Your progress is saved in this browser.</p>
+  <div class="flex flex-wrap gap-3">
+   <a href="#roadmaps" class="btn btn-primary">Browse roadmaps <i data-lucide="arrow-down" class="h-4 w-4"></i></a>
+   <a href="#how-it-works" class="btn">See how it works</a>
+  </div>
  </section>
- <section id="roadmaps" aria-label="Available roadmaps">
-  <div class="flex flex-col sm:flex-row gap-3 sm:items-center mb-8">
-   <label class="relative flex-1 max-w-md">
-    <i data-lucide="search" class="w-4 h-4 text-slate-400 absolute left-3 top-1/2 -translate-y-1/2"></i>
-    <input id="q" type="search" placeholder="Search roadmaps  (press /)" autocomplete="off" class="w-full bg-slate-900 border border-slate-700 rounded-lg pl-9 pr-3 py-2 text-sm text-slate-100 placeholder-slate-500 focus:border-slate-400">
+
+ <!-- Continue where you left off (filled by resume()) -->
+ <section id="resume" class="hidden mb-12" aria-labelledby="resume-title">
+  <h2 id="resume-title" class="text-lg font-semibold text-white mb-3">Continue where you left off</h2>
+  <div id="resume-list" class="grid gap-3 md:grid-cols-2"></div>
+ </section>
+
+ <!-- Roadmaps -->
+ <section id="roadmaps" aria-labelledby="roadmaps-title" class="mb-20">
+  <div class="flex items-baseline justify-between gap-4 mb-4">
+   <h2 id="roadmaps-title" class="text-2xl font-semibold text-white" style="letter-spacing:-.02em">All roadmaps</h2>
+   <span id="count" class="text-sm text-slate-400 text-right" aria-live="polite"></span>
+  </div>
+  <div class="flex flex-col gap-3 mb-8 lg:flex-row lg:items-center">
+   <label class="relative block w-full lg:max-w-sm lg:flex-none">
+    <span class="sr-only">Search roadmaps</span>
+    <i data-lucide="search" class="w-4 h-4 text-slate-400 absolute left-3.5 top-1/2 -translate-y-1/2 pointer-events-none"></i>
+    <input id="q" type="search" placeholder="Search roadmaps  (press /)" autocomplete="off" class="w-full h-11 bg-slate-900 border border-[#3f3f46] rounded-lg pl-10 pr-3 text-base sm:text-sm text-slate-100 placeholder-slate-400 focus:border-slate-300">
    </label>
-   <div id="filters" class="flex flex-wrap gap-2"></div>
+   <div id="filters" role="group" aria-label="Filter roadmaps" class="-mx-4 flex flex-nowrap gap-2 overflow-x-auto px-4 pb-1 lg:mx-0 lg:flex-wrap lg:overflow-visible lg:px-0 lg:pb-0"></div>
   </div>
   <div id="progress">
    <div id="grid" class="grid gap-4 sm:grid-cols-2 lg:grid-cols-3"></div>
   </div>
-  <p id="empty" class="hidden text-center text-slate-400 py-16">No roadmaps match your search.</p>
+  <p id="empty" class="hidden text-center text-slate-300 py-16">No roadmaps match your search. Try a different word or clear the filter.</p>
  </section>
- <section class="mt-16 rounded-2xl border border-white/10 bg-gradient-to-br from-zinc-900 to-zinc-950 p-6 sm:p-8">
-  <div class="eyebrow mb-2">Built by learners, for learners</div>
-  <h2 class="text-2xl font-semibold text-white mb-2">Help shape the next roadmap</h2>
-  <p class="max-w-2xl text-slate-400 mb-5">Suggest a topic, improve a lesson, or help build a new learning path with the community.</p>
+
+ <!-- How it works -->
+ <section id="how-it-works" class="mb-20" aria-labelledby="how-title">
+  <h2 id="how-title" class="text-2xl font-semibold text-white mb-2" style="letter-spacing:-.02em">How it works</h2>
+  <p class="text-slate-300 mb-8 max-w-xl">Three steps from your first lesson to a finished project.</p>
+  <ol class="grid gap-4 md:grid-cols-3">
+   <li class="rounded-2xl border border-[#27272c] bg-[#111114] p-6">
+    <div class="flex items-center gap-3 mb-3"><span class="mono flex h-8 w-8 items-center justify-center rounded-full border border-[#3f3f46] text-sm text-white" aria-hidden="true">1</span><i data-lucide="search" class="h-5 w-5 text-slate-300" aria-hidden="true"></i></div>
+    <h3 class="text-base font-semibold text-white mb-1">Pick a roadmap</h3>
+    <p class="text-sm text-slate-300">Search or filter by topic. Each roadmap is split into levels, from first steps to professional practice.</p>
+   </li>
+   <li class="rounded-2xl border border-[#27272c] bg-[#111114] p-6">
+    <div class="flex items-center gap-3 mb-3"><span class="mono flex h-8 w-8 items-center justify-center rounded-full border border-[#3f3f46] text-sm text-white" aria-hidden="true">2</span><i data-lucide="layers" class="h-5 w-5 text-slate-300" aria-hidden="true"></i></div>
+    <h3 class="text-base font-semibold text-white mb-1">Learn level by level</h3>
+    <p class="text-sm text-slate-300">Read each lesson, follow the worked examples, then solve the practice challenges.</p>
+   </li>
+   <li class="rounded-2xl border border-[#27272c] bg-[#111114] p-6">
+    <div class="flex items-center gap-3 mb-3"><span class="mono flex h-8 w-8 items-center justify-center rounded-full border border-[#3f3f46] text-sm text-white" aria-hidden="true">3</span><i data-lucide="list-checks" class="h-5 w-5 text-slate-300" aria-hidden="true"></i></div>
+    <h3 class="text-base font-semibold text-white mb-1">Build and track progress</h3>
+    <p class="text-sm text-slate-300">Finish a project at each level. Progress is saved in this browser, so you can pick up where you stopped.</p>
+   </li>
+  </ol>
+ </section>
+
+ <!-- Community -->
+ <section class="mb-16 rounded-2xl border border-white/10 bg-gradient-to-br from-zinc-900 to-zinc-950 p-6 sm:p-8" aria-labelledby="community-title">
+  <p class="text-sm font-medium text-slate-400 mb-2">Built by learners, for learners</p>
+  <h2 id="community-title" class="text-2xl font-semibold text-white mb-2" style="letter-spacing:-.02em">Help shape the next roadmap</h2>
+  <p class="max-w-2xl text-slate-300 mb-6">Suggest a topic, improve a lesson, or help build a new learning path with the community.</p>
   <div class="flex flex-wrap gap-3">
-   <a href="https://github.com/samikhan43/roadmap-hub/issues/new?template=topic-request.yml" target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-2 rounded-lg bg-white px-4 py-2 text-sm font-semibold text-zinc-950 hover:bg-slate-200">Suggest a topic <i data-lucide="arrow-up-right" class="h-4 w-4"></i></a>
-   <a href="CONTRIBUTING.md" class="inline-flex items-center gap-2 rounded-lg border border-slate-700 px-4 py-2 text-sm font-semibold text-slate-200 hover:border-slate-500">Contribution guide <i data-lucide="arrow-right" class="h-4 w-4"></i></a>
+   <a href="https://github.com/samikhan43/roadmap-hub/issues/new?template=topic-request.yml" target="_blank" rel="noopener noreferrer" class="btn btn-primary">Suggest a topic <i data-lucide="arrow-up-right" class="h-4 w-4"></i><span class="sr-only">(opens in a new tab)</span></a>
+   <a href="https://github.com/samikhan43/roadmap-hub/blob/main/CONTRIBUTING.md" target="_blank" rel="noopener noreferrer" class="btn">Contribution guide <i data-lucide="arrow-up-right" class="h-4 w-4"></i><span class="sr-only">(opens in a new tab)</span></a>
   </div>
  </section>
 </main>
-<footer class="max-w-6xl mx-auto px-4 pb-12 text-center text-sm text-slate-500">Built with plain HTML, Tailwind CSS and Lucide. Hosted on GitHub Pages.</footer>
+<footer class="max-w-6xl mx-auto px-4 pb-12 text-center text-sm text-slate-400">Built with plain HTML, Tailwind CSS and Lucide. Hosted on GitHub Pages.</footer>
 
 <script>
 /* ===== ADD NEW ROADMAPS HERE =====
@@ -107,8 +185,8 @@ const ROADMAPS=[
   desc:"From psql and schema design to indexing, transactions, JSONB, replication and production operations.",tags:["Database","Beginner to Professional"]},
  {slug:"fastapi-roadmap",key:"fastapi",title:"FastAPI",icon:"zap",rgb:"34,211,238",status:"live",levels:6,topics:39,
   desc:"Build, validate, secure and deploy modern Python APIs.",tags:["Backend","Python"]},
- {slug:"auth",title:"Authentication & Authorization",icon:"lock-keyhole",rgb:"167,139,250",status:"soon",
-  desc:"Sessions, tokens, OAuth2, roles and permissions, and common attacks.",tags:["Backend","Security"]}
+ {slug:"Auth-roadmap",key:"auth",title:"Authentication & Authorization",icon:"lock-keyhole",rgb:"251,191,36",status:"live",levels:6,topics:26,
+  desc:"From passwords and sessions to OAuth/OIDC, MFA, authorization policies, federation and multi-tenant IAM.",tags:["Backend","Security","Beginner to Senior"]}
 ];
 
 const $=id=>document.getElementById(id);
@@ -124,30 +202,45 @@ const match=r=>{
  return r.tags.includes(filter)};
 function card(r){
  const live=r.status==="live",p=live?progress(r):0;
- const inner=`<div class="flex items-start gap-3"><span class="ico"><i data-lucide="${r.icon}" class="w-5 h-5"></i></span><div class="flex-1 min-w-0"><h2 class="text-lg font-semibold text-white tracking-tight" style="line-height:1.3">${r.title}</h2><div class="flex flex-wrap gap-1.5 mt-1">${r.tags.map(t=>`<span class="text-xs text-slate-400">${t}</span>`).join('<span class="text-xs text-slate-600">·</span>')}</div></div>
-  <span class="pill" style="${live?`color:rgb(${r.rgb});border-color:rgba(${r.rgb},.35);background:rgba(${r.rgb},.08)`:"color:#a1a1aa;border-color:#303036"}">${live?"Live":"Soon"}</span></div>
-  <p class="text-slate-400 text-sm" style="line-height:1.65">${r.desc}</p>
-  <div class="mt-auto flex flex-col gap-3">
-   ${live?`<div class="flex items-center gap-4"><span class="meta"><i data-lucide="layers" class="w-3.5 h-3.5"></i>${r.levels} levels</span><span class="meta"><i data-lucide="list-checks" class="w-3.5 h-3.5"></i>${r.topics} topics</span></div>
-   <div><div class="flex justify-between text-xs text-slate-400 mb-1.5"><span>${p?"Your progress":"Not started"}</span><span class="mono">${p}%</span></div><div class="bar"><i style="width:${p}%"></i></div></div>
-   <div class="flex items-center gap-1 text-sm font-medium text-slate-200"><span>${p?"Continue":"Start roadmap"}</span><i data-lucide="arrow-right" class="go w-4 h-4"></i></div>`
-   :`<div class="meta"><i data-lucide="clock" class="w-3.5 h-3.5"></i>In the works</div>`}
+ const label=!live?"Coming soon":p>=100?"Completed":p>0?"In progress":"Live";
+ const pillStyle=live?`color:rgb(${r.rgb});border-color:rgba(${r.rgb},.4);background:rgba(${r.rgb},.1)`:"color:#d4d4d8;border-color:#3f3f46";
+ const inner=`<div class="flex items-start gap-3"><span class="ico"><i data-lucide="${r.icon}" class="w-5 h-5" aria-hidden="true"></i></span><div class="flex-1 min-w-0"><h3 class="text-xl font-semibold text-white" style="line-height:1.25;letter-spacing:-.02em">${r.title}</h3><div class="mt-1 text-xs text-slate-400">${r.tags.join(" · ")}</div></div>
+  <span class="pill" style="${pillStyle}">${label}</span></div>
+  <p class="text-slate-300 text-sm" style="line-height:1.65">${r.desc}</p>
+  <div class="mt-auto flex flex-col gap-4 pt-1">
+   ${live?`<div class="flex items-center gap-4"><span class="meta"><i data-lucide="layers" class="w-3.5 h-3.5" aria-hidden="true"></i>${r.levels} levels</span><span class="meta"><i data-lucide="list-checks" class="w-3.5 h-3.5" aria-hidden="true"></i>${r.topics} topics</span></div>
+   <div><div class="flex justify-between text-xs text-slate-300 mb-1.5"><span>${p?"Your progress":"Not started"}</span><span class="mono">${p}%</span></div><div class="bar" role="progressbar" aria-label="${r.title} progress" aria-valuemin="0" aria-valuemax="100" aria-valuenow="${p}"><i style="width:${p}%"></i></div></div>
+   <span class="cta self-start"><span>${p>=100?"Review roadmap":p?"Continue":"Start roadmap"}</span><i data-lucide="arrow-right" class="go w-4 h-4" aria-hidden="true"></i></span>`
+   :`<div class="meta"><i data-lucide="clock" class="w-3.5 h-3.5" aria-hidden="true"></i>In the works. Suggest it on GitHub to move it up the list.</div>`}
   </div>`;
- return live?`<a href="${r.slug}/" class="card" style="--rgb:${r.rgb}">${inner}</a>`:`<div class="card soon" style="--rgb:${r.rgb}" aria-disabled="true">${inner}</div>`}
+ return live?`<a href="${r.slug}/" class="card" style="--rgb:${r.rgb}">${inner}</a>`:`<div class="card soon" style="--rgb:${r.rgb}">${inner}</div>`}
 function render(){
  const list=ROADMAPS.filter(match);
  $("grid").innerHTML=list.map(card).join("");
  $("empty").classList.toggle("hidden",list.length>0);
  const live=ROADMAPS.filter(r=>r.status==="live").length;
  $("count").textContent=live+" live · "+(ROADMAPS.length-live)+" coming soon";
- $("filters").innerHTML=tagsAll.map(t=>`<button class="chip ${t===filter?"on":""}" data-t="${t}">${t}</button>`).join("");
+ $("filters").innerHTML=tagsAll.map((t,i)=>`${i===3?'<span class="sep" aria-hidden="true"></span>':""}<button type="button" class="chip ${t===filter?"on":""}" data-t="${t}" aria-pressed="${t===filter}">${t}</button>`).join("");
+ lucide.createIcons();
+}
+/* Continue where you left off: reads the same progress() as the cards */
+function resume(){
+ const items=ROADMAPS.filter(r=>r.status==="live").map(r=>({r,p:progress(r)})).filter(x=>x.p>0)
+  .sort((a,b)=>(a.p>=100)-(b.p>=100)||b.p-a.p);
+ $("resume").classList.toggle("hidden",!items.length);
+ $("resume-list").innerHTML=items.map(({r,p})=>`<a href="${r.slug}/" class="resume" style="--rgb:${r.rgb}">
+  <span class="ico"><i data-lucide="${r.icon}" class="w-5 h-5" aria-hidden="true"></i></span>
+  <span class="flex-1 min-w-0"><span class="flex items-baseline justify-between gap-3"><span class="font-semibold text-white truncate">${r.title}</span><span class="mono text-xs text-slate-300">${p}%</span></span>
+  <span class="bar mt-2 block"><i style="width:${p}%"></i></span></span>
+  <span class="text-sm font-semibold text-white inline-flex items-center gap-1">${p>=100?"Review":"Continue"}<i data-lucide="arrow-right" class="go w-4 h-4" aria-hidden="true"></i></span></a>`).join("");
  lucide.createIcons();
 }
 $("filters").addEventListener("click",e=>{const b=e.target.closest("button");if(b){filter=b.dataset.t;render()}});
 $("q").addEventListener("input",e=>{term=e.target.value.trim().toLowerCase();render()});
 document.addEventListener("keydown",e=>{if(e.key==="/"&&document.activeElement.tagName!=="INPUT"){e.preventDefault();$("q").focus()}});
-window.addEventListener("pageshow",render);
+window.addEventListener("pageshow",()=>{render();resume()});
 render();
+resume();
 </script>
 <script>
 (() => {
