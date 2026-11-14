@@ -6,6 +6,6 @@ window.SETUP_GUIDES=[
   icon:"database",
   rgb:"129,140,248",
   difficulty:"Beginner",
-  markdown:"POSTGRESQL_GUIDE.md"
+  markdown:"./postgresql/guide.md"
  }
 ];
