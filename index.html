@@ -7,7 +7,6 @@
 <meta charset="UTF-8">
 
 <meta name="viewport" content="width=device-width, initial-scale=1">
-
 <link rel="icon" type="image/svg+xml" href="logos/logo-mark.svg">
 
 <title>Roadmap Hub — Practical paths for developers</title>
@@ -194,7 +193,121 @@ header img { height: 26px !important; }
   color: var(--accent);
   background: rgba(198,243,106,.09);
 }
-#nav-menu { background: #101310; border-color: var(--border) !important; }
+header nav.site-nav {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  gap: 1.5rem;
+  height: auto !important;
+  min-height: 68px;
+  position: relative;
+}
+#nav-content { display: flex; min-width: 0; align-items: center; justify-content: space-between; gap: 1rem; }
+#primary-nav { display: flex; flex: 1; align-items: center; justify-content: center; gap: .15rem; }
+.nav-actions, .nav-utilities { display: flex; align-items: center; gap: .5rem; }
+.nav-search {
+  display: inline-flex;
+  min-height: 38px;
+  min-width: 208px;
+  align-items: center;
+  gap: .6rem;
+  padding: .4rem .55rem .4rem .75rem;
+  border: 1px solid var(--border);
+  border-radius: 5px;
+  color: #9da69d;
+  background: rgba(255,255,255,.025);
+  font-size: .78rem;
+  text-align: left;
+  transition: border-color .16s ease, background .16s ease, color .16s ease;
+}
+.nav-search:hover { color: var(--text); border-color: #465345; background: rgba(255,255,255,.045); }
+.nav-search > span:nth-of-type(1) { flex: 1; }
+.nav-search kbd {
+  padding: .12rem .32rem;
+  border: 1px solid #343d35;
+  border-radius: 3px;
+  color: #818b81;
+  font: inherit;
+  font-size: .68rem;
+  white-space: nowrap;
+}
+.nav-progress {
+  display: inline-flex;
+  align-items: center;
+  gap: .4rem;
+  min-height: 34px;
+  padding: .3rem .6rem;
+  border: 1px solid rgba(198,243,106,.25);
+  border-radius: 999px;
+  color: var(--accent);
+  background: rgba(198,243,106,.07);
+  font-size: .76rem;
+  font-weight: 600;
+  white-space: nowrap;
+  transition: border-color .16s ease, background .16s ease;
+}
+.nav-progress:hover { border-color: rgba(198,243,106,.5); background: rgba(198,243,106,.12); }
+.nav-progress[aria-current="true"] { border-color: rgba(198,243,106,.5); background: rgba(198,243,106,.12); }
+.nav-icon-button {
+  display: inline-flex;
+  width: 36px;
+  height: 36px;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid transparent;
+  border-radius: 5px;
+  color: #aeb7ad;
+  transition: border-color .16s ease, background .16s ease, color .16s ease;
+}
+.nav-icon-button:hover { color: var(--text); border-color: var(--border); background: rgba(255,255,255,.045); }
+#nav-toggle { display: none; }
+
+@media (max-width: 1023px) {
+  header nav.site-nav { grid-template-columns: minmax(0, 1fr) auto; gap: .5rem; min-height: 60px; }
+  #nav-content {
+    position: absolute;
+    z-index: 50;
+    top: 100%;
+    left: 0;
+    right: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    gap: .75rem;
+    padding: .9rem 1rem 1rem;
+    border: 1px solid var(--border);
+    border-top: 1px solid var(--border-soft);
+    border-radius: 0 0 7px 7px;
+    background: rgba(13,15,14,.97);
+    box-shadow: 0 18px 35px rgba(0,0,0,.24);
+    backdrop-filter: blur(14px);
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
+    transform: translateY(-.35rem);
+    transition: opacity .18s ease, transform .18s ease, visibility .18s ease;
+  }
+  #nav-content.is-open { opacity: 1; visibility: visible; pointer-events: auto; transform: translateY(0); }
+  #primary-nav { flex: none; flex-direction: column; align-items: stretch; gap: .1rem; }
+  #primary-nav .nav-link { padding: .72rem .75rem; }
+  .nav-actions { flex-direction: column; align-items: stretch; gap: .7rem; }
+  .nav-search { width: 100%; }
+  .nav-utilities { justify-content: space-between; padding-top: .75rem; border-top: 1px solid var(--border-soft); }
+  #nav-toggle {
+    display: inline-flex;
+    width: 40px;
+    height: 40px;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid transparent;
+    border-radius: 5px;
+    color: #d3dbd1;
+    background: transparent;
+  }
+  #nav-toggle:hover { border-color: var(--border); background: rgba(255,255,255,.045); }
+}
+@media (min-width: 1024px) {
+  #nav-content { position: static; opacity: 1; visibility: visible; pointer-events: auto; transform: none; }
+}
 
 .site-main { max-width: var(--content-width); }
 .site-main > section:first-child {
@@ -514,53 +627,41 @@ a.card:focus-visible { outline-offset: 4px; }
 
 <header class="sticky top-0 z-50 border-b border-white/10 bg-zinc-950/80 backdrop-blur">
 
- <nav class="max-w-6xl mx-auto px-4 h-14 flex items-center justify-between" aria-label="Main">
+ <nav class="site-nav max-w-6xl mx-auto px-4" aria-label="Main">
 
   <a href="./" class="flex items-center min-h-[2.75rem]" aria-label="Roadmap Hub home"><img src="logos/logo-horizontal-dark.svg" alt="Roadmap Hub" class="h-7 w-auto"></a>
 
-  <ul class="hidden items-center gap-1 md:flex">
+  <div id="nav-content" aria-hidden="true">
 
-   <li><a class="nav-link" href="#roadmaps">Roadmaps</a></li>
+   <ul id="primary-nav" aria-label="Primary">
+    <li><a class="nav-link" href="#roadmaps">Roadmaps</a></li>
+    <li><a class="nav-link" href="backend-engineer-journey/">Backend Journey</a></li>
+    <li><a class="nav-link" href="setup-guides/index.html">Setup Guides</a></li>
+    <li><a class="nav-link" href="#how-it-works">How It Works</a></li>
+   </ul>
 
-   <li><a class="nav-link" href="backend-engineer-journey/">Backend journey</a></li>
+   <div class="nav-actions">
+    <button id="nav-search" class="nav-search" type="button" aria-label="Search roadmaps (Command or Control plus K)">
+     <i data-lucide="search" class="h-4 w-4" aria-hidden="true"></i>
+     <span>Search roadmaps...</span>
+     <kbd aria-hidden="true">⌘K</kbd>
+    </button>
+    <div class="nav-utilities">
+     <a class="nav-progress" href="#progress"><i data-lucide="chart-no-axes-column-increasing" class="h-4 w-4" aria-hidden="true"></i>Progress</a>
+     <a class="nav-icon-button" href="https://github.com/samikhan43/roadmap-hub" target="_blank" rel="noopener noreferrer" aria-label="Roadmap Hub on GitHub (opens in a new tab)" title="GitHub">
+      <i data-lucide="github" class="h-[18px] w-[18px]" aria-hidden="true"></i>
+     </a>
+    </div>
+   </div>
 
-   <li><a class="nav-link" href="setup-guides/index.html">Setup guides</a></li>
+  </div>
 
-   <li><a class="nav-link" href="#how-it-works">How it works</a></li>
-
-   <li><a class="nav-link" href="#progress">Progress</a></li>
-
-   <li><a class="nav-link inline-flex items-center gap-1" href="https://github.com/samikhan43/roadmap-hub" target="_blank" rel="noopener noreferrer">GitHub <i data-lucide="arrow-up-right" class="h-4 w-4"></i><span class="sr-only">(opens in a new tab)</span></a></li>
-
-  </ul>
-
-  <button id="nav-toggle" type="button" class="-mr-2 flex h-11 w-11 items-center justify-center rounded-lg text-zinc-300 hover:bg-white/10 md:hidden"
-
-          aria-label="Open menu" aria-expanded="false" aria-controls="nav-menu">
-
-   <i data-lucide="menu" class="h-6 w-6" id="icon-open"></i>
-
-   <i data-lucide="x" class="hidden h-6 w-6" id="icon-close"></i>
-
+  <button id="nav-toggle" type="button" aria-label="Open menu" aria-expanded="false" aria-controls="nav-content">
+   <i data-lucide="menu" class="h-5 w-5" id="icon-open" aria-hidden="true"></i>
+   <i data-lucide="x" class="hidden h-5 w-5" id="icon-close" aria-hidden="true"></i>
   </button>
 
  </nav>
-
- <ul id="nav-menu" class="hidden space-y-1 border-t border-white/10 px-2 py-2 md:hidden">
-
-  <li><a class="nav-link py-3" href="#roadmaps">Roadmaps</a></li>
-
-  <li><a class="nav-link py-3" href="backend-engineer-journey/">Backend Engineer Journey</a></li>
-
-  <li><a class="nav-link py-3" href="setup-guides/index.html">Setup guides</a></li>
-
-  <li><a class="nav-link py-3" href="#how-it-works">How it works</a></li>
-
-  <li><a class="nav-link py-3" href="#progress">Progress</a></li>
-
-  <li><a class="nav-link py-3" href="https://github.com/samikhan43/roadmap-hub" target="_blank" rel="noopener noreferrer">GitHub<span class="sr-only"> (opens in a new tab)</span></a></li>
-
- </ul>
 
 </header>
 
@@ -889,7 +990,7 @@ $("filters").addEventListener("click",e=>{const b=e.target.closest("button");if(
 
 $("q").addEventListener("input",e=>{term=e.target.value.trim().toLowerCase();render()});
 
-document.addEventListener("keydown",e=>{if(e.key==="/"&&document.activeElement.tagName!=="INPUT"){e.preventDefault();$("q").focus()}});
+document.addEventListener("keydown",e=>{if(((e.metaKey||e.ctrlKey)&&e.key.toLowerCase()==="k")||(e.key==="/"&&document.activeElement.tagName!=="INPUT")){e.preventDefault();$("q").focus()}});
 
 window.addEventListener("pageshow",()=>{render();resume()});
 
@@ -905,39 +1006,49 @@ resume();
 
  const btn=document.getElementById("nav-toggle");
 
- const menu=document.getElementById("nav-menu");
+ const menu=document.getElementById("nav-content");
 
  const iconOpen=document.getElementById("icon-open");
 
  const iconClose=document.getElementById("icon-close");
 
+ const searchButton=document.getElementById("nav-search");
+
+ const mobileQuery=window.matchMedia("(max-width: 1023px)");
+
  const setOpen=open=>{
 
-  menu.classList.toggle("hidden",!open);
+  const isOpen=mobileQuery.matches&&open;
 
-  iconOpen.classList.toggle("hidden",open);
+  menu.classList.toggle("is-open",isOpen);
 
-  iconClose.classList.toggle("hidden",!open);
+  menu.setAttribute("aria-hidden",String(mobileQuery.matches&&!isOpen));
 
-  btn.setAttribute("aria-expanded",String(open));
+  iconOpen.classList.toggle("hidden",isOpen);
 
-  btn.setAttribute("aria-label",open?"Close menu":"Open menu");
+  iconClose.classList.toggle("hidden",!isOpen);
+
+  btn.setAttribute("aria-expanded",String(isOpen));
+
+  btn.setAttribute("aria-label",isOpen?"Close menu":"Open menu");
 
  };
 
+ setOpen(false);
 
+ searchButton.addEventListener("click",()=>{setOpen(false);document.getElementById("q").focus()});
 
- btn.addEventListener("click",()=>setOpen(menu.classList.contains("hidden")));
+ btn.addEventListener("click",()=>setOpen(!menu.classList.contains("is-open")));
 
  menu.addEventListener("click",e=>{if(e.target.closest("a"))setOpen(false)});
 
  document.addEventListener("keydown",e=>{if(e.key==="Escape")setOpen(false)});
 
- window.matchMedia("(min-width: 768px)").addEventListener("change",e=>{if(e.matches)setOpen(false)});
+ mobileQuery.addEventListener("change",()=>setOpen(false));
 
 
 
- const links=document.querySelectorAll('.nav-link[href^="#"]');
+ const links=document.querySelectorAll('.nav-link[href^="#"], .nav-progress[href^="#"]');
 
  const sections=[...links].map(link=>document.querySelector(link.getAttribute("href"))).filter(Boolean);
 

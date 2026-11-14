@@ -79,9 +79,18 @@ body{background:#09090b;color:#e4e4e7;font-family:ui-sans-serif,system-ui,-apple
   <p class="max-w-3xl text-sm text-slate-400">Add the guide Markdown file and register its metadata in <code class="text-slate-300">guides.js</code>. The homepage, catalog, and shared reader use that same entry, so no page rebuild is needed.</p>
  </section>
 </main>
-<footer class="mx-auto max-w-6xl px-4 pb-10 text-center text-sm text-slate-400">
- <a href="../index.html" class="font-semibold text-slate-300 underline underline-offset-4 hover:text-white">Back to Roadmap Hub</a>
- <p class="mt-2">Step-by-step notes for getting the tools behind your projects ready.</p>
+<footer class="mx-auto max-w-6xl px-4 pb-10">
+ <nav class="editorial-footer" aria-label="Related navigation">
+  <div class="editorial-footer__item">
+   <span class="editorial-footer__label">Go back</span>
+   <a class="editorial-footer__link" href="#guides"><span class="editorial-footer__arrow" aria-hidden="true">←</span>All setup guides</a>
+  </div>
+  <div class="editorial-footer__item">
+   <span class="editorial-footer__label">Explore more</span>
+   <a class="editorial-footer__link" href="../index.html">Roadmap Hub <span class="editorial-footer__arrow" aria-hidden="true">↗</span></a>
+  </div>
+ </nav>
+ <p class="mt-2 text-center text-sm text-slate-400">Step-by-step notes for getting the tools behind your projects ready.</p>
 </footer>
 
 <script src="guides.js"></script>
