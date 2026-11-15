@@ -379,44 +379,69 @@ header nav.site-nav {
   background: rgba(198,243,106,.05);
 }
 
-.site-main > section[aria-labelledby="backend-journey-title"],
-.site-main > section[aria-labelledby="setup-guides-title"] {
-  position: relative;
-  overflow: hidden;
-  min-height: 190px;
-  padding: clamp(1.5rem, 3.5vw, 2.5rem);
-  border-radius: 7px;
-  border: 1px solid var(--border) !important;
-  background: #141915 !important;
+.architecture-feature {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 2rem;
+  padding: 1.15rem 0;
+  border-top: 1px solid var(--border);
+  margin: 0;
 }
-.site-main > section[aria-labelledby="backend-journey-title"] {
-  border-left: 3px solid #a8d75a !important;
+.architecture-feature--first { margin-top: -2rem; }
+.architecture-feature--last {
+  border-bottom: 1px solid var(--border);
+  margin-bottom: 3rem;
 }
-.site-main > section[aria-labelledby="setup-guides-title"] {
-  border-left: 3px solid #8caaa0 !important;
-  background: #121816 !important;
-}
-.site-main > section[aria-labelledby="backend-journey-title"] > div:first-child > p,
-.site-main > section[aria-labelledby="setup-guides-title"] > div:first-child > p {
-  margin-bottom: .75rem;
-  color: var(--accent) !important;
-  font-size: .72rem;
+.architecture-feature__content { min-width: 0; }
+.architecture-feature__label {
+  margin: 0 0 .25rem;
+  color: var(--accent);
+  font-size: .66rem;
   font-weight: 700;
-  letter-spacing: .1em;
-  text-transform: uppercase;
+  letter-spacing: .12em;
+  line-height: 1.4;
 }
-.site-main > section[aria-labelledby="setup-guides-title"] > div:first-child > p { color: #a9c5b9 !important; }
-.site-main > section[aria-labelledby="backend-journey-title"] h2,
-.site-main > section[aria-labelledby="setup-guides-title"] h2 {
-  max-width: 560px;
-  font-size: clamp(1.5rem, 3vw, 2rem);
-  letter-spacing: -.045em !important;
+.architecture-feature__title {
+  margin: 0 0 .2rem;
+  color: var(--text);
+  font-size: 1.2rem;
+  font-weight: 650;
+  letter-spacing: -.03em;
+  line-height: 1.35;
 }
-.site-main > section[aria-labelledby="backend-journey-title"] p.text-sm,
-.site-main > section[aria-labelledby="setup-guides-title"] p.text-sm {
-  max-width: 620px;
+.architecture-feature__description {
+  max-width: 720px;
+  margin: 0;
   color: #aab5aa;
-  line-height: 1.75;
+  font-size: .84rem;
+  line-height: 1.65;
+}
+.architecture-feature__link {
+  display: inline-flex;
+  min-height: 2.75rem;
+  flex: none;
+  align-items: center;
+  gap: .45rem;
+  color: var(--text);
+  font-size: .84rem;
+  font-weight: 600;
+  text-decoration: none;
+  transition: color 160ms var(--ease);
+}
+.architecture-feature__link:hover,
+.architecture-feature__link:focus-visible { color: var(--accent); }
+.architecture-feature__arrow {
+  color: var(--accent);
+  transition: transform 160ms var(--ease);
+}
+.architecture-feature__link:hover .architecture-feature__arrow,
+.architecture-feature__link:focus-visible .architecture-feature__arrow {
+  transform: translateX(3px);
+}
+.architecture-feature__link:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 4px;
 }
 
 #resume { margin-bottom: 4.5rem; }
@@ -605,8 +630,16 @@ a.card:focus-visible { outline-offset: 4px; }
   .site-main > section:first-child { padding-top: 4rem; padding-bottom: 3.25rem; }
   .hero-title { font-size: clamp(3rem, 13vw, 4.5rem); }
   .hero-copy { font-size: 1rem; line-height: 1.7; }
-  .site-main > section[aria-labelledby="backend-journey-title"],
-  .site-main > section[aria-labelledby="setup-guides-title"] { min-height: 0; }
+  .architecture-feature {
+    align-items: flex-start;
+    flex-direction: column;
+    gap: .45rem;
+    padding: 1rem 0;
+    margin: 0;
+  }
+  .architecture-feature__link { min-height: 2.5rem; }
+  .architecture-feature--first { margin-top: -1.25rem; }
+  .architecture-feature--last { margin-bottom: 2.5rem; }
   .roadmaps-heading { align-items: start; }
   #count { max-width: 105px; line-height: 1.5; }
   #filters { padding-bottom: .45rem; }
@@ -635,6 +668,7 @@ a.card:focus-visible { outline-offset: 4px; }
 
    <ul id="primary-nav" aria-label="Primary">
     <li><a class="nav-link" href="#roadmaps">Roadmaps</a></li>
+    <li><a class="nav-link" href="architecture/index.html">Architecture Library</a></li>
     <li><a class="nav-link" href="backend-engineer-journey/">Backend Journey</a></li>
     <li><a class="nav-link" href="setup-guides/index.html">Setup Guides</a></li>
     <li><a class="nav-link" href="#how-it-works">How It Works</a></li>
@@ -677,11 +711,11 @@ a.card:focus-visible { outline-offset: 4px; }
 
   <h1 id="hero-title" class="hero-title">Learn the tools.<br><span>Understand the work.</span></h1>
 
-  <p class="hero-copy">Practical roadmaps for people who want to understand how software is built — from the first query to production systems. Learn at your pace and keep your progress in this browser.</p>
+  <p class="hero-copy">Explore practical roadmaps that break down software engineering topics into clear, manageable steps. Learn how things work, understand the concepts behind them, and follow your own learning path.</p>
 
   <div class="flex flex-wrap gap-3">
 
-   <a href="#roadmaps" class="btn btn-primary">Browse roadmaps <i data-lucide="arrow-down" class="h-4 w-4"></i></a>
+   <a href="#roadmaps" class="btn btn-primary">Explore roadmaps <i data-lucide="arrow-down" class="h-4 w-4"></i></a>
 
    <a href="#how-it-works" class="btn">See how it works</a>
 
@@ -689,44 +723,40 @@ a.card:focus-visible { outline-offset: 4px; }
 
  </section>
 
-
-
- <!-- Featured career journey -->
-
- <section class="mb-12 rounded-2xl border border-cyan-300/20 bg-gradient-to-br from-cyan-950/30 via-zinc-900 to-zinc-950 p-6 sm:flex sm:items-center sm:justify-between sm:gap-8 sm:p-8" aria-labelledby="backend-journey-title">
-
-  <div class="max-w-2xl">
-
-   <p class="mb-2 text-sm font-medium text-cyan-200">A guided career path</p>
-
-   <h2 id="backend-journey-title" class="mb-2 text-2xl font-semibold text-white" style="letter-spacing:-.02em">Want to become a backend engineer?</h2>
-
-   <p class="text-sm text-slate-300">Explore the complete journey from programming foundations to production engineering, with practical projects and progress tracking. This is an engineering path—not just another technology roadmap.</p>
-
+ <section class="architecture-feature architecture-feature--first" aria-labelledby="architecture-feature-title">
+  <div class="architecture-feature__content">
+   <p class="architecture-feature__label">SYSTEMS &amp; INTERNALS</p>
+   <h2 id="architecture-feature-title" class="architecture-feature__title">Architecture Library</h2>
+   <p class="architecture-feature__description">Understand how software systems work internally, how their components interact, how data moves through them, and why they are designed that way.</p>
   </div>
-
-  <a href="backend-engineer-journey/" class="btn btn-primary mt-5 flex-none sm:mt-0">Explore the journey <i data-lucide="arrow-up-right" class="h-4 w-4" aria-hidden="true"></i></a>
-
+  <a class="architecture-feature__link" href="architecture/index.html">
+   Explore architectures <span class="architecture-feature__arrow" aria-hidden="true">→</span>
+  </a>
  </section>
 
 
+ <!-- Explore the library -->
 
- <!-- Featured setup guides -->
-
- <section class="mb-12 rounded-2xl border border-white/10 bg-gradient-to-br from-zinc-900 to-zinc-950 p-6 sm:flex sm:items-center sm:justify-between sm:gap-8 sm:p-8" aria-labelledby="setup-guides-title">
-
-  <div class="max-w-2xl">
-
-   <p class="mb-2 text-sm font-medium text-slate-400">Practical development setup</p>
-
-   <h2 id="setup-guides-title" class="mb-2 text-2xl font-semibold text-white" style="letter-spacing:-.02em">Setup guides for your tools</h2>
-
-   <p class="text-sm text-slate-300">Step-by-step guides to install, configure, connect, and manage the tools used in backend development.</p>
-
+ <section class="architecture-feature" aria-labelledby="backend-journey-title">
+  <div class="architecture-feature__content">
+   <p class="architecture-feature__label">A GUIDED CAREER PATH</p>
+   <h2 id="backend-journey-title" class="architecture-feature__title">Want to become a backend engineer?</h2>
+   <p class="architecture-feature__description">From programming fundamentals to databases, APIs, system design and deployment, understand what goes into building backend systems.</p>
   </div>
+  <a href="backend-engineer-journey/" class="architecture-feature__link">
+   Explore the journey <span class="architecture-feature__arrow" aria-hidden="true">→</span>
+  </a>
+ </section>
 
-  <a href="setup-guides/index.html" class="btn btn-primary mt-5 flex-none sm:mt-0">Browse setup guides <i data-lucide="arrow-up-right" class="h-4 w-4" aria-hidden="true"></i></a>
-
+ <section class="architecture-feature architecture-feature--last" aria-labelledby="setup-guides-title">
+  <div class="architecture-feature__content">
+   <p class="architecture-feature__label">PRACTICAL DEVELOPMENT SETUP</p>
+   <h2 id="setup-guides-title" class="architecture-feature__title">Setup guides for your tools</h2>
+   <p class="architecture-feature__description">Follow straightforward guides to install and configure the tools you'll use in your projects.</p>
+  </div>
+  <a href="setup-guides/index.html" class="architecture-feature__link">
+   Browse setup guides <span class="architecture-feature__arrow" aria-hidden="true">→</span>
+  </a>
  </section>
 
 
@@ -876,19 +906,24 @@ const ROADMAPS=[
 
  {slug:"sql-roadmap",key:"sql",title:"SQL",icon:"database",rgb:"52,211,153",status:"live",levels:5,topics:32,
 
-  desc:"From your first SELECT to window functions, indexing, transactions and interview prep.",tags:["Database","Beginner to Pro"]},
+  desc:"Start with your first SELECT, then learn how to work with data, write better queries, and prepare for real database work.",tags:["Database","Beginner to Pro"]},
 
  {slug:"postgres-roadmap",key:"postgresql",title:"PostgreSQL",icon:"database",rgb:"129,140,248",status:"live",levels:5,topics:39,
 
-  desc:"From psql and schema design to indexing, transactions, JSONB, replication and production operations.",tags:["Database","Beginner to Professional"]},
+  desc:"Learn how to design, query, and run PostgreSQL databases with confidence, from the basics to production work.",tags:["Database","Beginner to Professional"]},
 
  {slug:"fastapi-roadmap",key:"fastapi",title:"FastAPI",icon:"zap",rgb:"34,211,238",status:"live",levels:6,topics:39,
 
-  desc:"Build, validate, secure and deploy modern Python APIs.",tags:["Backend","Python"]},
+  desc:"Build Python APIs with FastAPI, validate your data, add security, and get your app ready to deploy.",tags:["Backend","Python"]},
 
  {slug:"Auth-roadmap",key:"auth",title:"Authentication & Authorization",icon:"lock-keyhole",rgb:"251,191,36",status:"live",levels:6,topics:26,
+  desc:"Learn how login, permissions, sessions, and identity systems work so you can build apps that keep accounts safe.",tags:["Backend","Security","Beginner to Senior"]},
 
-  desc:"From passwords and sessions to OAuth/OIDC, MFA, authorization policies, federation and multi-tenant IAM.",tags:["Backend","Security","Beginner to Senior"]}
+ {slug:"http-roadmap",key:"http",title:"HTTP",icon:"arrow-left-right",rgb:"125,211,252",status:"live",levels:7,topics:32,
+  desc:"See what really happens when your browser talks to a server, from the first request and response to HTTP/1.1, HTTP/2, and HTTP/3.",tags:["Networking","Backend","Protocol internals"]},
+
+ {slug:"protocols",key:"protocols",title:"Protocols",icon:"radio",rgb:"198,243,106",status:"live",levels:7,topics:35,
+  desc:"Understand how systems communicate, from the network underneath your apps to the protocols they use every day.",tags:["Networking","Infrastructure","Beginner to Pro"]}
 
 ];
 
@@ -900,7 +935,7 @@ let filter="All",term="";
 
 const tagsAll=["All","Live","Coming soon",...[...new Set(ROADMAPS.flatMap(r=>r.tags))]];
 
-function progress(r){try{const d=JSON.parse(localStorage.getItem("rm:"+(r.key||r.slug)+":t")||"[]");return r.topics?Math.min(100,Math.round(d.length/r.topics*100)):0}catch(e){return 0}}
+function progress(r){try{const key=r.key||r.slug;const d=JSON.parse(localStorage.getItem(key==="protocols"?"rm:protocols:done":"rm:"+key+":t")||"[]");return r.topics?Math.min(100,Math.round(d.length/r.topics*100)):0}catch(e){return 0}}
 
 const match=r=>{
 
