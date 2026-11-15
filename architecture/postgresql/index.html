@@ -1,0 +1,887 @@
+<!doctype html>
+<html lang="en" data-explanation-mode="plain">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="An interactive technical guide to PostgreSQL 18 architecture, query processing, memory, storage, WAL, MVCC, and replication.">
+  <meta name="theme-color" content="#0d0f0e">
+  <link rel="icon" type="image/svg+xml" href="../../logos/logo-mark.svg">
+  <link rel="stylesheet" href="../architecture.css">
+  <title>PostgreSQL Architecture — Architecture Library | Roadmap Hub</title>
+</head>
+<body>
+  <a class="skip-link" href="#main-content">Skip to content</a>
+  <header class="docs-header">
+    <div class="docs-header-inner">
+      <a class="docs-brand" href="../../index.html" aria-label="Roadmap Hub home">
+        <img src="../../logos/logo-horizontal-dark.svg" alt="Roadmap Hub">
+      </a>
+      <nav class="docs-breadcrumb" aria-label="Breadcrumb">
+        <a href="../../index.html">Home</a>
+        <span aria-hidden="true">/</span>
+        <a href="../index.html">Architecture Library</a>
+        <span aria-hidden="true">/</span>
+        <span aria-current="page">PostgreSQL 18</span>
+      </nav>
+    </div>
+  </header>
+
+  <div class="docs-layout">
+    <aside class="docs-sidebar" aria-label="Section navigation">
+      <details class="toc-details" open>
+        <summary>On this page</summary>
+        <p class="toc-label">PostgreSQL internals</p>
+        <nav aria-label="PostgreSQL architecture sections">
+          <ol class="docs-toc">
+            <li><a href="#overview">Architecture overview</a></li>
+            <li><a href="#client-server">Client-server model</a></li>
+            <li><a href="#processes">Server processes</a></li>
+            <li><a href="#query-processing">Query processing</a></li>
+            <li><a href="#memory">Memory architecture</a></li>
+            <li><a href="#storage">Storage architecture</a></li>
+            <li><a href="#wal">Write-ahead logging</a></li>
+            <li><a href="#mvcc">MVCC and transactions</a></li>
+            <li><a href="#recovery">Checkpoints and recovery</a></li>
+            <li><a href="#vacuum">Vacuum and autovacuum</a></li>
+            <li><a href="#indexes">Index architecture</a></li>
+            <li><a href="#replication">Replication</a></li>
+            <li><a href="#request-trace">A write, end to end</a></li>
+            <li><a href="#reference">Quick reference</a></li>
+          </ol>
+        </nav>
+      </details>
+    </aside>
+
+    <main id="main-content" class="docs-main">
+      <div class="docs-title-block">
+        <p class="eyebrow">Architecture Library · PostgreSQL 18</p>
+        <h1>PostgreSQL Architecture</h1>
+        <p>A clear guide to how PostgreSQL handles requests, stores data, and protects changes. Technical terms are explained as they appear.</p>
+      </div>
+
+      <div class="explanation-toolbar" role="group" aria-label="Explanation display">
+        <span>Explanation view</span>
+        <button type="button" data-explanation-choice="both" aria-pressed="false">Both</button>
+        <button type="button" data-explanation-choice="plain" aria-pressed="true">Plain English</button>
+        <button type="button" data-explanation-choice="technical" aria-pressed="false">Technical</button>
+      </div>
+      <p class="view-hint">The guide starts with plain-language explanations. Choose <strong>Technical</strong> for implementation details, or <strong>Both</strong> to see the two side by side.</p>
+
+      <section id="overview" class="docs-section" aria-labelledby="overview-title">
+        <p class="section-kicker">System map</p>
+        <h2 id="overview-title">PostgreSQL at a glance</h2>
+        <p>PostgreSQL has two sides: programs that ask for data (clients) and a server that handles those requests. The server gives each connection a worker process called a <strong>backend</strong>. These workers share memory and get help from background processes that manage data files and the change log.</p>
+
+        <figure class="diagram-frame" aria-labelledby="overview-diagram-caption">
+          <div class="diagram-scroll" tabindex="0" aria-label="Scrollable PostgreSQL architecture diagram">
+            <svg class="architecture-diagram" viewBox="0 0 1120 600" role="group" aria-labelledby="overview-svg-title overview-svg-desc">
+              <title id="overview-svg-title">Conceptual PostgreSQL 18 server architecture</title>
+              <desc id="overview-svg-desc">Clients connect to the postmaster, which accepts connection requests and starts a backend process. The backend handles session startup and authentication, processes queries, and uses shared memory. Background processes maintain buffers and WAL, which are written to database files and WAL segments.</desc>
+              <defs>
+                <marker id="arch-arrow" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto"><path d="M0 0 8 4 0 8Z" fill="#a1b394"></path></marker>
+                <marker id="arch-arrow-wal" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto"><path d="M0 0 8 4 0 8Z" fill="#e5bd78"></path></marker>
+              </defs>
+              <rect class="zone" x="16" y="52" width="180" height="480" rx="8"></rect>
+              <text class="zone-label" x="34" y="80">CLIENTS</text>
+              <rect class="zone" x="220" y="52" width="200" height="480" rx="8"></rect>
+              <text class="zone-label" x="238" y="80">CONNECTION HANDLING</text>
+              <rect class="zone" x="444" y="52" width="250" height="480" rx="8"></rect>
+              <text class="zone-label" x="462" y="80">SERVER INSTANCE</text>
+              <rect class="zone" x="716" y="52" width="210" height="480" rx="8"></rect>
+              <text class="zone-label" x="734" y="80">SHARED MEMORY</text>
+              <rect class="zone" x="948" y="52" width="156" height="480" rx="8"></rect>
+              <text class="zone-label" x="966" y="80">STORAGE</text>
+
+              <g class="node" role="button" tabindex="0" data-component="FastAPI application" data-target="#client-server">
+                <title>Application client: opens a PostgreSQL protocol connection and sends SQL or prepared statements.</title>
+                <rect x="38" y="115" width="136" height="62" rx="6"></rect>
+                <text x="106" y="141">FastAPI</text><text class="subtext" x="106" y="159">application client</text>
+              </g>
+              <g class="node" role="button" tabindex="0" data-component="psql and GUI clients" data-target="#client-server">
+                <title>Command-line and graphical clients such as psql and pgAdmin also connect through the PostgreSQL protocol.</title>
+                <rect x="38" y="205" width="136" height="62" rx="6"></rect>
+                <text x="106" y="231">psql · pgAdmin</text><text class="subtext" x="106" y="249">other clients</text>
+              </g>
+              <g class="node" role="button" tabindex="0" data-component="Postmaster" data-target="#processes">
+                <title>The postmaster listens for connections, performs startup and connection setup, and starts a backend process for an accepted client.</title>
+                <rect x="246" y="145" width="148" height="84" rx="6"></rect>
+                <text x="320" y="176">Postmaster</text><text class="subtext" x="320" y="196">listen · accept</text><text class="subtext" x="320" y="212">start backend</text>
+              </g>
+              <g class="node" role="button" tabindex="0" data-component="Backend process" data-target="#processes">
+                <title>A backend handles one client connection at a time: it processes the protocol, runs SQL, and returns results.</title>
+                <rect x="482" y="145" width="174" height="84" rx="6"></rect>
+                <text x="569" y="176">Backend process</text><text class="subtext" x="569" y="196">one connected client</text><text class="subtext" x="569" y="212">query · transaction</text>
+              </g>
+              <g class="node" role="button" tabindex="0" data-component="Background processes" data-target="#processes">
+                <title>Background processes perform distinct maintenance and I/O tasks; they are not client query workers.</title>
+                <rect x="482" y="350" width="174" height="94" rx="6"></rect>
+                <text x="569" y="378">Background processes</text><text class="subtext" x="569" y="398">writer · checkpointer</text><text class="subtext" x="569" y="414">WAL · autovacuum · archive</text>
+              </g>
+              <g class="node" role="button" tabindex="0" data-component="Shared Buffers" data-target="#memory">
+                <title>Shared buffers cache table and index pages in shared memory. Backends can read and modify shared pages.</title>
+                <rect x="744" y="125" width="154" height="75" rx="6"></rect>
+                <text x="821" y="155">Shared Buffers</text><text class="subtext" x="821" y="175">cached data pages</text>
+              </g>
+              <g class="node" role="button" tabindex="0" data-component="WAL Buffers" data-target="#wal">
+                <title>WAL buffers hold generated WAL records in shared memory before WAL writer or commit processing writes them to WAL files.</title>
+                <rect x="744" y="225" width="154" height="75" rx="6"></rect>
+                <text x="821" y="255">WAL Buffers</text><text class="subtext" x="821" y="275">change records</text>
+              </g>
+              <g class="node" role="button" tabindex="0" data-component="Other shared memory" data-target="#memory">
+                <title>PostgreSQL shared memory also holds locks, transaction status, and other coordination structures.</title>
+                <rect x="744" y="350" width="154" height="75" rx="6"></rect>
+                <text x="821" y="380">Other shared state</text><text class="subtext" x="821" y="400">locks · transaction data</text>
+              </g>
+              <g class="node" role="button" tabindex="0" data-component="Database relation files" data-target="#storage">
+                <title>Relation files contain table heap pages, indexes, and auxiliary storage such as TOAST relations.</title>
+                <rect x="970" y="125" width="112" height="75" rx="6"></rect>
+                <text x="1026" y="153">Relation files</text><text class="subtext" x="1026" y="173">heap · TOAST</text><text class="subtext" x="1026" y="188">indexes</text>
+              </g>
+              <g class="node" role="button" tabindex="0" data-component="WAL segments" data-target="#wal">
+                <title>WAL segment files hold the sequential log records used for crash recovery and, depending on configuration, archiving and replication.</title>
+                <rect x="970" y="260" width="112" height="75" rx="6"></rect>
+                <text x="1026" y="289">WAL segments</text><text class="subtext" x="1026" y="309">durability · recovery</text>
+              </g>
+
+              <path class="flow" marker-end="url(#arch-arrow)" d="M174 146H238"></path>
+              <path class="flow" marker-end="url(#arch-arrow)" d="M174 236H218V207H238"></path>
+              <text class="flow-label" x="208" y="135">connection</text>
+              <path class="flow" marker-end="url(#arch-arrow)" d="M394 186H474"></path>
+              <text class="flow-label" x="434" y="175">spawn</text>
+              <path class="flow" marker-end="url(#arch-arrow)" d="M656 166H736"></path>
+              <path class="flow" marker-end="url(#arch-arrow)" d="M656 193H706V262H736"></path>
+              <path class="flow" marker-end="url(#arch-arrow)" d="M656 207H694V387H736"></path>
+              <text class="flow-label" x="693" y="151">shared access</text>
+              <path class="flow" marker-end="url(#arch-arrow)" d="M656 382H706V167H736"></path>
+              <path class="flow wal" marker-end="url(#arch-arrow-wal)" d="M656 407H718V262H736"></path>
+              <path class="flow" marker-end="url(#arch-arrow)" d="M898 160H962"></path>
+              <text class="flow-label" x="930" y="148">page writes</text>
+              <path class="flow wal" marker-end="url(#arch-arrow-wal)" d="M898 262H962"></path>
+              <text class="flow-label" x="930" y="250">WAL writes</text>
+              <path class="flow" marker-end="url(#arch-arrow)" d="M898 387H930V160H962"></path>
+              <text class="flow-label" x="920" y="372">flush dirty pages</text>
+            </svg>
+          </div>
+          <figcaption id="overview-diagram-caption" class="diagram-caption">A simplified map of the main parts. The exact work and timing depend on the server settings and workload.</figcaption>
+        </figure>
+        <p class="diagram-help">Select a diagram component to highlight it and jump to its explanation. On narrow screens, scroll the diagram horizontally.</p>
+        <div id="diagram-detail" class="diagram-detail" aria-live="polite">Choose a component in the diagram to see where it is covered in this guide.</div>
+
+        <div class="explanation-grid">
+          <div class="explanation" data-kind="plain"><h4>Plain English</h4><p>Think of PostgreSQL as a workshop. Each connected customer has a worker. Workers use shared workspaces, while other workers save changes and clean up old data.</p></div>
+          <div class="explanation" data-kind="technical"><h4>Technical</h4><p>The server uses a process-per-connection model. Backends execute client commands and coordinate through shared memory and synchronization primitives. Buffer and WAL I/O are distinct: WAL is flushed for commit durability; table and index pages can be written later.</p></div>
+        </div>
+      </section>
+
+      <section id="client-server" class="docs-section" aria-labelledby="client-server-title">
+        <p class="section-kicker">01 · Connections</p>
+        <h2 id="client-server-title">Client-server architecture</h2>
+        <p>A <strong>client</strong> is any program that connects to PostgreSQL, such as a website, a command-line tool, or a database app. A driver (a library that lets the program talk to PostgreSQL) sends and receives messages. The program and database can be written in different languages.</p>
+        <p>The <strong>postmaster</strong> is PostgreSQL's main server process. It listens for new connections and starts a backend process for each one. The backend checks the connection details and password, then handles all queries for that connection. The postmaster does not handle each query itself.</p>
+        <figure class="diagram-frame">
+          <div class="diagram-scroll" tabindex="0" aria-label="Scrollable connection flow diagram">
+            <svg class="architecture-diagram" viewBox="0 0 900 190" role="group" aria-labelledby="connection-title connection-desc">
+              <title id="connection-title">PostgreSQL connection flow</title>
+              <desc id="connection-desc">A client connects over a Unix socket or TCP, the postmaster accepts the connection and starts a backend, the backend performs session startup and authentication, then client and backend exchange protocol messages.</desc>
+              <defs><marker id="conn-arrow" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto"><path d="M0 0 8 4 0 8Z" fill="#a1b394"></path></marker></defs>
+              <g class="node" role="button" tabindex="0" data-component="Application client" data-target="#processes"><rect x="24" y="58" width="150" height="72" rx="6"></rect><text x="99" y="87">Application</text><text class="subtext" x="99" y="108">driver · protocol</text></g>
+              <g class="node" role="button" tabindex="0" data-component="Postmaster" data-target="#processes"><rect x="238" y="58" width="170" height="72" rx="6"></rect><text x="323" y="87">Postmaster</text><text class="subtext" x="323" y="108">listen · start backend</text></g>
+              <g class="node" role="button" tabindex="0" data-component="Backend process" data-target="#processes"><rect x="472" y="58" width="170" height="72" rx="6"></rect><text x="557" y="87">Backend process</text><text class="subtext" x="557" y="108">one per connection</text></g>
+              <g class="node" role="button" tabindex="0" data-component="SQL protocol session" data-target="#query-processing"><rect x="706" y="58" width="170" height="72" rx="6"></rect><text x="791" y="87">SQL &amp; results</text><text class="subtext" x="791" y="108">frontend/backend protocol</text></g>
+              <path class="flow" marker-end="url(#conn-arrow)" d="M174 94H230"></path><text class="flow-label" x="202" y="82">socket / TCP</text>
+              <path class="flow" marker-end="url(#conn-arrow)" d="M408 94H464"></path><text class="flow-label" x="436" y="82">startup + auth</text>
+              <path class="flow" marker-end="url(#conn-arrow)" d="M642 94H698"></path><text class="flow-label" x="670" y="82">query · response</text>
+            </svg>
+          </div>
+          <figcaption class="diagram-caption">An application can connect on the same machine or over a network. TLS can encrypt a network connection when enabled.</figcaption>
+        </figure>
+        <div class="explanation-grid">
+          <div class="explanation" data-kind="plain"><h4>Plain English</h4><p>The postmaster is like a front desk. It starts a worker for each new connection; that worker then handles the conversation.</p></div>
+          <div class="explanation" data-kind="technical"><h4>Technical</h4><p>PostgreSQL uses a process-per-user connection model. The postmaster accepts the connection and starts a backend; the backend performs the protocol startup and authentication flow using access configuration such as <code>pg_hba.conf</code>. Connection poolers can reduce the number of server backends required by an application.</p></div>
+        </div>
+        <h3>FastAPI example</h3>
+        <pre><code># A driver manages a PostgreSQL protocol connection.
+async with pool.connection() as conn:
+    row = await conn.execute(
+        "SELECT id, username FROM users WHERE id = %s",
+        (10,),
+    )</code></pre>
+        <p>The driver sends the query to the backend, which checks and runs it. Applications often reuse connections through a <strong>connection pool</strong> instead of opening a new one for every request. Database permissions should give each application only the access it needs.</p>
+      </section>
+
+      <section id="processes" class="docs-section" aria-labelledby="processes-title">
+        <p class="section-kicker">02 · Execution model</p>
+        <h2 id="processes-title">PostgreSQL processes and core components</h2>
+        <p>PostgreSQL uses separate operating-system processes to do its work. A backend serves one client connection, while background processes handle specific tasks such as saving data or cleaning up old rows.</p>
+        <figure class="diagram-frame">
+          <div class="diagram-scroll" tabindex="0" aria-label="Scrollable PostgreSQL process relationship diagram">
+            <svg class="architecture-diagram" viewBox="0 0 980 310" role="group" aria-labelledby="process-title process-desc">
+              <title id="process-title">PostgreSQL server process relationships</title>
+              <desc id="process-desc">The postmaster starts client backends and background processes. Backends and background workers coordinate through shared memory. Specialized processes write data pages, flush WAL, vacuum tables, archive completed WAL, and transfer WAL for replication.</desc>
+              <defs><marker id="proc-arrow" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto"><path d="M0 0 8 4 0 8Z" fill="#a1b394"></path></marker><marker id="proc-arrow-wal" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto"><path d="M0 0 8 4 0 8Z" fill="#e5bd78"></path></marker></defs>
+              <g class="node" role="button" tabindex="0" data-component="Postmaster" data-target="#component-postmaster"><rect x="30" y="112" width="155" height="75" rx="6"></rect><text x="107" y="141">Postmaster</text><text class="subtext" x="107" y="163">supervisor · listener</text></g>
+              <g class="node" role="button" tabindex="0" data-component="Backend process" data-target="#component-backends"><rect x="270" y="40" width="165" height="75" rx="6"></rect><text x="352" y="69">Backends</text><text class="subtext" x="352" y="91">client SQL sessions</text></g>
+              <g class="node" role="button" tabindex="0" data-component="Shared memory" data-target="#component-shared-memory"><rect x="505" y="112" width="190" height="75" rx="6"></rect><text x="600" y="141">Shared memory</text><text class="subtext" x="600" y="163">buffers · locks · state</text></g>
+              <g class="node" role="button" tabindex="0" data-component="Background Writer and Checkpointer" data-target="#process-bg-writer"><rect x="270" y="208" width="165" height="75" rx="6"></rect><text x="352" y="237">Writer · checkpointer</text><text class="subtext" x="352" y="259">data-page I/O</text></g>
+              <g class="node" role="button" tabindex="0" data-component="WAL Writer and Archiver" data-target="#process-wal-writer"><rect x="745" y="40" width="190" height="75" rx="6"></rect><text x="840" y="69">WAL writer · archiver</text><text class="subtext" x="840" y="91">log flush · archive</text></g>
+              <g class="node" role="button" tabindex="0" data-component="Autovacuum Launcher and Workers" data-target="#process-autovacuum"><rect x="745" y="208" width="190" height="75" rx="6"></rect><text x="840" y="237">Autovacuum</text><text class="subtext" x="840" y="259">launcher · workers</text></g>
+              <path class="flow" marker-end="url(#proc-arrow)" d="M185 135H250V78H262"></path><text class="flow-label" x="225" y="66">spawn</text>
+              <path class="flow" marker-end="url(#proc-arrow)" d="M185 164H250V245H262"></path><text class="flow-label" x="225" y="204">start services</text>
+              <path class="flow" marker-end="url(#proc-arrow)" d="M435 78H475V132H497"></path>
+              <path class="flow" marker-end="url(#proc-arrow)" d="M435 245H475V168H497"></path>
+              <path class="flow wal" marker-end="url(#proc-arrow-wal)" d="M695 132H722V78H737"></path>
+              <path class="flow" marker-end="url(#proc-arrow)" d="M695 168H722V245H737"></path>
+              <text class="flow-label" x="724" y="122">WAL</text><text class="flow-label" x="724" y="203">table pages</text>
+            </svg>
+          </div>
+          <figcaption class="diagram-caption">The arrows show each process's main job, not every internal message or file operation.</figcaption>
+        </figure>
+
+        <h3>Process roles</h3>
+        <div class="docs-table-wrap">
+          <table class="docs-table">
+            <thead><tr><th>Process</th><th>Everyday comparison</th><th>Main job</th></tr></thead>
+            <tbody>
+              <tr><td>Postmaster</td><td>A service desk assigning a worker to each customer.</td><td>Listens for new connections and starts the server processes that handle them.</td></tr>
+              <tr><td>Backend</td><td>A worker helping one customer.</td><td>Handles one client connection, runs its SQL, and returns results.</td></tr>
+              <tr><td>Background writer</td><td>A filing assistant clearing papers from shared desks.</td><td>Writes some changed pages from memory to database files.</td></tr>
+              <tr><td>Checkpointer</td><td>A supervisor marking a recovery point.</td><td>Writes pages needed for a checkpoint so recovery has a known starting point.</td></tr>
+              <tr><td>WAL writer</td><td>A clerk saving the change log.</td><td>Writes change records from memory to log files. A backend can also do this when needed.</td></tr>
+              <tr><td>Autovacuum launcher / workers</td><td>A coordinator sending out cleanup crews.</td><td>Finds tables that need cleanup or updated statistics and starts workers to maintain them.</td></tr>
+              <tr><td>Archiver</td><td>A courier taking finished log files to storage.</td><td>Copies completed change-log files to an archive when configured.</td></tr>
+              <tr><td>WAL sender / receiver</td><td>Workers sending and receiving a change log.</td><td>Sends change records from a primary server to a standby.</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <p>Each process has a separate job. The background writer and checkpointer save table and index pages. The WAL writer saves change records. Autovacuum cleans tables, and the archiver copies finished log files when archiving is enabled.</p>
+        <h3>Background process details</h3>
+        <div class="component-list">
+          <details id="process-bg-writer" class="component-details">
+            <summary>Background writer</summary>
+            <div class="component-details-body">
+              <div class="explanation-grid">
+                <div class="explanation" data-kind="plain"><h4>Non-technical</h4><p>A filing assistant moves some frequently used papers from shared desks into their proper cabinets gradually, so customer-facing workers have less filing to do themselves.</p></div>
+                <div class="explanation" data-kind="technical"><h4>Technical</h4><p>The background writer scans buffer-pool state and writes selected dirty shared-buffer pages. It smooths relation-page I/O, but checkpoint and backend writes still occur; WAL must be flushed before a dirty page can be written.</p></div>
+              </div>
+              <p><strong>Why it exists:</strong> to reduce bursts of writes performed by backends when they need clean buffers. It is not the mechanism that makes a transaction commit durable.</p>
+            </div>
+          </details>
+          <details id="process-checkpointer" class="component-details">
+            <summary>Checkpointer</summary>
+            <div class="component-details-body">
+              <div class="explanation-grid">
+                <div class="explanation" data-kind="plain"><h4>Non-technical</h4><p>A supervisor creates a reliable bookmark in the journal and makes sure the pages needed for that recovery point are safely filed.</p></div>
+                <div class="explanation" data-kind="technical"><h4>Technical</h4><p>The checkpointer writes dirty buffers needed for a checkpoint, ensures WAL through the checkpoint record is durable, and updates checkpoint state. The interval and write pacing affect recovery time and I/O.</p></div>
+              </div>
+              <p><strong>How it interacts:</strong> it coordinates relation-page writes with WAL ordering and shared buffers. A checkpoint bounds crash-recovery work; it is not issued for every COMMIT.</p>
+            </div>
+          </details>
+          <details id="process-wal-writer" class="component-details">
+            <summary>WAL writer</summary>
+            <div class="component-details-body">
+              <div class="explanation-grid">
+                <div class="explanation" data-kind="plain"><h4>Non-technical</h4><p>A ledger clerk periodically copies the latest change notes from a shared tray into the durable journal.</p></div>
+                <div class="explanation" data-kind="technical"><h4>Technical</h4><p>The WAL writer flushes WAL buffers to WAL segment files on a schedule. Backends can also perform WAL writes and flushes, including when a transaction must wait for synchronous commit durability.</p></div>
+              </div>
+              <p><strong>Why it exists:</strong> to move WAL out of shared memory efficiently and reduce the amount of work that a backend must do when commit records are generated.</p>
+            </div>
+          </details>
+          <details id="process-autovacuum" class="component-details">
+            <summary>Autovacuum launcher and workers</summary>
+            <div class="component-details-body">
+              <div class="explanation-grid">
+                <div class="explanation" data-kind="plain"><h4>Non-technical</h4><p>A coordinator sends cleanup crews to tables that have accumulated stale row versions or need refreshed statistics.</p></div>
+                <div class="explanation" data-kind="technical"><h4>Technical</h4><p>The launcher starts workers based on per-table vacuum/analyze thresholds and available worker slots. Workers perform VACUUM and ANALYZE; anti-wraparound vacuuming can take priority to protect transaction-ID correctness.</p></div>
+              </div>
+              <p><strong>How they interact:</strong> workers read and update table/index structures and share buffer and lock resources with application workloads. Long-running transactions and replication horizons can constrain how much dead-tuple cleanup is safe.</p>
+            </div>
+          </details>
+          <details id="process-archiver" class="component-details">
+            <summary>Archiver</summary>
+            <div class="component-details-body">
+              <div class="explanation-grid">
+                <div class="explanation" data-kind="plain"><h4>Non-technical</h4><p>A courier takes a completed, sealed journal volume to a separate archive location.</p></div>
+                <div class="explanation" data-kind="technical"><h4>Technical</h4><p>When WAL archiving is enabled, the archiver invokes the configured archive command or archive library for completed WAL segments. Archive retention and backup consistency are managed as part of the backup/recovery design.</p></div>
+              </div>
+              <p><strong>Important boundary:</strong> archiving does not itself make a base backup and does not replace the active WAL segment files needed by the running server.</p>
+            </div>
+          </details>
+          <details id="process-wal-replication" class="component-details">
+            <summary>WAL sender and receiver</summary>
+            <div class="component-details-body">
+              <div class="explanation-grid">
+                <div class="explanation" data-kind="plain"><h4>Non-technical</h4><p>One office sends a numbered stream of journal entries; the receiving office checks the stream and applies it to its own files.</p></div>
+                <div class="explanation" data-kind="technical"><h4>Technical</h4><p>A walsender serves WAL to a replication connection on the primary; a walreceiver on the standby receives it, writes it locally, and coordinates replay. Replication slots can retain WAL required by a consumer.</p></div>
+              </div>
+              <p><strong>Why they exist:</strong> to transport physical WAL for streaming replication and standby recovery. They are separate from logical decoding and application backend execution.</p>
+            </div>
+          </details>
+        </div>
+
+        <h3>Ten components to keep distinct</h3>
+        <p>These are the ten main parts of the system, not ten separate processes. Open a row to see what each part does and how it works.</p>
+        <div class="component-list">
+          <details id="component-clients" class="component-details">
+            <summary>Client applications</summary>
+            <div class="component-details-body">
+              <dl class="spec-grid"><div><dt>Definition</dt><dd>A program that speaks PostgreSQL's frontend/backend protocol.</dd></div><div><dt>Purpose</dt><dd>Submit commands and consume rows, status, and errors.</dd></div><div><dt>Mechanism</dt><dd>Driver encodes protocol messages over a socket, optionally using TLS.</dd></div><div><dt>Role</dt><dd>Owns application behavior and connection policy; server-side execution belongs to the backend.</dd></div><div><dt>Real-world analogy</dt><dd>A customer communicating an order to a service desk.</dd></div><div><dt>Technical explanation</dt><dd>Clients include FastAPI services, <code>psql</code>, pgAdmin, and language drivers such as libpq-based tools, JDBC, or psycopg.</dd></div></dl>
+            </div>
+          </details>
+          <details id="component-postmaster" class="component-details">
+            <summary>Postmaster (main server process)</summary>
+            <div class="component-details-body">
+              <dl class="spec-grid"><div><dt>Definition</dt><dd>The supervising PostgreSQL server process.</dd></div><div><dt>Purpose</dt><dd>Start and supervise an instance and accept connection requests.</dd></div><div><dt>Mechanism</dt><dd>Listens on configured sockets and starts a backend process; the backend performs session startup and authentication.</dd></div><div><dt>Role</dt><dd>Connection admission and process lifecycle, not ordinary query execution.</dd></div><div><dt>Real-world analogy</dt><dd>A receptionist who assigns a dedicated staff member to a visitor.</dd></div><div><dt>Technical explanation</dt><dd>The postmaster supervises the process-per-connection server model and starts auxiliary server processes.</dd></div></dl>
+            </div>
+          </details>
+          <details id="component-backends" class="component-details">
+            <summary>Backend processes</summary>
+            <div class="component-details-body">
+              <dl class="spec-grid"><div><dt>Definition</dt><dd>A server process assigned to one client connection.</dd></div><div><dt>Purpose</dt><dd>Parse commands, run transactions, and return results to that client.</dd></div><div><dt>Mechanism</dt><dd>Receives protocol messages, uses private memory and shared server structures, and issues storage I/O as needed.</dd></div><div><dt>Role</dt><dd>Session-scoped query and transaction execution.</dd></div><div><dt>Real-world analogy</dt><dd>A dedicated clerk handling one customer's session.</dd></div><div><dt>Technical explanation</dt><dd>Each backend has process-local state and accesses shared memory under PostgreSQL's synchronization rules; a pooler can multiplex application sessions onto fewer server connections.</dd></div></dl>
+            </div>
+          </details>
+          <details id="component-shared-memory" class="component-details">
+            <summary>Shared memory</summary>
+            <div class="component-details-body">
+              <dl class="spec-grid"><div><dt>Definition</dt><dd>Memory mapped for use by multiple server processes.</dd></div><div><dt>Purpose</dt><dd>Share buffers and coordinate concurrent work.</dd></div><div><dt>Mechanism</dt><dd>Processes use PostgreSQL synchronization primitives, including locks and semaphores, to protect shared state.</dd></div><div><dt>Role</dt><dd>Coordinates backends and auxiliary processes.</dd></div><div><dt>Real-world analogy</dt><dd>A shared noticeboard and workbench in a workshop.</dd></div><div><dt>Technical explanation</dt><dd>Contains shared buffers, WAL buffers, lock and transaction state, and other structures; it is distinct from each process's private memory.</dd></div></dl>
+            </div>
+          </details>
+          <details id="component-shared-buffers" class="component-details">
+            <summary>Shared buffers</summary>
+            <div class="component-details-body">
+              <dl class="spec-grid"><div><dt>Definition</dt><dd>The shared cache of relation pages maintained by PostgreSQL.</dd></div><div><dt>Purpose</dt><dd>Cache table and index blocks and provide a place to modify pages in memory.</dd></div><div><dt>Mechanism</dt><dd>A page is read into a buffer on a miss; modified buffers become dirty and are written later.</dd></div><div><dt>Role</dt><dd>Bridge backend page access and relation-file I/O.</dd></div><div><dt>Real-world analogy</dt><dd>Frequently used folders kept on a communal desk rather than fetched from an archive each time.</dd></div><div><dt>Technical explanation</dt><dd>Configured with <code>shared_buffers</code>; PostgreSQL's buffer manager coordinates pinning, locking, replacement, and dirty-page handling. The operating-system page cache may also cache file data.</dd></div></dl>
+            </div>
+          </details>
+          <details id="component-wal-buffers" class="component-details">
+            <summary>WAL buffers</summary>
+            <div class="component-details-body">
+              <dl class="spec-grid"><div><dt>Definition</dt><dd>A shared-memory staging area for write-ahead log records.</dd></div><div><dt>Purpose</dt><dd>Collect records before they are written to WAL segment files.</dd></div><div><dt>Mechanism</dt><dd>Backends generate WAL records as they change data; records are flushed in the required order.</dd></div><div><dt>Role</dt><dd>Support redo-based recovery and transaction durability.</dd></div><div><dt>Real-world analogy</dt><dd>A numbered dispatch ledger that is copied to secure storage before the filing cabinet is updated.</dd></div><div><dt>Technical explanation</dt><dd>WAL buffers are distinct from shared buffers. A commit normally waits for the relevant WAL to reach durable storage according to <code>synchronous_commit</code> and the platform's sync guarantees.</dd></div></dl>
+            </div>
+          </details>
+          <details id="component-bg-processes" class="component-details">
+            <summary>Background processes</summary>
+            <div class="component-details-body">
+              <dl class="spec-grid"><div><dt>Definition</dt><dd>Server processes with system-level maintenance or replication responsibilities.</dd></div><div><dt>Purpose</dt><dd>Handle checkpointing, writing, vacuum, archiving, and WAL transport.</dd></div><div><dt>Mechanism</dt><dd>Coordinate through shared memory and perform specific scheduled or continuous duties.</dd></div><div><dt>Role</dt><dd>Maintain the database without assigning all work to client backends.</dd></div><div><dt>Real-world analogy</dt><dd>Specialist staff responsible for filing, cleaning, and transporting records.</dd></div><div><dt>Technical explanation</dt><dd>The background writer, checkpointer, WAL writer, autovacuum launcher/workers, and archiver have different responsibilities; process availability depends on configuration and workload.</dd></div></dl>
+            </div>
+          </details>
+          <details id="component-data-files" class="component-details">
+            <summary>Data files</summary>
+            <div class="component-details-body">
+              <dl class="spec-grid"><div><dt>Definition</dt><dd>Persistent relation files holding tables, indexes, and related structures.</dd></div><div><dt>Purpose</dt><dd>Store the database's durable page contents.</dd></div><div><dt>Mechanism</dt><dd>Relation pages are read into shared buffers and dirty pages are written to storage through PostgreSQL and the operating system.</dd></div><div><dt>Role</dt><dd>Long-term home for heap tuples and index entries.</dd></div><div><dt>Real-world analogy</dt><dd>The filing cabinets where the records ultimately live.</dd></div><div><dt>Technical explanation</dt><dd>Relation data is organized in pages and files under the cluster data directory; large relations span multiple segment files. WAL is required to recover data files after a crash.</dd></div></dl>
+            </div>
+          </details>
+          <details id="component-wal-files" class="component-details">
+            <summary>WAL files</summary>
+            <div class="component-details-body">
+              <dl class="spec-grid"><div><dt>Definition</dt><dd>Sequential segment files containing WAL records.</dd></div><div><dt>Purpose</dt><dd>Support crash recovery, archiving, and replication.</dd></div><div><dt>Mechanism</dt><dd>Records are appended in log sequence order and replayed from a checkpoint after a crash.</dd></div><div><dt>Role</dt><dd>Make changes recoverable and committed transactions durable.</dd></div><div><dt>Real-world analogy</dt><dd>A time-ordered journal used to reconstruct the filing cabinets after a failure.</dd></div><div><dt>Technical explanation</dt><dd>WAL records describe changes; they are not a replacement for heap or index files. PostgreSQL redoes required changes during crash recovery.</dd></div></dl>
+            </div>
+          </details>
+          <details id="component-index-files" class="component-details">
+            <summary>Index files</summary>
+            <div class="component-details-body">
+              <dl class="spec-grid"><div><dt>Definition</dt><dd>Persistent relation files containing index access-method structures.</dd></div><div><dt>Purpose</dt><dd>Provide alternative ways to locate rows or evaluate supported operators.</dd></div><div><dt>Mechanism</dt><dd>The planner may choose an index scan; the executor follows index entries and fetches heap tuples when needed.</dd></div><div><dt>Role</dt><dd>Accelerate suitable lookups while adding storage and write-maintenance cost.</dd></div><div><dt>Real-world analogy</dt><dd>An index in a book points toward relevant pages but does not contain the whole story.</dd></div><div><dt>Technical explanation</dt><dd>Index entries can become dead or require maintenance under MVCC. Index-only scans can avoid some heap visits only when visibility-map and query conditions permit.</dd></div></dl>
+            </div>
+          </details>
+        </div>
+        <div class="explanation-grid">
+          <div class="explanation" data-kind="plain"><h4>Non-technical</h4><p>Each component solves one kind of problem: clients request, backends work, shared memory coordinates, background processes maintain, and files preserve state.</p></div>
+          <div class="explanation" data-kind="technical"><h4>Technical</h4><p>Do not treat “server,” “backend,” “shared memory,” and “disk” as interchangeable. Process boundaries, private versus shared state, and WAL versus relation files explain both concurrency and durability behavior.</p></div>
+        </div>
+      </section>
+
+      <section id="query-processing" class="docs-section" aria-labelledby="query-title">
+        <p class="section-kicker">03 · SQL execution</p>
+        <h2 id="query-title">Query processing pipeline</h2>
+        <p>When you send SQL, PostgreSQL processes it in five steps: check the writing, check that names and data types are valid, apply rules, choose how to find the data, and run the query.</p>
+        <figure class="diagram-frame">
+          <div class="diagram-scroll" tabindex="0" aria-label="Scrollable query processing pipeline">
+            <svg class="architecture-diagram" viewBox="0 0 1000 220" role="group" aria-labelledby="query-svg-title query-svg-desc">
+              <title id="query-svg-title">PostgreSQL query-processing stages</title>
+              <desc id="query-svg-desc">PostgreSQL checks the SQL, looks up table and column names, applies rules, chooses a way to find the data, then runs the query.</desc>
+              <defs><marker id="query-arrow" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto"><path d="M0 0 8 4 0 8Z" fill="#a1b394"></path></marker></defs>
+              <g class="node" role="button" tabindex="0" data-component="Parser" data-target="#query-processing"><rect x="18" y="66" width="155" height="84" rx="6"></rect><text x="95" y="95">Parser</text><text class="subtext" x="95" y="117">syntax → parse tree</text></g>
+              <g class="node" role="button" tabindex="0" data-component="Analyzer" data-target="#query-processing"><rect x="214" y="66" width="155" height="84" rx="6"></rect><text x="291" y="95">Analyzer</text><text class="subtext" x="291" y="117">names · types · semantics</text></g>
+              <g class="node" role="button" tabindex="0" data-component="Rewriter" data-target="#query-processing"><rect x="410" y="66" width="155" height="84" rx="6"></rect><text x="487" y="95">Rewriter</text><text class="subtext" x="487" y="117">rules · views</text></g>
+              <g class="node" role="button" tabindex="0" data-component="Planner / Optimizer" data-target="#query-processing"><rect x="606" y="66" width="170" height="84" rx="6"></rect><text x="691" y="95">Planner / Optimizer</text><text class="subtext" x="691" y="117">costed execution plan</text></g>
+              <g class="node" role="button" tabindex="0" data-component="Executor" data-target="#query-processing"><rect x="817" y="66" width="165" height="84" rx="6"></rect><text x="899" y="95">Executor</text><text class="subtext" x="899" y="117">rows · data changes</text></g>
+              <path class="flow" marker-end="url(#query-arrow)" d="M173 108H206"></path><path class="flow" marker-end="url(#query-arrow)" d="M369 108H402"></path><path class="flow" marker-end="url(#query-arrow)" d="M565 108H598"></path><path class="flow" marker-end="url(#query-arrow)" d="M776 108H809"></path>
+              <text class="flow-label" x="95" y="178">SQL text</text><text class="flow-label" x="291" y="178">catalog lookup</text><text class="flow-label" x="487" y="178">rewritten tree</text><text class="flow-label" x="691" y="178">plan nodes</text><text class="flow-label" x="899" y="178">storage access</text>
+            </svg>
+          </div>
+          <figcaption class="diagram-caption">This shows the usual order. The chosen plan may include steps such as scanning a table, joining tables, filtering rows, or sorting results.</figcaption>
+        </figure>
+        <h3>Walkthrough: <code>SELECT * FROM users WHERE id = 10;</code></h3>
+        <ol>
+          <li><strong>Parser:</strong> checks that the SQL is written correctly.</li>
+          <li><strong>Analyzer:</strong> checks that <code>users</code> and <code>id</code> exist and that the query uses them correctly.</li>
+          <li><strong>Rewriter:</strong> applies database rules. For example, it expands a view (a saved query) into the query that defines it.</li>
+          <li><strong>Planner / optimizer:</strong> chooses how to find the rows. It may read the whole table or use an index (a lookup structure), based on the table's size and available information.</li>
+          <li><strong>Executor:</strong> follows that plan, checks which row versions this query can see, and returns the matching rows.</li>
+        </ol>
+        <pre><code>EXPLAIN SELECT * FROM users WHERE id = 10;
+EXPLAIN (ANALYZE, BUFFERS) SELECT * FROM users WHERE id = 10;</code></pre>
+        <p><code>EXPLAIN</code> shows how PostgreSQL plans to run a query without running it. <code>EXPLAIN ANALYZE</code> runs the query and reports what happened. Be careful with commands that change data: <code>ANALYZE</code> really does run them.</p>
+        <div class="explanation-grid">
+          <div class="explanation" data-kind="plain"><h4>Plain English</h4><p>PostgreSQL checks the query, confirms the names are valid, picks a way to find the data, then runs it.</p></div>
+          <div class="explanation" data-kind="technical"><h4>Technical</h4><p>The parser produces a parse tree; parse analysis resolves names and types; the rewrite system transforms query trees; the optimizer compares paths and constructs a plan tree; executor nodes evaluate it using the storage system.</p></div>
+        </div>
+      </section>
+
+      <section id="memory" class="docs-section" aria-labelledby="memory-title">
+        <p class="section-kicker">04 · Working set</p>
+        <h2 id="memory-title">Memory architecture</h2>
+        <p>PostgreSQL uses both shared and private memory. Shared memory is available to server processes. Each backend also has its own memory for tasks such as sorting query results. Some memory settings apply separately to every connection or task, so their total use can add up.</p>
+        <figure class="diagram-frame">
+          <div class="diagram-scroll" tabindex="0" aria-label="Scrollable PostgreSQL memory layout">
+            <svg class="architecture-diagram" viewBox="0 0 940 330" role="group" aria-labelledby="memory-svg-title memory-svg-desc">
+              <title id="memory-svg-title">Shared and process-local PostgreSQL memory</title>
+              <desc id="memory-svg-desc">Shared memory holds cached data pages and change records used by multiple processes. Each backend also has private memory for query tasks and maintenance work.</desc>
+              <defs><marker id="memory-arrow" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto"><path d="M0 0 8 4 0 8Z" fill="#a1b394"></path></marker></defs>
+              <rect class="zone" x="24" y="30" width="555" height="270" rx="8"></rect><text class="zone-label" x="45" y="58">SHARED MEMORY · INSTANCE-WIDE</text>
+              <rect class="zone" x="604" y="30" width="310" height="270" rx="8"></rect><text class="zone-label" x="625" y="58">BACKEND-LOCAL · PRIVATE</text>
+              <g class="node" role="button" tabindex="0" data-component="Shared Buffers" data-target="#component-shared-buffers"><rect x="50" y="88" width="235" height="72" rx="6"></rect><text x="167" y="117">Shared buffers</text><text class="subtext" x="167" y="139">cached heap and index pages</text></g>
+              <g class="node" role="button" tabindex="0" data-component="WAL Buffers" data-target="#component-wal-buffers"><rect x="315" y="88" width="235" height="72" rx="6"></rect><text x="432" y="117">WAL buffers</text><text class="subtext" x="432" y="139">records awaiting WAL writes</text></g>
+              <g class="node" role="button" tabindex="0" data-component="Shared coordination state" data-target="#component-shared-memory"><rect x="50" y="190" width="500" height="72" rx="6"></rect><text x="300" y="219">Locks · transaction state · other shared structures</text><text class="subtext" x="300" y="241">coordination among backends and server processes</text></g>
+              <g class="node" role="button" tabindex="0" data-component="Work memory" data-target="#memory"><rect x="630" y="88" width="255" height="72" rx="6"></rect><text x="757" y="117">work_mem</text><text class="subtext" x="757" y="139">sort / hash operation budget</text></g>
+              <g class="node" role="button" tabindex="0" data-component="Maintenance work memory" data-target="#memory"><rect x="630" y="190" width="255" height="72" rx="6"></rect><text x="757" y="219">maintenance_work_mem</text><text class="subtext" x="757" y="241">maintenance operation budget</text></g>
+              <path class="flow" marker-end="url(#memory-arrow)" d="M285 124H307"></path><text class="flow-label" x="296" y="177">separate regions</text>
+            </svg>
+          </div>
+          <figcaption class="diagram-caption">Conceptual scope, not a scale drawing. Work memory is a limit per eligible operation, not a single per-server allocation.</figcaption>
+        </figure>
+        <div class="docs-table-wrap">
+          <table class="docs-table">
+            <thead><tr><th>Memory area</th><th>Scope</th><th>Typical use</th></tr></thead>
+            <tbody>
+              <tr><td>Shared memory</td><td>Shared by PostgreSQL processes</td><td>Buffers, locks, transaction and coordination state</td></tr>
+              <tr><td><code>shared_buffers</code></td><td>Shared</td><td>PostgreSQL's cache for relation pages</td></tr>
+              <tr><td><code>wal_buffers</code></td><td>Shared</td><td>Staging generated WAL records</td></tr>
+              <tr><td><code>work_mem</code></td><td>Backend operation</td><td>Sorts and hash operations; multiple operations and sessions can consume it concurrently</td></tr>
+              <tr><td><code>maintenance_work_mem</code></td><td>Maintenance operation</td><td>Operations such as VACUUM and index creation; worker concurrency matters</td></tr>
+              <tr><td>Backend-local memory</td><td>Private to a server process</td><td>Executor state, session state, and operation-specific allocations</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <p>When a backend needs a relation page, PostgreSQL checks shared buffers. A cache hit avoids a PostgreSQL data-file read; on a miss, the block is read into a buffer, often with help from the operating system's own page cache. A write dirties a buffer rather than forcing an immediate relation-file write.</p>
+        <p>Memory settings have workload-dependent consequences. For example, a query may have several sorts or hash operations, and many backends run concurrently. Setting <code>work_mem</code> high can therefore allow aggregate use far beyond the value shown for one operation.</p>
+        <div class="explanation-grid">
+          <div class="explanation" data-kind="plain"><h4>Non-technical</h4><p>Shared memory is the workshop's common benches. Each worker also has a personal work area. A larger personal allowance can help one task but, multiplied across many tasks and workers, can crowd the room.</p></div>
+          <div class="explanation" data-kind="technical"><h4>Technical</h4><p><code>shared_buffers</code> is an instance-wide buffer pool; <code>work_mem</code> is applied per eligible plan operation, per backend; <code>maintenance_work_mem</code> applies to maintenance work. The operating-system cache is separate from PostgreSQL shared buffers.</p></div>
+        </div>
+      </section>
+
+      <section id="storage" class="docs-section" aria-labelledby="storage-title">
+        <p class="section-kicker">05 · Persistent data</p>
+        <h2 id="storage-title">Storage architecture</h2>
+        <p>A PostgreSQL installation stores its data in a <strong>database cluster</strong> (the data directory for one server instance). It can contain several databases. Each database can have schemas, which group tables and other objects. Tables and indexes are saved in files made up of small blocks called pages.</p>
+        <figure class="diagram-frame">
+          <div class="diagram-scroll" tabindex="0" aria-label="Scrollable PostgreSQL storage hierarchy">
+            <svg class="architecture-diagram" viewBox="0 0 960 360" role="group" aria-labelledby="storage-svg-title storage-svg-desc">
+              <title id="storage-svg-title">PostgreSQL logical and physical storage hierarchy</title>
+              <desc id="storage-svg-desc">One server's data directory contains databases. Databases contain schemas and tables. Tables are stored in pages; large values may use extra storage. Indexes and the change log are stored separately from table data.</desc>
+              <defs><marker id="storage-arrow" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto"><path d="M0 0 8 4 0 8Z" fill="#a1b394"></path></marker></defs>
+              <g class="node" role="button" tabindex="0" data-component="Database cluster" data-target="#storage"><rect x="30" y="130" width="150" height="72" rx="6"></rect><text x="105" y="159">Database cluster</text><text class="subtext" x="105" y="181">one PostgreSQL instance</text></g>
+              <g class="node" role="button" tabindex="0" data-component="Database" data-target="#storage"><rect x="235" y="130" width="145" height="72" rx="6"></rect><text x="307" y="159">Database</text><text class="subtext" x="307" y="181">catalog namespace</text></g>
+              <g class="node" role="button" tabindex="0" data-component="Schema" data-target="#storage"><rect x="435" y="130" width="135" height="72" rx="6"></rect><text x="502" y="159">Schema</text><text class="subtext" x="502" y="181">named objects</text></g>
+              <g class="node" role="button" tabindex="0" data-component="Heap relation" data-target="#storage"><rect x="630" y="54" width="145" height="72" rx="6"></rect><text x="702" y="83">Heap relation</text><text class="subtext" x="702" y="105">table tuple versions</text></g>
+              <g class="node" role="button" tabindex="0" data-component="Index relation" data-target="#indexes"><rect x="630" y="154" width="145" height="72" rx="6"></rect><text x="702" y="183">Index relation</text><text class="subtext" x="702" y="205">access method data</text></g>
+              <g class="node" role="button" tabindex="0" data-component="TOAST relation" data-target="#storage"><rect x="630" y="254" width="145" height="72" rx="6"></rect><text x="702" y="283">TOAST relation</text><text class="subtext" x="702" y="305">large values, if needed</text></g>
+              <g class="node" role="button" tabindex="0" data-component="Pages and tuples" data-target="#storage"><rect x="820" y="54" width="120" height="72" rx="6"></rect><text x="880" y="83">Pages</text><text class="subtext" x="880" y="105">tuples · line pointers</text></g>
+              <path class="flow" marker-end="url(#storage-arrow)" d="M180 166H227"></path><path class="flow" marker-end="url(#storage-arrow)" d="M380 166H427"></path>
+              <path class="flow" marker-end="url(#storage-arrow)" d="M570 151H605V90H622"></path><path class="flow" marker-end="url(#storage-arrow)" d="M570 166H622"></path><path class="flow" marker-end="url(#storage-arrow)" d="M570 181H605V290H622"></path>
+              <path class="flow" marker-end="url(#storage-arrow)" d="M775 90H812"></path>
+              <text class="flow-label" x="600" y="44">table pages</text>
+            </svg>
+          </div>
+          <figcaption class="diagram-caption">The change log (WAL) is separate from table files. PostgreSQL keeps it in the <code>pg_wal</code> directory.</figcaption>
+        </figure>
+        <h3>From a row to a disk page</h3>
+        <ul>
+          <li>A table's main storage is called the <strong>heap</strong>. It is a set of pages, each holding parts of the table's rows.</li>
+          <li>When a row changes, PostgreSQL usually stores a new version. It keeps the old version while an active query may still need it.</li>
+          <li>An index is a separate structure that helps PostgreSQL find rows faster. PostgreSQL can also read the table from start to finish when that is faster.</li>
+          <li>Very large values may be stored separately using <strong>TOAST</strong>. This is only needed for some values.</li>
+          <li>PostgreSQL keeps extra information about free space and row visibility to help with cleanup and some index lookups.</li>
+        </ul>
+        <p>In a standard PostgreSQL build, each page is 8 KiB. Large tables can use more than one file. PostgreSQL maps names such as database, schema, and table to these files. Applications should use SQL and backup tools, not edit the files directly.</p>
+        <div class="explanation-grid">
+          <div class="explanation" data-kind="plain"><h4>Plain English</h4><p>Think of a database cluster as a filing room. It holds databases, each with named groups of tables. Tables are split into pages, and indexes help find rows without reading every page.</p></div>
+          <div class="explanation" data-kind="technical"><h4>Technical</h4><p>A cluster's data directory contains per-database relation files and cluster-wide state. Heap pages store tuple versions; indexes and TOAST relations are separate relation storage. WAL lives separately and supports recovery of relation pages.</p></div>
+        </div>
+      </section>
+
+      <section id="wal" class="docs-section" aria-labelledby="wal-title">
+        <p class="section-kicker">06 · Durability</p>
+        <h2 id="wal-title">Write-ahead logging (WAL)</h2>
+        <p><strong>WAL</strong> (write-ahead log) is PostgreSQL's change log. It helps restore data after a crash and can send changes to another server. PostgreSQL saves a change in this log before it writes the changed table page. That way, the log can restore a change if the server stops unexpectedly.</p>
+        <figure class="diagram-frame">
+          <div class="diagram-scroll" tabindex="0" aria-label="Scrollable WAL write and recovery flow">
+            <svg class="architecture-diagram" viewBox="0 0 980 260" role="group" aria-labelledby="wal-svg-title wal-svg-desc">
+              <title id="wal-svg-title">WAL durability and data-page write flow</title>
+              <desc id="wal-svg-desc">A backend modifies a shared buffer and generates WAL records. WAL records pass through WAL buffers and are flushed to WAL segments before the commit acknowledgement. Dirty relation pages can be written later by background writer or checkpointer. WAL supports redo after a crash.</desc>
+              <defs><marker id="wal-arrow" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto"><path d="M0 0 8 4 0 8Z" fill="#a1b394"></path></marker><marker id="wal-arrow-wal" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto"><path d="M0 0 8 4 0 8Z" fill="#e5bd78"></path></marker></defs>
+              <g class="node" role="button" tabindex="0" data-component="Backend write" data-target="#request-trace"><rect x="25" y="80" width="150" height="78" rx="6"></rect><text x="100" y="110">Backend</text><text class="subtext" x="100" y="132">change tuple / page</text></g>
+              <g class="node" role="button" tabindex="0" data-component="Dirty shared buffer" data-target="#memory"><rect x="230" y="80" width="165" height="78" rx="6"></rect><text x="312" y="110">Dirty shared buffer</text><text class="subtext" x="312" y="132">data page in memory</text></g>
+              <g class="node" role="button" tabindex="0" data-component="WAL Buffers" data-target="#component-wal-buffers"><rect x="450" y="38" width="165" height="78" rx="6"></rect><text x="532" y="68">WAL buffers</text><text class="subtext" x="532" y="90">ordered change records</text></g>
+              <g class="node" role="button" tabindex="0" data-component="WAL segments" data-target="#component-wal-files"><rect x="690" y="38" width="165" height="78" rx="6"></rect><text x="772" y="68">WAL segments</text><text class="subtext" x="772" y="90">flush before page write</text></g>
+              <g class="node" role="button" tabindex="0" data-component="COMMIT acknowledgment" data-target="#request-trace"><rect x="690" y="155" width="165" height="70" rx="6"></rect><text x="772" y="184">COMMIT may return</text><text class="subtext" x="772" y="205">after required WAL flush</text></g>
+              <g class="node" role="button" tabindex="0" data-component="Relation file write" data-target="#storage"><rect x="450" y="155" width="165" height="70" rx="6"></rect><text x="532" y="184">Relation files</text><text class="subtext" x="532" y="205">data page written later</text></g>
+              <path class="flow" marker-end="url(#wal-arrow)" d="M175 119H222"></path>
+              <path class="flow wal" marker-end="url(#wal-arrow-wal)" d="M395 101H442"></path>
+              <path class="flow wal" marker-end="url(#wal-arrow-wal)" d="M615 78H682"></path>
+              <path class="flow wal" marker-end="url(#wal-arrow-wal)" d="M772 116V147"></path>
+              <path class="flow" marker-end="url(#wal-arrow)" d="M312 158V190H442"></path>
+              <text class="flow-label" x="532" y="143">later page write</text>
+              <text class="flow-label" x="770" y="136">durability point*</text>
+            </svg>
+          </div>
+          <figcaption class="diagram-caption">*Commit behavior depends on settings such as <code>synchronous_commit</code>, the transaction's durability mode, and storage guarantees. In standard synchronous local commit, the required WAL is flushed before success is reported.</figcaption>
+        </figure>
+        <h3>What WAL does and does not do</h3>
+        <ul>
+          <li>When a tuple or index is changed, PostgreSQL generates WAL records and marks affected shared buffers dirty.</li>
+          <li>For a standard durable commit, PostgreSQL ensures WAL through the transaction's commit record is flushed before acknowledging COMMIT. Group commit can amortize a flush across transactions.</li>
+          <li>The changed heap and index pages do <strong>not</strong> need to reach their final relation files before COMMIT returns. A crash can be recovered by redoing changes from WAL after the last checkpoint.</li>
+          <li>WAL is not a second copy of the complete database and does not replace relation files. It is a change log whose records can be replayed.</li>
+          <li>Archiving WAL plus a valid base backup supports point-in-time recovery. Streaming replication can transport WAL to a standby.</li>
+        </ul>
+        <pre><code>BEGIN;
+INSERT INTO users (username) VALUES ('Sami');
+COMMIT;</code></pre>
+        <div class="explanation-grid">
+          <div class="explanation" data-kind="plain"><h4>Plain English</h4><p>PostgreSQL writes each change in a log before saving the changed table page. If the server stops, it can use the log to finish saving the change when it starts again.</p></div>
+          <div class="explanation" data-kind="technical"><h4>Technical</h4><p>WAL records are generated in memory and written in LSN order. WAL-before-data ordering plus redo recovery allows commit to be durable without synchronously flushing every changed relation page. This guarantee depends on configured sync behavior and honest storage flush semantics.</p></div>
+        </div>
+      </section>
+
+      <section id="mvcc" class="docs-section" aria-labelledby="mvcc-title">
+        <p class="section-kicker">07 · Concurrency</p>
+        <h2 id="mvcc-title">MVCC and transaction architecture</h2>
+        <p>PostgreSQL uses <strong>multiversion concurrency control (MVCC)</strong> to handle readers and writers at the same time. When a row changes, PostgreSQL usually keeps the old version and creates a new one. A query sees the version that was current when that query began.</p>
+        <figure class="diagram-frame">
+          <div class="diagram-scroll" tabindex="0" aria-label="Scrollable MVCC row-version diagram">
+            <svg class="architecture-diagram" viewBox="0 0 900 265" role="group" aria-labelledby="mvcc-svg-title mvcc-svg-desc">
+              <title id="mvcc-svg-title">MVCC versions of a user row</title>
+              <desc id="mvcc-svg-desc">Transaction 40 creates a row version with xmin 40. Transaction 52 updates it, setting the old version's xmax to 52 and creating a new version with xmin 52. An older snapshot can continue to see the old version while a later snapshot sees the new version, subject to visibility rules.</desc>
+              <defs><marker id="mvcc-arrow" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto"><path d="M0 0 8 4 0 8Z" fill="#a1b394"></path></marker></defs>
+              <g class="node" role="button" tabindex="0" data-component="Old row version" data-target="#mvcc"><rect x="60" y="75" width="290" height="100" rx="6"></rect><text x="205" y="105">Tuple version A</text><text class="subtext" x="205" y="129">username = 'Sam' · xmin = 40</text><text class="subtext" x="205" y="150">xmax = 52 after update</text></g>
+              <g class="node" role="button" tabindex="0" data-component="New row version" data-target="#mvcc"><rect x="550" y="75" width="290" height="100" rx="6"></rect><text x="695" y="105">Tuple version B</text><text class="subtext" x="695" y="129">username = 'Sami' · xmin = 52</text><text class="subtext" x="695" y="150">current version after commit</text></g>
+              <path class="flow" marker-end="url(#mvcc-arrow)" d="M350 125H542"></path><text class="flow-label" x="446" y="111">UPDATE creates a version</text>
+              <text class="flow-label" x="205" y="213">older snapshot may see A</text><text class="flow-label" x="695" y="213">newer snapshot may see B</text>
+            </svg>
+          </div>
+          <figcaption class="diagram-caption">Simplified visibility story: actual visibility depends on the transaction snapshot, commit status, command ID, and tuple metadata—not just comparing xmin and xmax numerically.</figcaption>
+        </figure>
+        <h3>Tuple visibility and snapshots</h3>
+        <ul>
+          <li><code>xmin</code> records the inserting transaction ID for a tuple version; <code>xmax</code> records a deleting or superseding transaction ID, with special states and meanings also possible.</li>
+          <li>A snapshot describes which transactions were in progress and which committed when a statement or transaction began. PostgreSQL uses transaction status and tuple metadata to determine visibility.</li>
+          <li>At Read Committed, each command gets a fresh snapshot. Repeatable Read uses a transaction-level snapshot. Serializable adds dependency tracking to detect executions that cannot be serialized safely.</li>
+          <li>MVCC reduces read/write blocking, but does not remove locks. Writes, DDL, explicit row locks, and conflicting operations can still wait or deadlock.</li>
+          <li>Obsolete tuple versions become dead tuples after no relevant snapshot can see them. VACUUM reclaims their space for reuse and maintains visibility information.</li>
+        </ul>
+        <div class="docs-table-wrap">
+          <table class="docs-table">
+            <thead><tr><th>Mechanism</th><th>Protects / coordinates</th><th>Typical behavior</th></tr></thead>
+            <tbody>
+              <tr><td>MVCC snapshot</td><td>Which tuple versions a statement can observe</td><td>Readers commonly proceed without blocking writers</td></tr>
+              <tr><td>Row-level lock</td><td>Conflicting changes or explicit row-lock requests</td><td>Competing writers can wait on the same row</td></tr>
+              <tr><td>Table-level lock</td><td>Operations on a relation, including DDL and maintenance</td><td>Modes conflict according to PostgreSQL's lock matrix</td></tr>
+              <tr><td>Advisory lock</td><td>Application-defined coordination key</td><td>Meaning is defined by the application, not automatically tied to a row</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="explanation-grid">
+          <div class="explanation" data-kind="plain"><h4>Plain English</h4><p>Changing a row creates a new version instead of immediately replacing the old one. A query already in progress can finish reading the old version; a later query sees the new one.</p></div>
+          <div class="explanation" data-kind="technical"><h4>Technical</h4><p>MVCC visibility is snapshot-based. Tuple headers identify inserting and deleting/updating transactions; transaction status, snapshot boundaries, and command visibility determine which version is visible. Vacuum removes versions that are no longer potentially visible.</p></div>
+        </div>
+      </section>
+
+      <section id="recovery" class="docs-section" aria-labelledby="recovery-title">
+        <p class="section-kicker">08 · Restart and consistency</p>
+        <h2 id="recovery-title">Checkpoints and crash recovery</h2>
+        <p>A <strong>checkpoint</strong> is a saved recovery point. PostgreSQL writes changed pages to disk and records the point in WAL. After a crash, the server can start recovery from there instead of checking the entire log. New changes can still be waiting to be saved after a checkpoint.</p>
+        <figure class="diagram-frame">
+          <div class="diagram-scroll" tabindex="0" aria-label="Scrollable checkpoint and recovery flow">
+            <svg class="architecture-diagram" viewBox="0 0 980 235" role="group" aria-labelledby="recovery-svg-title recovery-svg-desc">
+              <title id="recovery-svg-title">Checkpoint and crash recovery flow</title>
+              <desc id="recovery-svg-desc">During normal operation, dirty buffers and WAL accumulate. A checkpoint writes required dirty pages and records a checkpoint location. After a crash, startup locates the last valid checkpoint and replays subsequent WAL records to redo changes.</desc>
+              <defs><marker id="recovery-arrow" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto"><path d="M0 0 8 4 0 8Z" fill="#a1b394"></path></marker><marker id="recovery-arrow-wal" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto"><path d="M0 0 8 4 0 8Z" fill="#e5bd78"></path></marker></defs>
+              <g class="node" role="button" tabindex="0" data-component="Dirty buffers" data-target="#memory"><rect x="25" y="70" width="170" height="75" rx="6"></rect><text x="110" y="99">Dirty buffers</text><text class="subtext" x="110" y="121">changed pages in memory</text></g>
+              <g class="node" role="button" tabindex="0" data-component="Checkpoint" data-target="#recovery"><rect x="270" y="70" width="170" height="75" rx="6"></rect><text x="355" y="99">Checkpoint</text><text class="subtext" x="355" y="121">write pages · record LSN</text></g>
+              <g class="node" role="button" tabindex="0" data-component="WAL segments" data-target="#component-wal-files"><rect x="515" y="70" width="175" height="75" rx="6"></rect><text x="602" y="99">WAL after checkpoint</text><text class="subtext" x="602" y="121">ordered change records</text></g>
+              <g class="node" role="button" tabindex="0" data-component="Crash recovery" data-target="#recovery"><rect x="765" y="70" width="180" height="75" rx="6"></rect><text x="855" y="99">Startup recovery</text><text class="subtext" x="855" y="121">redo WAL · open service</text></g>
+              <path class="flow" marker-end="url(#recovery-arrow)" d="M195 107H262"></path><text class="flow-label" x="228" y="94">checkpoint work</text>
+              <path class="flow wal" marker-end="url(#recovery-arrow-wal)" d="M440 107H507"></path><text class="flow-label" x="473" y="94">WAL continues</text>
+              <path class="flow wal" marker-end="url(#recovery-arrow-wal)" d="M690 107H757"></path><text class="flow-label" x="723" y="94">failure → replay</text>
+              <text class="flow-label" x="355" y="183">data pages + checkpoint record are persisted</text>
+              <text class="flow-label" x="855" y="183">uncommitted effects are not exposed as committed</text>
+            </svg>
+          </div>
+          <figcaption class="diagram-caption">Recovery uses WAL and transaction state to bring data files to a consistent state. Checkpoints reduce recovery work; WAL records remain essential between checkpoints.</figcaption>
+        </figure>
+        <ol>
+          <li>During normal operation, backends modify buffers and WAL records accumulate.</li>
+          <li>The checkpointer writes dirty pages required for a checkpoint and records checkpoint information in WAL. The background writer can write pages earlier but does not replace checkpointing.</li>
+          <li>After a crash, PostgreSQL locates the last valid checkpoint and replays relevant WAL forward to redo changes that may not yet be reflected in data files.</li>
+          <li>Transaction state determines which transactions committed. Crash recovery is not equivalent to replaying arbitrary application SQL.</li>
+        </ol>
+        <div class="explanation-grid">
+          <div class="explanation" data-kind="plain"><h4>Non-technical</h4><p>A checkpoint is a known, documented filing point. If the workshop loses power, staff start there and replay the later journal rather than reconstructing the entire history.</p></div>
+          <div class="explanation" data-kind="technical"><h4>Technical</h4><p>Checkpoint processing persists dirty buffers needed for the checkpoint and establishes an LSN for recovery. Startup redo replays WAL from the recovery start point; normal commit durability is obtained from WAL flush, not by synchronously checkpointing each transaction.</p></div>
+        </div>
+      </section>
+
+      <section id="vacuum" class="docs-section" aria-labelledby="vacuum-title">
+        <p class="section-kicker">09 · Maintenance</p>
+        <h2 id="vacuum-title">Vacuum and autovacuum</h2>
+        <p>Old row versions take up space after updates and deletes. <strong>VACUUM</strong> finds versions no active query needs and makes their space available for reuse. It usually keeps that space inside the table instead of returning it to the operating system.</p>
+        <h3>Autovacuum lifecycle</h3>
+        <ol>
+          <li>The autovacuum launcher checks which tables need work and starts cleanup workers.</li>
+          <li>A worker reclaims space from old row versions. It can also collect statistics that help PostgreSQL choose how to run queries.</li>
+          <li>PostgreSQL cannot remove an old version while an active query may still need it. Long-running transactions can delay cleanup.</li>
+          <li><code>VACUUM FULL</code> rebuilds a table to make it smaller and return space to the operating system. It takes a stronger lock and needs extra disk space while it runs.</li>
+        </ol>
+        <p><code>ANALYZE</code> collects summary information about table data. PostgreSQL uses it to choose query plans. Autovacuum can run this task too.</p>
+        <div class="note"><strong>Transaction ID safety:</strong> PostgreSQL uses transaction numbers to track changes. These numbers have a limit, so vacuum updates old rows before the numbers can wrap around and become confusing. This work protects correctness.</div>
+        <div class="explanation-grid">
+          <div class="explanation" data-kind="plain"><h4>Non-technical</h4><p>Old editions stay available while someone may still be reading them. Vacuum clears editions nobody can need, tidies the index, and keeps the numbering system from running out of safe identifiers.</p></div>
+          <div class="explanation" data-kind="technical"><h4>Technical</h4><p>VACUUM removes dead tuple versions eligible under the vacuum horizon, updates the visibility map, and supports XID freezing. Autovacuum workers use per-table thresholds and wraparound safeguards. VACUUM FULL rewrites and takes a stronger lock.</p></div>
+        </div>
+      </section>
+
+      <section id="indexes" class="docs-section" aria-labelledby="indexes-title">
+        <p class="section-kicker">10 · Access paths</p>
+        <h2 id="indexes-title">Index architecture</h2>
+        <p>An <strong>index</strong> is a separate lookup structure that can help PostgreSQL find rows without reading the whole table. PostgreSQL decides whether using it is faster. For a small table or a search that matches many rows, reading the whole table may be quicker.</p>
+        <figure class="diagram-frame">
+          <div class="diagram-scroll" tabindex="0" aria-label="Scrollable index scan flow">
+            <svg class="architecture-diagram" viewBox="0 0 900 230" role="group" aria-labelledby="index-svg-title index-svg-desc">
+              <title id="index-svg-title">Planner choice between sequential and index scans</title>
+              <desc id="index-svg-desc">The planner compares a sequential scan of the heap with an index scan that probes an index and fetches candidate heap tuples, choosing a plan based on estimated costs and statistics.</desc>
+              <defs><marker id="index-arrow" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto"><path d="M0 0 8 4 0 8Z" fill="#a1b394"></path></marker></defs>
+              <g class="node" role="button" tabindex="0" data-component="Planner / Optimizer" data-target="#query-processing"><rect x="40" y="72" width="170" height="75" rx="6"></rect><text x="125" y="101">Planner</text><text class="subtext" x="125" y="123">estimate costs</text></g>
+              <g class="node" role="button" tabindex="0" data-component="Sequential scan" data-target="#query-processing"><rect x="340" y="26" width="210" height="72" rx="6"></rect><text x="445" y="55">Sequential scan</text><text class="subtext" x="445" y="77">read heap pages</text></g>
+              <g class="node" role="button" tabindex="0" data-component="Index scan" data-target="#query-processing"><rect x="340" y="132" width="210" height="72" rx="6"></rect><text x="445" y="161">Index scan</text><text class="subtext" x="445" y="183">probe index → heap rows</text></g>
+              <g class="node" role="button" tabindex="0" data-component="Heap relation" data-target="#storage"><rect x="665" y="72" width="190" height="75" rx="6"></rect><text x="760" y="101">Heap relation</text><text class="subtext" x="760" y="123">visible tuple versions</text></g>
+              <path class="flow" marker-end="url(#index-arrow)" d="M210 96H280V62H332"></path><path class="flow" marker-end="url(#index-arrow)" d="M210 124H280V168H332"></path>
+              <path class="flow" marker-end="url(#index-arrow)" d="M550 62H657"></path><path class="flow" marker-end="url(#index-arrow)" d="M550 168H657"></path>
+              <text class="flow-label" x="279" y="48">candidate A</text><text class="flow-label" x="279" y="157">candidate B</text>
+            </svg>
+          </div>
+          <figcaption class="diagram-caption">An index often points PostgreSQL to the table page that holds a row. In some cases, PostgreSQL can answer directly from the index.</figcaption>
+        </figure>
+        <div class="docs-table-wrap">
+          <table class="docs-table">
+            <thead><tr><th>Access method</th><th>Useful shape</th><th>Key trade-off</th></tr></thead>
+            <tbody>
+              <tr><td>B-tree</td><td>Equality, ranges, and ordered retrieval</td><td>General-purpose default; requires maintenance and storage</td></tr>
+              <tr><td>Hash</td><td>Equality comparisons</td><td>Does not provide ordered range access</td></tr>
+              <tr><td>GIN</td><td>Values with multiple components, such as arrays and some full-text workloads</td><td>Can be large and relatively costly to update</td></tr>
+              <tr><td>GiST / SP-GiST</td><td>Operator-class-defined searches, including spatial and nearest-neighbor use cases</td><td>Behavior depends on the selected operator class</td></tr>
+              <tr><td>BRIN</td><td>Summaries of block ranges, especially when values correlate with physical order</td><td>Compact, but less precise and may return more candidate pages</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <p>Indexes can speed up searches, but they use extra storage and must be updated whenever data changes. Add indexes based on queries your application runs, then check their effect with <code>EXPLAIN (ANALYZE, BUFFERS)</code>.</p>
+        <div class="explanation-grid">
+          <div class="explanation" data-kind="plain"><h4>Non-technical</h4><p>An index is like a book's index: it points to likely pages, but for a broad search it can be faster to scan the whole book. Every extra index also makes updates and storage more expensive.</p></div>
+          <div class="explanation" data-kind="technical"><h4>Technical</h4><p>Access methods implement operator-class-specific search semantics. The planner compares estimated sequential, index, bitmap, and other paths; the executor performs the selected scan and applies MVCC visibility checks.</p></div>
+        </div>
+      </section>
+
+      <section id="replication" class="docs-section" aria-labelledby="replication-title">
+        <p class="section-kicker">11 · High availability</p>
+        <h2 id="replication-title">Replication architecture</h2>
+        <p><strong>Replication</strong> keeps another PostgreSQL server up to date. The main server (primary) sends its change log to a second server (standby), which applies those changes to its own data. This can support recovery or help serve read requests.</p>
+        <figure class="diagram-frame">
+          <div class="diagram-scroll" tabindex="0" aria-label="Scrollable primary and standby replication diagram">
+            <svg class="architecture-diagram" viewBox="0 0 940 285" role="group" aria-labelledby="replication-svg-title replication-svg-desc">
+              <title id="replication-svg-title">PostgreSQL primary and standby WAL replication</title>
+              <desc id="replication-svg-desc">Client writes go to a primary backend. The primary produces WAL, which a WAL sender streams to a standby WAL receiver. The standby replays WAL against its local data files and can serve read-only queries when configured.</desc>
+              <defs><marker id="repl-arrow" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto"><path d="M0 0 8 4 0 8Z" fill="#a1b394"></path></marker><marker id="repl-arrow-wal" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto"><path d="M0 0 8 4 0 8Z" fill="#e5bd78"></path></marker></defs>
+              <rect class="zone" x="20" y="34" width="410" height="220" rx="8"></rect><text class="zone-label" x="42" y="62">PRIMARY</text>
+              <rect class="zone" x="510" y="34" width="410" height="220" rx="8"></rect><text class="zone-label" x="532" y="62">STANDBY</text>
+              <g class="node" role="button" tabindex="0" data-component="Primary backend" data-target="#processes"><rect x="48" y="92" width="150" height="70" rx="6"></rect><text x="123" y="121">Backend</text><text class="subtext" x="123" y="143">application writes</text></g>
+              <g class="node" role="button" tabindex="0" data-component="Primary WAL sender" data-target="#replication"><rect x="250" y="92" width="145" height="70" rx="6"></rect><text x="322" y="121">WAL sender</text><text class="subtext" x="322" y="143">stream changes</text></g>
+              <g class="node" role="button" tabindex="0" data-component="Standby WAL receiver" data-target="#replication"><rect x="545" y="92" width="145" height="70" rx="6"></rect><text x="617" y="121">WAL receiver</text><text class="subtext" x="617" y="143">receive WAL</text></g>
+              <g class="node" role="button" tabindex="0" data-component="Standby replay" data-target="#replication"><rect x="735" y="92" width="155" height="70" rx="6"></rect><text x="812" y="121">WAL replay</text><text class="subtext" x="812" y="143">standby data files</text></g>
+              <path class="flow wal" marker-end="url(#repl-arrow-wal)" d="M198 127H242"></path><text class="flow-label" x="220" y="115">WAL</text>
+              <path class="flow wal" marker-end="url(#repl-arrow-wal)" d="M395 127H537"></path><text class="flow-label" x="466" y="115">streaming replication</text>
+              <path class="flow" marker-end="url(#repl-arrow)" d="M690 127H727"></path>
+              <text class="flow-label" x="617" y="197">read-only queries may use standby</text>
+              <text class="flow-label" x="322" y="197">replication slot may retain required WAL</text>
+            </svg>
+          </div>
+          <figcaption class="diagram-caption">Replication slots prevent removal of WAL still needed by a consumer, but a stalled consumer can cause WAL retention and disk pressure.</figcaption>
+        </figure>
+        <div class="docs-table-wrap">
+          <table class="docs-table">
+            <thead><tr><th>Mode</th><th>What is sent</th><th>Common use</th></tr></thead>
+            <tbody>
+              <tr><td>Physical streaming</td><td>WAL for physical changes to the cluster</td><td>Standby servers, failover, read scaling</td></tr>
+              <tr><td>WAL archiving</td><td>Completed WAL segment files</td><td>Point-in-time recovery and delayed standby recovery</td></tr>
+              <tr><td>Logical replication</td><td>Decoded row changes for publications and subscriptions</td><td>Selective table replication, integrations, and some upgrade workflows</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <p>Logical replication is distinct from physical replication: it publishes logical changes for selected tables and replays them into subscriber tables. It does not automatically replicate all database objects or DDL. Plan schema changes and sequence state separately. Replication slots and synchronous replication settings have operational consequences for retention, latency, and availability.</p>
+        <div class="explanation-grid">
+          <div class="explanation" data-kind="plain"><h4>Plain English</h4><p>The primary sends its change log to a second server. The second server applies those changes to keep its copy up to date.</p></div>
+          <div class="explanation" data-kind="technical"><h4>Technical</h4><p>Physical streaming transports WAL from primary walsender to standby walreceiver and replays it. Logical replication decodes WAL into row-level changes selected by publications and applied by subscriptions; its scope and guarantees differ.</p></div>
+        </div>
+      </section>
+
+      <section id="request-trace" class="docs-section" aria-labelledby="request-title">
+        <p class="section-kicker">12 · Full system trace</p>
+        <h2 id="request-title">A FastAPI write, end to end</h2>
+        <p>Here is what happens when an application adds a user and saves the change:</p>
+        <pre><code>BEGIN;
+INSERT INTO users (username) VALUES ('Sami');
+COMMIT;</code></pre>
+        <figure class="diagram-frame">
+          <div class="diagram-scroll" tabindex="0" aria-label="Scrollable end-to-end PostgreSQL write request">
+            <svg class="architecture-diagram" viewBox="0 0 1020 230" role="group" aria-labelledby="trace-svg-title trace-svg-desc">
+              <title id="trace-svg-title">FastAPI insert and PostgreSQL commit flow</title>
+              <desc id="trace-svg-desc">FastAPI sends an INSERT over a pooled connection to its PostgreSQL backend. The backend parses and executes it, modifies shared buffers and generates WAL. PostgreSQL flushes required WAL before acknowledging a durable commit; the changed relation page may be written later. The response returns to FastAPI.</desc>
+              <defs><marker id="trace-arrow" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto"><path d="M0 0 8 4 0 8Z" fill="#a1b394"></path></marker><marker id="trace-arrow-wal" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto"><path d="M0 0 8 4 0 8Z" fill="#e5bd78"></path></marker></defs>
+              <g class="node" role="button" tabindex="0" data-component="FastAPI application" data-target="#client-server"><rect x="18" y="70" width="140" height="78" rx="6"></rect><text x="88" y="100">FastAPI</text><text class="subtext" x="88" y="122">parameterized INSERT</text></g>
+              <g class="node" role="button" tabindex="0" data-component="PostgreSQL backend" data-target="#processes"><rect x="198" y="70" width="145" height="78" rx="6"></rect><text x="270" y="100">Backend</text><text class="subtext" x="270" y="122">session process</text></g>
+              <g class="node" role="button" tabindex="0" data-component="Query executor" data-target="#query-processing"><rect x="383" y="70" width="145" height="78" rx="6"></rect><text x="455" y="100">Executor</text><text class="subtext" x="455" y="122">insert · constraints</text></g>
+              <g class="node" role="button" tabindex="0" data-component="Shared Buffers" data-target="#component-shared-buffers"><rect x="568" y="70" width="145" height="78" rx="6"></rect><text x="640" y="100">Shared buffers</text><text class="subtext" x="640" y="122">dirty heap / index</text></g>
+              <g class="node" role="button" tabindex="0" data-component="WAL segments" data-target="#wal"><rect x="753" y="34" width="145" height="78" rx="6"></rect><text x="825" y="64">WAL flush</text><text class="subtext" x="825" y="86">commit record durable*</text></g>
+              <g class="node" role="button" tabindex="0" data-component="Relation file write" data-target="#storage"><rect x="753" y="144" width="145" height="62" rx="6"></rect><text x="825" y="170">Data page write</text><text class="subtext" x="825" y="190">can happen later</text></g>
+              <g class="node" role="button" tabindex="0" data-component="COMMIT response" data-target="#wal"><rect x="930" y="70" width="82" height="78" rx="6"></rect><text x="971" y="100">COMMIT</text><text class="subtext" x="971" y="122">response</text></g>
+              <path class="flow" marker-end="url(#trace-arrow)" d="M158 109H190"></path><path class="flow" marker-end="url(#trace-arrow)" d="M343 109H375"></path><path class="flow" marker-end="url(#trace-arrow)" d="M528 109H560"></path>
+              <path class="flow wal" marker-end="url(#trace-arrow-wal)" d="M713 91H745"></path><path class="flow" marker-end="url(#trace-arrow)" d="M713 127H730V175H745"></path>
+              <path class="flow wal" marker-end="url(#trace-arrow-wal)" d="M898 73H922"></path>
+              <text class="flow-label" x="825" y="130">separate I/O path</text>
+            </svg>
+          </div>
+          <figcaption class="diagram-caption">*Assumes the normal synchronous local-commit durability behavior. Configuration can weaken or extend the commit wait; verify the deployed settings and storage guarantees.</figcaption>
+        </figure>
+        <ol>
+          <li><strong>Connection:</strong> FastAPI gets a connection from its pool. PostgreSQL has a backend process ready to handle that connection.</li>
+          <li><strong>Check the request:</strong> The driver sends the query and its values. PostgreSQL checks the query and plans how to add the row.</li>
+          <li><strong>Add the row:</strong> PostgreSQL updates the table and any indexes it needs. It keeps these changes in shared memory first.</li>
+          <li><strong>Record the change:</strong> PostgreSQL adds details to WAL, its recovery log.</li>
+          <li><strong>Save the transaction:</strong> With the usual settings, PostgreSQL writes the required log records to durable storage before it confirms COMMIT. It does not have to write the table page at this point.</li>
+          <li><strong>Reply:</strong> PostgreSQL tells FastAPI that the save succeeded. It can write the changed table and index pages later. If the server crashes first, it uses WAL to restore the confirmed change.</li>
+        </ol>
+        <div class="caution"><strong>Durability boundary:</strong> <code>synchronous_commit = off</code> can acknowledge a transaction before its WAL is flushed, so a recent acknowledged transaction can be lost after an operating-system crash. Synchronous replication settings may add a standby acknowledgement to the commit wait. Neither mode means the changed data page must be flushed at commit.</div>
+        <div class="explanation-grid">
+          <div class="explanation" data-kind="plain"><h4>Plain English</h4><p>FastAPI sends the request to PostgreSQL. PostgreSQL records the change in its log and confirms it. It can save the table page later, because the log can restore the change if the server stops.</p></div>
+          <div class="explanation" data-kind="technical"><h4>Technical</h4><p>The backend executes the INSERT, dirties heap/index buffers, and emits WAL. Under normal synchronous local commit, it flushes WAL through the commit record before acknowledging; relation pages can remain dirty until later background/checkpoint I/O. Recovery redoes logged changes.</p></div>
+        </div>
+      </section>
+
+      <section id="reference" class="docs-section" aria-labelledby="reference-title">
+        <p class="section-kicker">13 · At a glance</p>
+        <h2 id="reference-title">Quick reference</h2>
+        <h3>Component comparison</h3>
+        <div class="docs-table-wrap">
+          <table class="docs-table">
+            <thead><tr><th>Component</th><th>Main responsibility</th><th>Shared or persistent?</th></tr></thead>
+            <tbody>
+              <tr><td>Postmaster</td><td>Supervise the instance and start connection backends</td><td>Operating-system process</td></tr>
+              <tr><td>Backend</td><td>Serve one client session and execute its commands</td><td>Process with private memory and shared-memory access</td></tr>
+              <tr><td>Shared buffers</td><td>Cache relation pages and hold dirty page changes</td><td>Shared memory</td></tr>
+              <tr><td>WAL buffers</td><td>Stage change records before WAL writes</td><td>Shared memory</td></tr>
+              <tr><td>WAL segments</td><td>Record ordered changes for redo and replication</td><td>Persistent log files</td></tr>
+              <tr><td>Heap / index files</td><td>Store tuples and access-method structures</td><td>Persistent relation files</td></tr>
+              <tr><td>Checkpointer</td><td>Establish a recovery checkpoint and write required dirty buffers</td><td>Background process</td></tr>
+              <tr><td>Autovacuum</td><td>Reclaim eligible dead tuples, refresh statistics, prevent XID wraparound</td><td>Launcher and worker processes</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <h3>Terminology</h3>
+        <dl class="glossary">
+          <div><dt>Backend</dt><dd>A PostgreSQL worker process that handles one client connection.</dd></div>
+          <div><dt>Cluster</dt><dd>The data directory and databases managed by one PostgreSQL server instance.</dd></div>
+          <div><dt>Dirty page</dt><dd>A data page changed in memory but not yet saved to its database file.</dd></div>
+          <div><dt>LSN</dt><dd>A numbered position in PostgreSQL's change log.</dd></div>
+          <div><dt>Snapshot</dt><dd>The set of row changes a query is allowed to see.</dd></div>
+          <div><dt>Tuple</dt><dd>A stored row. PostgreSQL may keep more than one version of a row.</dd></div>
+          <div><dt>WAL</dt><dd>Write-ahead log: the record of changes PostgreSQL can use to recover data.</dd></div>
+          <div><dt>TOAST</dt><dd>A PostgreSQL feature for storing very large values separately from the main table data.</dd></div>
+        </dl>
+        <h3>Key takeaways</h3>
+        <ul>
+          <li>A backend executes work for one client; the postmaster manages connection setup and process supervision.</li>
+          <li>Shared buffers, WAL buffers, and process-local memory have different scopes and purposes.</li>
+          <li>WAL is a recovery log, not a replacement for table and index files.</li>
+          <li>Durable COMMIT normally waits for WAL flush, not for each changed data page to reach its final file.</li>
+          <li>MVCC snapshots explain row visibility; vacuum reclaims obsolete versions when they are safe to remove.</li>
+          <li>The planner chooses a cost-based plan; verify behavior with representative measurements and explain output.</li>
+        </ul>
+        <div class="explanation-grid">
+          <div class="explanation" data-kind="plain"><h4>Non-technical</h4><p>PostgreSQL coordinates workers around shared workspaces, uses a durable journal to recover changes, and keeps older record versions until readers no longer need them.</p></div>
+          <div class="explanation" data-kind="technical"><h4>Technical</h4><p>Process isolation, shared-memory coordination, WAL redo, snapshot visibility, and asynchronous relation-page writes are the core mechanisms connecting query execution to durability and concurrency.</p></div>
+        </div>
+        <p class="source-note">This guide describes PostgreSQL 18 behavior at a conceptual level. Configuration, platform, extensions, workload, and build options can affect operational details. Consult the versioned PostgreSQL documentation for exact behavior.</p>
+      </section>
+    </main>
+
+    <aside class="right-rail" aria-label="Reference sidebar">
+      <section class="rail-block" aria-labelledby="terms-heading">
+        <h2 id="terms-heading" class="rail-heading">Key terminology</h2>
+        <ul class="rail-list">
+          <li><strong>Postmaster</strong> — listens for connections and starts workers</li>
+          <li><strong>Backend</strong> — worker for one client connection</li>
+          <li><strong>WAL</strong> — log of changes used for recovery</li>
+          <li><strong>LSN</strong> — numbered position in the change log</li>
+          <li><strong>Heap</strong> — main storage for table rows</li>
+          <li><strong>Snapshot</strong> — row versions a query can see</li>
+          <li><strong>TOAST</strong> — separate storage for very large values</li>
+        </ul>
+      </section>
+      <section class="rail-block" aria-labelledby="related-heading">
+        <h2 id="related-heading" class="rail-heading">Related components</h2>
+        <div class="rail-related">
+          <a href="#processes">Backends</a><a href="#memory">Buffers</a><a href="#wal">WAL</a><a href="#mvcc">MVCC</a><a href="#vacuum">Vacuum</a><a href="#replication">Replication</a>
+        </div>
+      </section>
+      <section class="rail-block" aria-labelledby="docs-heading">
+        <h2 id="docs-heading" class="rail-heading">PostgreSQL 18 docs</h2>
+        <ul class="rail-list">
+          <li><a href="https://www.postgresql.org/docs/18/tutorial-arch.html" target="_blank" rel="noopener noreferrer">Architectural fundamentals ↗</a></li>
+          <li><a href="https://www.postgresql.org/docs/18/connect-estab.html" target="_blank" rel="noopener noreferrer">Connection establishment ↗</a></li>
+          <li><a href="https://www.postgresql.org/docs/18/query-path.html" target="_blank" rel="noopener noreferrer">Path of a query ↗</a></li>
+          <li><a href="https://www.postgresql.org/docs/18/runtime-config-resource.html" target="_blank" rel="noopener noreferrer">Resource configuration ↗</a></li>
+          <li><a href="https://www.postgresql.org/docs/18/storage.html" target="_blank" rel="noopener noreferrer">Database physical storage ↗</a></li>
+          <li><a href="https://www.postgresql.org/docs/18/wal-intro.html" target="_blank" rel="noopener noreferrer">Write-ahead logging ↗</a></li>
+          <li><a href="https://www.postgresql.org/docs/18/mvcc-intro.html" target="_blank" rel="noopener noreferrer">MVCC introduction ↗</a></li>
+          <li><a href="https://www.postgresql.org/docs/18/ddl-system-columns.html" target="_blank" rel="noopener noreferrer">System columns ↗</a></li>
+          <li><a href="https://www.postgresql.org/docs/18/transaction-iso.html" target="_blank" rel="noopener noreferrer">Transaction isolation ↗</a></li>
+          <li><a href="https://www.postgresql.org/docs/18/routine-vacuuming.html" target="_blank" rel="noopener noreferrer">Routine vacuuming ↗</a></li>
+          <li><a href="https://www.postgresql.org/docs/18/indexes-types.html" target="_blank" rel="noopener noreferrer">Index types ↗</a></li>
+          <li><a href="https://www.postgresql.org/docs/18/warm-standby.html" target="_blank" rel="noopener noreferrer">Warm standby ↗</a></li>
+          <li><a href="https://www.postgresql.org/docs/18/logical-replication.html" target="_blank" rel="noopener noreferrer">Logical replication ↗</a></li>
+          <li><a href="https://www.postgresql.org/docs/18/continuous-archiving.html" target="_blank" rel="noopener noreferrer">Archiving and point-in-time recovery ↗</a></li>
+        </ul>
+      </section>
+      <section class="rail-block" aria-labelledby="related-learning-heading">
+        <h2 id="related-learning-heading" class="rail-heading">Explore further</h2>
+        <ul class="rail-list">
+          <li><a href="../../postgres-roadmap/index.html">PostgreSQL learning roadmap</a></li>
+          <li><a href="../index.html">Architecture Library</a></li>
+        </ul>
+      </section>
+    </aside>
+  </div>
+
+  <footer class="docs-footer">
+    <nav class="editorial-footer" aria-label="Related navigation">
+      <div class="editorial-footer__item">
+        <span class="editorial-footer__label">Go back</span>
+        <a class="editorial-footer__link" href="../index.html"><span class="editorial-footer__arrow" aria-hidden="true">←</span>Architecture Library</a>
+      </div>
+      <div class="editorial-footer__item">
+        <span class="editorial-footer__label">Explore more</span>
+        <a class="editorial-footer__link" href="../../index.html">Roadmap Hub <span class="editorial-footer__arrow" aria-hidden="true">↗</span></a>
+      </div>
+    </nav>
+  </footer>
+  <script src="architecture.js"></script>
+</body>
+</html>

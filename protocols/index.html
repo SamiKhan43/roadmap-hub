@@ -1,0 +1,1654 @@
+
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#0d0f0e">
+<title>Protocols Library — Roadmap Hub</title>
+<meta name="description" content="Understand the protocols that let software systems communicate.">
+
+<style>
+:root {
+  --page: #0d0f0e;
+  --surface: #131814;
+  --raised: #181e19;
+  --line: #29332b;
+  --line2: #3b473c;
+  --text: #f0f2ec;
+  --muted: #aab5aa;
+  --quiet: #7e897f;
+  --accent: #c6f36a;
+  --content: 1160px;
+}
+
+* { box-sizing: border-box; }
+
+html {
+  scroll-behavior: smooth;
+  scroll-padding-top: 132px;
+  background: var(--page);
+}
+
+body {
+  margin: 0;
+  background:
+    linear-gradient(rgba(255,255,255,.016) 1px, transparent 1px),
+    linear-gradient(90deg,rgba(255,255,255,.016) 1px,transparent 1px),
+    var(--page);
+  background-size: 48px 48px;
+  color: var(--text);
+  font: 15px/1.7 Inter, system-ui, sans-serif;
+  letter-spacing: -.012em;
+}
+
+button, input, select { font: inherit; }
+button { cursor: pointer; }
+
+:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 3px;
+}
+
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0,0,0,0);
+  white-space: nowrap;
+  border: 0;
+}
+
+.wrap {
+  width: min(var(--content),calc(100% - 40px));
+  margin-inline: auto;
+}
+
+.top {
+  border-bottom: 1px solid var(--line);
+  background: rgba(13,15,14,.92);
+  position: sticky;
+  top: 0;
+  z-index: 10;
+}
+
+.topin {
+  min-height: 66px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 11px;
+  text-decoration: none;
+  font-size: 13px;
+  font-weight: 650;
+  color: var(--text);
+}
+
+.crumb { color: var(--quiet); }
+
+.brand:hover { color: var(--accent); }
+
+.toplink {
+  font-size: 13px;
+  color: var(--muted);
+  text-decoration: none;
+}
+
+.toplink:hover { color: var(--accent); }
+
+.phase-nav {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  overflow-x: auto;
+  padding: 8px 0 10px;
+  scrollbar-width: thin;
+  scrollbar-color: var(--line2) transparent;
+}
+
+.phase-nav a {
+  flex: 0 0 auto;
+  padding: 5px 9px;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  color: var(--muted);
+  text-decoration: none;
+  font-size: 10px;
+  white-space: nowrap;
+}
+
+.phase-nav a:hover,
+.phase-nav a:focus-visible {
+  border-color: #65764d;
+  color: var(--accent);
+}
+
+.phase-nav .nav-utility { color: var(--text); }
+
+.phase-nav-bottom {
+  margin-bottom: 22px;
+  border-block: 1px solid var(--line);
+  padding-block: 12px;
+}
+
+.hero {
+  padding: 76px 0 54px;
+  max-width: 850px;
+}
+
+.kicker {
+  color: var(--accent);
+  font-size: 11px;
+  font-weight: 750;
+  letter-spacing: .14em;
+  text-transform: uppercase;
+  margin-bottom: 20px;
+}
+
+h1 {
+  font-size: clamp(42px,7vw,76px);
+  line-height: .99;
+  letter-spacing: -.075em;
+  font-weight: 680;
+  margin: 0 0 22px;
+}
+
+h1 span { color: #a5b19f; }
+
+.intro {
+  max-width: 700px;
+  color: var(--muted);
+  font-size: 17px;
+  line-height: 1.8;
+}
+
+.hero-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 26px;
+  color: var(--quiet);
+  font-size: 12px;
+}
+
+.hero-meta span {
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  padding: 5px 10px;
+}
+
+.hero-meta strong { color: var(--text); }
+
+.notice {
+  border: 1px solid var(--line);
+  border-left: 3px solid #a8d75a;
+  background: #141915;
+  padding: 17px 20px;
+  margin: 0 0 42px;
+  color: var(--muted);
+  font-size: 13px;
+}
+
+.notice strong { color: var(--text); }
+
+.request-path {
+  display: grid;
+  grid-template-columns: repeat(2,minmax(0,1fr));
+  gap: 10px;
+  margin-top: 13px;
+}
+
+.request-path div {
+  padding: 11px 13px;
+  background: #0e120f;
+  border: 1px solid var(--line);
+  color: var(--muted);
+  font: 11px/1.7 monospace;
+}
+
+.request-path b { color: var(--accent); }
+
+.notice-note {
+  margin: 12px 0 0;
+  font-size: 11px;
+  color: var(--quiet);
+}
+
+.toolbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 18px;
+  margin-bottom: 18px;
+}
+
+.toolbar h2 {
+  font-size: 25px;
+  letter-spacing: -.055em;
+  margin: 0;
+}
+
+.count {
+  font: 12px monospace;
+  color: var(--quiet);
+  text-align: right;
+}
+
+.controls {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  margin-bottom: 26px;
+}
+
+.search {
+  position: relative;
+  flex: 1;
+  min-width: 260px;
+}
+
+.search input {
+  width: 100%;
+  height: 44px;
+  background: #121713;
+  border: 1px solid #303a32;
+  border-radius: 5px;
+  padding: 0 13px;
+  color: var(--text);
+  font-size: 14px;
+}
+
+.search input::placeholder { color: var(--quiet); }
+
+.filter {
+  height: 42px;
+  background: #121713;
+  border: 1px solid #303a32;
+  border-radius: 5px;
+  color: var(--muted);
+  padding: 0 12px;
+  font-size: 12px;
+}
+
+.reset {
+  min-height: 42px;
+  padding: 0 12px;
+  border: 1px solid var(--line2);
+  border-radius: 5px;
+  background: transparent;
+  color: var(--muted);
+  font-size: 12px;
+}
+
+.reset:hover:not(:disabled) {
+  border-color: var(--accent);
+  color: var(--accent);
+}
+
+.reset:disabled {
+  cursor: default;
+  opacity: .48;
+}
+
+.progress-summary {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  margin: 0 0 8px;
+  color: var(--quiet);
+  font: 11px monospace;
+}
+
+.progressline {
+  height: 3px;
+  background: #263027;
+  margin-bottom: 36px;
+}
+
+.progressline i {
+  display: block;
+  height: 100%;
+  background: var(--accent);
+  width: 0;
+  transition: width .25s;
+}
+
+.phase { margin-bottom: 46px; scroll-margin-top: 132px; }
+
+.phasehead {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 16px;
+  border-bottom: 1px solid var(--line);
+  padding-bottom: 13px;
+  margin-bottom: 15px;
+}
+
+.phase-num {
+  font: 11px monospace;
+  color: var(--accent);
+}
+
+.phase h3 {
+  font-size: 19px;
+  margin: 3px 0 0;
+}
+
+.phase-desc {
+  font-size: 12px;
+  color: var(--quiet);
+  max-width: 450px;
+  text-align: right;
+}
+
+.phase-summary {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 12px;
+}
+
+.phase-progress {
+  color: var(--quiet);
+  font: 10px monospace;
+  white-space: nowrap;
+}
+
+.cards {
+  display: grid;
+  grid-template-columns: repeat(3,minmax(0,1fr));
+  gap: 11px;
+}
+
+.topic {
+  display: flex;
+  flex-direction: column;
+  min-height: 188px;
+  padding: 17px;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 5px;
+  text-align: left;
+  color: var(--text);
+  transition: border-color .16s,background .16s;
+}
+
+.topic:hover {
+  border-color: #65764d;
+  background: #171e17;
+}
+
+.topic-top {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 14px;
+}
+
+.layer {
+  font: 10px monospace;
+  color: var(--accent);
+  text-transform: uppercase;
+}
+
+.done {
+  color: var(--accent);
+  font-size: 11px;
+}
+
+.topic-title {
+  display: block;
+  font-size: 16px;
+  margin: 0 0 8px;
+  font-weight: 650;
+  line-height: 1.4;
+}
+
+.topic-subtitle {
+  display: block;
+  font-size: 12px;
+  color: var(--muted);
+  line-height: 1.65;
+  margin: 0;
+}
+
+.topic-foot {
+  display: flex;
+  justify-content: space-between;
+  margin-top: auto;
+  padding-top: 15px;
+  color: var(--quiet);
+  font-size: 10px;
+}
+
+.topic:focus-visible { outline-offset: 2px; }
+
+.empty {
+  display: none;
+  text-align: center;
+  padding: 50px 12px;
+  color: var(--muted);
+  border: 1px dashed var(--line2);
+}
+
+.empty:not([hidden]) { display: block; }
+
+.storage-status {
+  display: none;
+  margin: 0 0 18px;
+  padding: 10px 13px;
+  border: 1px solid #6f5c34;
+  color: #e7d19c;
+  background: #231d11;
+  font-size: 12px;
+}
+
+.endnote {
+  border-top: 1px solid var(--line);
+  padding: 24px 0 50px;
+  color: var(--quiet);
+  font-size: 12px;
+  display: flex;
+  justify-content: space-between;
+}
+
+.endnote a {
+  color: var(--muted);
+  text-decoration: none;
+}
+
+/* Lesson drawer */
+
+.overlay {
+  position: fixed;
+  inset: 0;
+  background: #000a;
+  z-index: 30;
+  display: none;
+  justify-content: flex-end;
+}
+
+.overlay.open { display: flex; }
+
+.drawer {
+  width: min(760px,100%);
+  height: 100%;
+  overflow: auto;
+  background: #101511;
+  border-left: 1px solid var(--line2);
+  padding-bottom: 50px;
+}
+
+.drawerbar {
+  position: sticky;
+  top: 0;
+  z-index: 2;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 14px 24px;
+  background: #101511ed;
+  border-bottom: 1px solid var(--line);
+}
+
+.drawerbar small {
+  font: 11px monospace;
+  color: var(--quiet);
+}
+
+.close {
+  width: 36px;
+  height: 36px;
+  border: 1px solid var(--line2);
+  background: transparent;
+  color: var(--text);
+  border-radius: 4px;
+}
+
+.lesson {
+  padding: 35px clamp(20px,5vw,48px);
+}
+
+.lesson-kicker {
+  font: 11px monospace;
+  color: var(--accent);
+  text-transform: uppercase;
+}
+
+.lesson h2 {
+  font-size: clamp(32px,5vw,48px);
+  line-height: 1.06;
+  letter-spacing: -.065em;
+  margin: 10px 0 14px;
+}
+
+.lead {
+  font-size: 16px;
+  color: var(--muted);
+  line-height: 1.8;
+  margin-bottom: 26px;
+}
+
+.lesson-section { margin: 29px 0; }
+
+.lesson-section h3 {
+  font-size: 16px;
+  margin: 0 0 10px;
+}
+
+.lesson-section p,
+.lesson-section li {
+  color: #b5beb4;
+  font-size: 13px;
+  line-height: 1.8;
+}
+
+.lesson-section ul { padding-left: 20px; }
+
+.flow {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  flex-wrap: wrap;
+  margin: 14px 0;
+  padding: 16px;
+  background: #0c100d;
+  border: 1px solid var(--line);
+}
+
+.flow span {
+  padding: 8px 10px;
+  border: 1px solid #354036;
+  background: #151c16;
+  color: #dce5d8;
+  font: 11px monospace;
+}
+
+.flow b { color: var(--accent); }
+
+.callout {
+  border-left: 2px solid var(--accent);
+  background: #c6f36a0a;
+  padding: 13px 16px;
+  color: #c3cdbf;
+  font-size: 12px;
+  line-height: 1.8;
+}
+
+.mistakes {
+  border: 1px solid var(--line);
+  padding: 14px 16px;
+  border-radius: 4px;
+}
+
+.markrow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+  border-top: 1px solid var(--line);
+  padding-top: 22px;
+  margin-top: 34px;
+}
+
+.markbtn {
+  border: 1px solid #65764d;
+  background: var(--accent);
+  color: #17200b;
+  border-radius: 4px;
+  padding: 10px 14px;
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.markbtn:hover { background: #d7ff83; }
+
+@media(max-width:850px) {
+  .cards { grid-template-columns: repeat(2,minmax(0,1fr)); }
+}
+
+@media(max-width:560px) {
+  .wrap { width: calc(100% - 30px); }
+  .hero { padding: 52px 0 38px; }
+  h1 { font-size: clamp(40px,12vw,60px); }
+  .request-path { grid-template-columns: 1fr; }
+  .cards { grid-template-columns: 1fr; }
+  .topic { min-height: 155px; }
+  .phasehead {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+  .phase-desc { text-align: left; }
+  .phase-summary { align-items: flex-start; flex-direction: column; gap: 2px; }
+  .controls { flex-direction: column; }
+  .search { width: 100%; }
+  .filter { width: 100%; }
+  .reset { width: 100%; }
+  .toolbar { align-items: flex-end; }
+  .count { max-width: 120px; }
+  .markrow { align-items: flex-start; flex-direction: column; }
+  .drawerbar { padding-inline: 16px; }
+  .endnote { flex-direction: column; }
+}
+
+@media(prefers-reduced-motion:reduce) {
+  *,*::before,*::after {
+    scroll-behavior: auto !important;
+    transition: none !important;
+  }
+}
+</style>
+</head>
+
+<body>
+
+<header class="top">
+  <div class="wrap topin" id="top">
+    <a class="brand" href="../">
+      ROADMAP HUB <span class="crumb">/ PROTOCOLS</span>
+    </a>
+    <a class="toplink" href="../">← Back to library</a>
+  </div>
+  <nav class="wrap phase-nav" id="phase-nav-top" aria-label="Protocol roadmap sections"></nav>
+</header>
+
+<main class="wrap">
+
+<section class="hero">
+  <p class="kicker">A systems communication library</p>
+
+  <h1>
+    Protocols.<br>
+    <span>Understand the conversation.</span>
+  </h1>
+
+  <p class="intro">
+    Software systems communicate through agreed rules:
+    how messages are framed, addressed, delivered, secured,
+    acknowledged and recovered when things go wrong.
+    This library explains those rules and the machinery behind them.
+  </p>
+
+  <div class="hero-meta">
+    <span><strong id="topic-total">0</strong> protocol notes</span>
+    <span id="progress-summary">0 / 0 completed</span>
+    <span>Saved in this browser</span>
+  </div>
+</section>
+
+<div class="notice">
+  <strong>Follow a web request through the stack.</strong>
+  DNS usually resolves the name first; then the connection takes one of two common paths:
+  <div class="request-path" aria-label="Common web request protocol paths">
+    <div><b>HTTP/1.1 or HTTP/2</b> → TCP → TLS → IP → link</div>
+    <div><b>HTTP/3</b> → QUIC (with TLS 1.3) → UDP → IP → link</div>
+  </div>
+  <p class="notice-note">These are simplified paths; DNS, proxies, caches and network configuration can change the exact exchange.</p>
+</div>
+
+<section id="library">
+
+  <div class="toolbar">
+    <div>
+      <p class="kicker">THE REFERENCE MAP</p>
+      <h2>Explore protocols</h2>
+    </div>
+    <span class="count" id="count" aria-live="polite"></span>
+  </div>
+
+  <div class="controls">
+    <label class="search">
+      <span class="sr-only">Search protocols</span>
+      <input
+        id="search"
+        type="search"
+        placeholder="Search by name, layer, or concept…"
+      >
+    </label>
+
+    <select id="layer-filter" class="filter" aria-label="Filter by layer">
+      <option value="all">All layers</option>
+      <option value="foundation">Foundations</option>
+      <option value="link">Link</option>
+      <option value="network">Network</option>
+      <option value="transport">Transport</option>
+      <option value="application">Application</option>
+      <option value="security">Security & identity</option>
+      <option value="messaging">Messaging & infrastructure</option>
+    </select>
+
+    <select id="status-filter" class="filter" aria-label="Filter completion">
+      <option value="all">All topics</option>
+      <option value="todo">Not completed</option>
+      <option value="done">Completed</option>
+    </select>
+
+    <button class="reset" id="reset-filters" type="button" disabled>
+      Reset filters
+    </button>
+  </div>
+
+  <p class="progress-summary" id="progress">
+    <span>Overall learning progress</span>
+    <span id="completed-count">0 of 0 complete</span>
+  </p>
+  <div
+    class="progressline"
+    role="progressbar"
+    aria-label="Overall protocol topics completed"
+    aria-valuemin="0"
+    aria-valuemax="100"
+    aria-valuenow="0"
+    id="overall-progress"
+  >
+    <i id="progress-fill"></i>
+  </div>
+
+  <div id="phases"></div>
+
+  <p class="empty" id="empty">
+    No topics match those filters.
+    <button class="reset" id="empty-reset" type="button">Clear filters and show all topics</button>
+  </p>
+
+  <p class="storage-status" id="storage-status" role="status"></p>
+</section>
+
+</main>
+
+<nav class="wrap phase-nav phase-nav-bottom" id="phase-nav-bottom" aria-label="Protocol roadmap sections"></nav>
+
+<footer class="wrap endnote">
+  <span>Roadmap Hub · Protocols Library</span>
+  <a href="../">Return to Roadmap Hub ↗</a>
+</footer>
+
+<div class="overlay" id="overlay" aria-hidden="true">
+  <section
+    class="drawer"
+    role="dialog"
+    aria-modal="true"
+    aria-labelledby="lesson-title"
+    tabindex="-1"
+  >
+    <div class="drawerbar">
+      <small id="lesson-position">PROTOCOL NOTE</small>
+      <button class="close" id="close" type="button" aria-label="Close lesson">
+        ✕
+      </button>
+    </div>
+
+    <article class="lesson" id="lesson-content"></article>
+  </section>
+</div>
+
+<script>
+const groups = [
+
+{
+  key: "foundation",
+  number: "01",
+  title: "Foundations of communication",
+  desc: "The shared concepts needed to reason about every protocol.",
+  items: [
+
+    [
+      "Protocol",
+      "The contract between communicating systems",
+      "A protocol is a set of rules that lets independent participants interpret each other's messages. It defines syntax, meaning, ordering, state transitions and expected behavior when something goes wrong.",
+      "A protocol is more than a message format. Two systems also need shared rules for when a message is valid, what response follows, and how each side knows the exchange is complete.",
+      "Sender and receiver agree on a protocol → sender constructs a valid message → receiver interprets it → both follow the defined next state.",
+      "Participants; message grammar; semantics; state machine; sequencing; error handling; versioning and extension points.",
+      "A protocol is not the same thing as a library or an API. A library is code; an API is an interface; a protocol is the communication agreement that implementations follow.",
+      "Different implementations can interoperate because the protocol—not the vendor's code—defines the behavior."
+    ],
+
+    [
+      "Layering and encapsulation",
+      "How one protocol carries another",
+      "Networking is divided into layers so each layer can solve a narrower problem. A higher layer hands data to a lower layer; the lower layer wraps it with its own control information.",
+      "Encapsulation means adding a header (and sometimes a trailer) around the data received from the layer above. Each layer interprets its own header and treats the rest as payload.",
+      "Application data → transport segment/datagram → IP packet → link frame → physical signals.",
+      "Service boundaries; headers; payloads; encapsulation; decapsulation; MTU; protocol layering.",
+      "TCP does not put an Ethernet frame inside HTTP. Each layer encapsulates the data from the layer above it.",
+      "Layering enables independent evolution, but headers and boundaries add overhead."
+    ],
+
+    [
+      "Addressing, naming and ports",
+      "Finding the right machine and process",
+      "Communication needs several kinds of identifiers. Names are convenient for people, network addresses help route packets, and transport ports identify an application endpoint on a host.",
+      "A hostname can resolve to an IP address. The IP address gets a packet toward a host; a TCP or UDP port helps the host's transport layer deliver data to the right socket.",
+      "Hostname → DNS lookup → IP address → destination IP + port → operating system socket.",
+      "Names vs addresses; IPv4/IPv6; ports; sockets; endpoints; ephemeral ports; NAT.",
+      "A port is not a physical connector, and a domain name is not an IP address.",
+      "One name can map to multiple addresses, and one address can host many services."
+    ],
+
+    [
+      "Client-server and peer-to-peer",
+      "Who initiates and who provides a service",
+      "Client-server describes roles in an exchange: a client requests a service and a server provides it. Peer-to-peer systems allow participants to act as both consumers and providers.",
+      "The role is defined by the interaction, not necessarily by the machine. A server process listens for requests; a client initiates a connection or sends a request.",
+      "Client → request → server; server → response → client.",
+      "Listening sockets; request/response; discovery; central coordination; peer roles; topology.",
+      "A server is software/process behavior, not automatically a separate physical computer.",
+      "Centralized coordination simplifies control; peer-to-peer can distribute load but makes discovery and consistency harder."
+    ]
+  ]
+},
+
+{
+  key: "link",
+  number: "02",
+  title: "Local network and link protocols",
+  desc: "How devices share a local medium and deliver frames across one link.",
+  items: [
+
+    [
+      "Ethernet",
+      "Frames on a wired local network",
+      "Ethernet defines link-layer framing and media access for wired LANs. A frame carries source and destination MAC addresses plus a payload and error-detection information.",
+      "The network interface places an Ethernet frame onto a local link. A switch learns which MAC addresses are reachable on which ports and forwards known unicast frames toward the appropriate port.",
+      "IP packet → Ethernet frame → switch forwarding by destination MAC → receiving network interface.",
+      "MAC addresses; frame boundaries; EtherType; FCS; switching; broadcast domain; MTU.",
+      "Ethernet MAC addresses are link-local delivery identifiers. Routers do not forward an Ethernet frame unchanged across the internet.",
+      "Ethernet provides delivery over a local link, not end-to-end delivery across multiple networks."
+    ],
+
+    [
+      "Wi-Fi (IEEE 802.11)",
+      "Wireless local networking",
+      "Wi-Fi specifies how devices communicate over shared radio channels. Because several devices contend for the same medium, stations coordinate access and acknowledge many unicast frames.",
+      "A station listens before transmitting and uses contention/backoff rules to reduce collisions. The receiver can acknowledge a frame at the link layer.",
+      "Station waits for medium → contends → transmits frame → receiver acknowledges.",
+      "Access points; association; channels; contention; acknowledgements; retransmission; roaming.",
+      "Wi-Fi encryption and association do not replace application security or TLS.",
+      "Radio interference, distance, congestion and roaming affect link performance."
+    ],
+
+    [
+      "ARP and Neighbor Discovery",
+      "Resolving a local next-hop address",
+      "IP identifies destinations logically, but a local link needs a link-layer destination. ARP resolves IPv4 addresses to link-layer addresses. IPv6 uses Neighbor Discovery.",
+      "A host checks its neighbor cache. If no mapping exists, it sends a local request; the device owning the target address replies.",
+      "Check neighbor cache → ARP request → target replies with MAC → cache mapping → send frame.",
+      "Neighbor cache; broadcast; ARP request/reply; NDP; router solicitation/advertisement; address resolution.",
+      "ARP does not discover a remote server's MAC address. For off-subnet traffic, the host resolves the MAC address of its next-hop router.",
+      "Address resolution is local to a link; the destination IP remains the remote host's IP."
+    ],
+
+    [
+      "VLAN and 802.1Q",
+      "Separating logical networks on shared switches",
+      "A VLAN creates a logical Layer 2 broadcast domain. 802.1Q adds a VLAN tag to Ethernet frames on trunk links.",
+      "Access ports usually associate untagged device traffic with one VLAN. Trunk ports carry tagged frames for multiple VLANs.",
+      "Device → access port VLAN → tagged trunk → destination VLAN access port.",
+      "VLAN ID; access vs trunk; tagging; broadcast domains; inter-VLAN routing.",
+      "A VLAN is not encryption and does not automatically provide a strong security boundary.",
+      "Logical segmentation reduces broadcast scope, but routing and access-control policy still matter."
+    ]
+  ]
+},
+
+{
+  key: "network",
+  number: "03",
+  title: "Network and routing protocols",
+  desc: "How packets are addressed and moved between different networks.",
+  items: [
+
+    [
+      "IP (IPv4 and IPv6)",
+      "Best-effort packet delivery across networks",
+      "Internet Protocol provides logical addressing and packet forwarding. IP is connectionless and best-effort: it does not promise that packets arrive, arrive once, or arrive in order.",
+      "A host decides whether a destination is on-link or should go to a router. Routers inspect the destination IP and forwarding table, then send the packet toward the next hop.",
+      "Host creates IP packet → local router → next-hop routers → destination network → destination host.",
+      "Source/destination IP; TTL or Hop Limit; fragmentation; routing; subnet; best effort; MTU.",
+      "IP does not establish a reliable conversation. Reliability and ordering, when needed, are handled above IP.",
+      "The destination IP generally stays the same end-to-end, while the link-layer frame is rebuilt at each hop."
+    ],
+
+    [
+      "ICMP and ICMPv6",
+      "Network control and diagnostic messages",
+      "ICMP carries control and error information associated with IP. It helps report conditions such as unreachable destinations and time exceeded.",
+      "When a router cannot forward a packet or its hop limit expires, it may send an ICMP message to the source.",
+      "IP packet encounters condition → router generates ICMP message → message returns to source.",
+      "Echo; destination unreachable; time exceeded; packet-too-big; path MTU discovery; traceroute.",
+      "ICMP is not simply ping. Ping uses one ICMP message type; ICMP also carries important network error feedback.",
+      "Filtering all ICMP can interfere with diagnostics and path MTU discovery."
+    ],
+
+    [
+      "Routing and BGP",
+      "How networks choose paths",
+      "Routing is the process of selecting paths for IP packets. BGP exchanges reachability between autonomous systems and applies policy.",
+      "Routers learn routes, select best paths according to protocol rules and local policy, then install forwarding information.",
+      "Network announces prefix → BGP peers exchange route → route selection → route installed.",
+      "Prefixes; next hop; autonomous systems; AS_PATH; route selection; policy; control plane vs data plane.",
+      "BGP does not choose the fastest path in a simple universal sense. Business policy and routing attributes influence selection.",
+      "The control plane decides where traffic should go; the data plane forwards packets."
+    ],
+
+    [
+      "DHCP",
+      "Automatically configuring hosts",
+      "Dynamic Host Configuration Protocol lets a host obtain configuration such as an IP address, subnet mask, default gateway and DNS resolver.",
+      "A new client commonly uses the DORA exchange: Discover, Offer, Request, Acknowledge.",
+      "DHCP Discover → DHCP Offer → DHCP Request → DHCP ACK.",
+      "Broadcast discovery; leases; scope; options; relay agent; renewal.",
+      "DHCP provides configuration, not name resolution or internet access by itself.",
+      "DHCP relay agents allow clients and servers on different IP subnets to exchange DHCP messages."
+    ],
+
+    [
+      "NAT and PAT",
+      "Translating addresses at network boundaries",
+      "Network Address Translation rewrites IP addressing information as traffic crosses a device. Port Address Translation lets many private hosts share one public IPv4 address.",
+      "The NAT device records a mapping between an internal flow and an external address/port. Return packets are matched against that state.",
+      "Private source IP:port → NAT mapping → public IP:port → response translated back.",
+      "Private address ranges; source NAT; destination NAT; port mapping; connection tracking; hairpin NAT.",
+      "NAT is not the same as a firewall. NAT changes addressing; a firewall applies traffic policy.",
+      "NAT complicates inbound connectivity and peer-to-peer communication."
+    ],
+
+    [
+      "OSPF",
+      "Finding routes inside an IP network",
+      "Open Shortest Path First is a link-state routing protocol used within an autonomous system. Routers exchange link-state information and independently calculate paths using a shared network view.",
+      "Routers discover neighbors, distribute link-state advertisements, build a link-state database and run Dijkstra's shortest-path-first algorithm.",
+      "Discover neighbors → exchange link-state advertisements → build topology database → calculate routes.",
+      "Areas; neighbors; adjacencies; link-state advertisements; cost; designated router; shortest-path tree.",
+      "OSPF is an interior gateway protocol; BGP is commonly used to exchange routes between autonomous systems.",
+      "OSPF reacts to topology changes by recalculating routes within the configured routing domain."
+    ]
+  ]
+},
+
+{
+  key: "transport",
+  number: "04",
+  title: "Transport protocols",
+  desc: "How applications exchange data between process endpoints.",
+  items: [
+
+    [
+      "TCP",
+      "Reliable, ordered byte streams",
+      "TCP provides a reliable, ordered, bidirectional byte stream between endpoints. It uses sequence numbers, acknowledgements, retransmissions, flow control and congestion control.",
+      "A three-way handshake synchronizes sequence numbers. Data is segmented and acknowledged. Missing data is retransmitted.",
+      "SYN → SYN-ACK → ACK → byte stream → connection close.",
+      "Connection state; sequence and acknowledgement numbers; retransmission; receive window; congestion window; slow start.",
+      "TCP is a byte stream, not a message protocol. One write on one side does not necessarily equal one read on the other.",
+      "TCP reliability is between two TCP endpoints. It does not guarantee that an application processed or stored the data."
+    ],
+
+    [
+      "UDP",
+      "Datagrams without a built-in connection",
+      "UDP provides a minimal datagram transport. It preserves message boundaries and includes ports and a checksum, but does not provide TCP-style connection setup, ordering or retransmission.",
+      "An application hands a datagram to UDP. UDP adds a small header and passes it to IP. The receiver uses the destination port to deliver the datagram.",
+      "Application datagram → UDP header → IP → receiving UDP socket.",
+      "Datagram boundaries; ports; checksum; loss; reordering; multicast; application-managed reliability.",
+      "UDP is not inherently faster in every situation and does not guarantee low latency.",
+      "DNS commonly uses UDP, while QUIC uses UDP as a substrate."
+    ],
+
+    [
+      "QUIC",
+      "Modern secure transport over UDP",
+      "QUIC is a secure transport protocol designed to reduce connection setup delay and support independent streams. It integrates TLS 1.3 handshake mechanisms.",
+      "A QUIC endpoint establishes cryptographic and transport state, then multiplexes streams over one connection.",
+      "QUIC Initial packets → TLS 1.3 handshake → encrypted QUIC streams → application data.",
+      "Connection IDs; streams; packet numbers; acknowledgements; congestion control; loss recovery; connection migration.",
+      "QUIC is not simply UDP with encryption. It defines acknowledgements, loss recovery, congestion control and stream multiplexing.",
+      "Connection IDs help a QUIC connection survive some network-path changes."
+    ],
+
+    [
+      "TLS",
+      "Confidentiality, integrity and authentication",
+      "Transport Layer Security protects application communication against eavesdropping and tampering, and can authenticate the server using certificates.",
+      "The peers negotiate parameters and establish shared traffic keys through a handshake. The server proves possession of the private key corresponding to its certificate.",
+      "ClientHello → ServerHello → certificate/authentication → key agreement → Finished → protected records.",
+      "Handshake; certificate chain; hostname verification; key exchange; session resumption; record protection.",
+      "TLS does not prove that a website is honest or that its application is safe.",
+      "Certificate validation is a critical part of server authentication."
+    ]
+  ]
+},
+
+{
+  key: "application",
+  number: "05",
+  title: "Application and web protocols",
+  desc: "The message formats and interaction rules applications use.",
+  items: [
+
+    [
+      "DNS",
+      "Turning names into records",
+      "The Domain Name System is a distributed, hierarchical naming system. It maps names to records such as A, AAAA, MX, NS and TXT.",
+      "A stub resolver asks a recursive resolver. If the answer is not cached, the resolver follows referrals through the DNS hierarchy.",
+      "Application → recursive resolver → root → TLD → authoritative server → answer.",
+      "Stub vs recursive resolver; root/TLD/authoritative; A/AAAA/CNAME/MX/NS/TXT; TTL; negative caching; DNSSEC.",
+      "DNS is not a single central database and a domain does not permanently correspond to one IP address.",
+      "DNS caching improves performance but means record changes may take time to be reflected everywhere."
+    ],
+
+    [
+      "HTTP",
+      "The semantics of web requests and responses",
+      "HTTP is an application-layer request/response protocol. It defines methods, status codes, fields, representations, caching rules and connection behavior.",
+      "A client sends a request with a method, target, fields and optional content. A server or intermediary returns a status, fields and optional content.",
+      "Client request → intermediary → origin response → client interprets result.",
+      "Methods; status codes; fields; content negotiation; caching; conditional requests; redirects; proxies; HTTP/1.1 vs HTTP/2 vs HTTP/3.",
+      "HTTP is not synonymous with REST, and HTTPS means HTTP protected by TLS (or TLS integrated through QUIC for HTTP/3).",
+      "HTTP semantics persist across versions, while framing and transport differ. See the dedicated HTTP roadmap for deeper coverage."
+    ],
+
+    [
+      "WebSocket",
+      "Long-lived, bidirectional application communication",
+      "WebSocket provides a persistent, full-duplex channel between a client and server. The classic opening handshake begins as an HTTP request.",
+      "After the handshake succeeds, both sides can send framed messages independently over the established connection.",
+      "HTTP Upgrade request → 101 Switching Protocols → WebSocket frames → close handshake.",
+      "Handshake; masking; frames; text/binary messages; ping/pong; close codes; origin checks; heartbeat; backpressure.",
+      "WebSocket is not the same as HTTP polling. After the upgrade, application data uses WebSocket framing.",
+      "A persistent connection needs lifecycle handling: reconnects, heartbeats, authentication expiry and slow consumers."
+    ],
+
+    [
+      "SSE (Server-Sent Events)",
+      "One-way event streams from server to browser",
+      "Server-Sent Events let a server send a stream of text events to a browser over an HTTP response.",
+      "The browser opens an HTTP request and keeps the response stream open. The server emits event fields separated by blank lines.",
+      "Browser GET → long-lived text/event-stream response → event chunks → browser handler.",
+      "text/event-stream; data; event; id; retry; Last-Event-ID; reconnection; proxy buffering.",
+      "SSE is not a WebSocket replacement when the client needs to send arbitrary messages over the same channel.",
+      "SSE can be simpler for feeds, status updates and notifications."
+    ],
+
+    [
+      "gRPC",
+      "Typed remote procedure calls",
+      "gRPC is an RPC framework and protocol ecosystem commonly using Protocol Buffers for service definitions and HTTP/2 for transport.",
+      "A client invokes a method defined by a service contract. Protobuf encodes the message; gRPC maps the call onto HTTP/2 streams.",
+      "Generated client method → Protobuf message → HTTP/2 stream → server handler → response.",
+      "Service definitions; Protobuf; metadata; deadlines; status codes; unary; client/server/bidirectional streaming.",
+      "gRPC is not just JSON over HTTP. Its common wire format, code generation and status model differ from typical REST-style APIs.",
+      "Deadlines and cancellation matter: a client timing out does not automatically mean server-side work stopped."
+    ],
+
+    [
+      "SMTP, IMAP and POP3",
+      "How email is sent and retrieved",
+      "Email uses separate protocols for message transfer and mailbox access. SMTP transfers mail; IMAP and POP3 let users access stored messages.",
+      "A sending client submits mail to an outgoing server using SMTP. Mail servers use DNS MX records to find recipient domains.",
+      "Mail client → SMTP submission → sending server → MX lookup → receiving server → mailbox.",
+      "MTA; MUA; MX; SMTP relay; store-and-forward; IMAP folders and sync; POP3 retrieval; STARTTLS.",
+      "SMTP is primarily for sending and relaying mail; IMAP and POP3 are mailbox access protocols.",
+      "Email delivery is asynchronous and store-and-forward."
+    ]
+  ]
+},
+
+{
+  key: "security",
+  number: "06",
+  title: "Security, identity and time",
+  desc: "Protocols and standards that protect traffic, establish identity and coordinate systems.",
+  items: [
+
+    [
+      "SSH",
+      "Secure remote login and tunneling",
+      "Secure Shell provides encrypted remote sessions and related capabilities such as command execution, file transfer and port forwarding.",
+      "The client and server negotiate algorithms, perform key exchange, verify the server host key and authenticate the user.",
+      "Algorithm negotiation → key exchange → host authentication → user authentication → encrypted channels.",
+      "Host keys; known_hosts; public-key authentication; session encryption; channels; port forwarding; SFTP subsystem.",
+      "SSH host authentication is separate from user authentication.",
+      "Host-key verification helps ensure the remote machine is the one the user intended to reach."
+    ],
+
+    [
+      "OAuth 2.0 and OpenID Connect",
+      "Delegated authorization and sign-in",
+      "OAuth 2.0 is an authorization framework for granting limited access to resources. OpenID Connect adds an identity layer for sign-in.",
+      "An application redirects a user to an authorization server. In the Authorization Code flow with PKCE, the client receives a code and exchanges it for tokens.",
+      "Client redirect → user authenticates/consents → authorization code → token exchange → API access.",
+      "Authorization server; resource server; scopes; access token; refresh token; ID Token; PKCE; redirect URI.",
+      "OAuth is not itself an authentication protocol. OIDC is the identity layer built on OAuth 2.0.",
+      "An access token authorizes access to a resource; an ID Token communicates authentication information to the client."
+    ],
+
+    [
+      "Kerberos",
+      "Ticket-based authentication in a trusted realm",
+      "Kerberos lets users and services authenticate using tickets issued by a trusted Key Distribution Center.",
+      "A client obtains a Ticket-Granting Ticket from the Authentication Service, then requests a service ticket from the Ticket-Granting Service.",
+      "Client → Authentication Service → TGT → Ticket-Granting Service → service ticket → application server.",
+      "KDC; realm; principals; TGT; service ticket; authenticators; clock synchronization.",
+      "Kerberos does not mean passwords are never involved; passwords can be used to derive key material for the initial exchange.",
+      "Time synchronization is important because ticket validity and replay protections depend on timestamps."
+    ],
+
+    [
+      "NTP",
+      "Keeping distributed clocks aligned",
+      "Network Time Protocol synchronizes clocks across packet-switched networks. It estimates offset and delay using timestamp exchanges.",
+      "A client exchanges timestamps with a time server. It estimates round-trip delay and clock offset, then adjusts its local clock.",
+      "Client sends timestamp → server timestamps response → client computes offset/delay → clock discipline.",
+      "Stratum; offset; delay; jitter; timestamps; clock drift; leap seconds; authenticated time.",
+      "NTP synchronization is not perfectly exact, and a low stratum number does not automatically mean a server is trustworthy.",
+      "Clock accuracy affects logs, distributed coordination, certificates and authentication."
+    ],
+
+    [
+      "IPsec",
+      "Protecting traffic at the IP layer",
+      "IPsec is a suite of protocols for authenticating and protecting IP traffic. It is often used to build VPNs between hosts or network gateways.",
+      "Peers negotiate security associations, commonly with IKEv2. Encapsulating Security Payload (ESP) can provide confidentiality, integrity and peer authentication.",
+      "IKE negotiation → security association → ESP-protected IP traffic → authenticated peer.",
+      "ESP; Authentication Header; IKEv2; security associations; transport and tunnel modes; pre-shared keys; certificates.",
+      "IPsec is a protocol suite, not a single encryption algorithm; the negotiated algorithms and configuration determine its protections.",
+      "Tunnel mode can protect traffic between gateways without requiring applications to understand the VPN."
+    ]
+  ]
+},
+
+{
+  key: "messaging",
+  number: "07",
+  title: "Messaging and infrastructure protocols",
+  desc: "Patterns for asynchronous work, file transfer and operational visibility.",
+  items: [
+
+    [
+      "AMQP",
+      "Reliable message-oriented middleware",
+      "Advanced Message Queuing Protocol defines a standard model for messaging between applications and brokers.",
+      "A producer publishes a message to an exchange. Bindings and routing rules determine which queues receive it. Consumers receive messages and acknowledge them.",
+      "Producer → exchange → binding/routing key → queue → consumer → acknowledgement.",
+      "Broker; exchange types; bindings; routing keys; queues; delivery tags; acknowledgements; persistence.",
+      "A broker acknowledgement and a consumer acknowledgement mean different things.",
+      "Durability, acknowledgements, retries and dead-letter queues are separate design decisions."
+    ],
+
+    [
+      "MQTT",
+      "Lightweight publish/subscribe messaging",
+      "MQTT is a lightweight publish/subscribe protocol often used for constrained devices and unreliable networks.",
+      "A client establishes a broker connection, then publishes messages to topics. The broker forwards matching messages to subscribers.",
+      "Device/client → MQTT broker → topic match → subscribed clients.",
+      "Broker; topics; wildcards; retained messages; Last Will; QoS 0/1/2; persistent sessions.",
+      "MQTT QoS 2 does not mean a business operation can never happen twice.",
+      "The broker decouples publishers from subscribers."
+    ],
+
+    [
+      "Webhooks",
+      "Event notification through HTTP",
+      "A webhook is an application pattern in which one system sends an HTTP request to another system when an event occurs.",
+      "The event producer constructs a payload and sends it to a configured endpoint. The receiver validates authenticity, records or queues the event, and responds.",
+      "Event occurs → signed HTTP POST → receiver verifies and stores → response → possible retry.",
+      "Delivery attempts; signatures; idempotency keys; replay windows; retries; timeouts; event IDs.",
+      "A webhook is not guaranteed to arrive exactly once. Receivers should expect retries and duplicate event deliveries.",
+      "A robust receiver verifies signatures and handles duplicate event IDs idempotently."
+    ],
+
+    [
+      "FTP, FTPS and SFTP",
+      "Moving files across systems",
+      "FTP is a legacy file-transfer protocol with separate control and data connections. FTPS adds TLS to FTP. SFTP is an SSH subsystem.",
+      "FTP establishes a control connection for commands and negotiates a separate data connection. FTPS protects FTP connections with TLS. SFTP runs file operations over SSH.",
+      "FTP control channel + data channel; FTPS adds TLS; SFTP runs as an SSH subsystem.",
+      "Active/passive mode; control/data channels; TLS; SSH; directory operations; authentication.",
+      "SFTP and FTPS are different protocols. SFTP uses SSH; FTPS is FTP secured with TLS.",
+      "Firewall and NAT behavior differs because classic FTP can open a separate data connection."
+    ],
+
+    [
+      "Syslog",
+      "Transporting system event messages",
+      "Syslog is a standard for conveying event messages from devices and applications to log collectors.",
+      "A process emits a log message to a local agent or remote collector. Syslog can be carried over UDP, TCP or TLS.",
+      "Application/device → syslog agent → transport → collector → indexing/storage.",
+      "Facility; severity; PRI; structured data; UDP/TCP/TLS; relays; timestamps.",
+      "Syslog defines message conventions, but it does not itself guarantee durable storage or successful indexing.",
+      "For reliable centralized logging, transport choice, buffering and collector availability matter."
+    ],
+
+    [
+      "SNMP",
+      "Monitoring and managing network equipment",
+      "Simple Network Management Protocol lets monitoring systems query and receive information from managed devices.",
+      "A manager queries an agent for object identifiers, or an agent sends a trap/inform notification. SNMPv3 adds security features.",
+      "Manager GET → agent reads MIB object → RESPONSE; agent may send TRAP/INFORM.",
+      "Manager; agent; MIB; OID; GET/SET; traps; SNMPv1/v2c/v3; authentication and privacy.",
+      "SNMP is not only for routers; it is used to monitor many kinds of infrastructure devices.",
+      "SNMPv3 is generally preferred where authenticated and private management traffic is required."
+    ]
+  ]
+}
+
+];
+
+const STORAGE_KEY = "rm:protocols:done";
+
+const $ = id => document.getElementById(id);
+
+function slugify(value) {
+  return value
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/^-|-$/g, "");
+}
+
+const all = groups.flatMap(group =>
+  group.items.map((item,index) => ({
+    id: group.key + "-" + slugify(item[0]),
+    legacyId: group.number + "-" + index,
+    group,
+    title: item[0],
+    subtitle: item[1],
+    summary: item[2],
+    mechanism: item[3],
+    flow: item[4],
+    concepts: item[5],
+    misconception: item[6],
+    takeaway: item[7]
+  }))
+);
+
+function escapeHTML(value) {
+  return String(value).replace(/[&<>"']/g, char => ({
+    "&": "&amp;",
+    "<": "&lt;",
+    ">": "&gt;",
+    '"': "&quot;",
+    "'": "&#39;"
+  }[char]));
+}
+
+function setStorageMessage(message) {
+  const status = $("storage-status");
+  status.textContent = message;
+  status.style.display = message ? "block" : "none";
+}
+
+function loadProgress() {
+  try {
+    const saved = localStorage.getItem(STORAGE_KEY);
+
+    if (saved === null) return new Set();
+
+    const values = JSON.parse(saved);
+
+    if (!Array.isArray(values)) {
+      throw new TypeError("Saved progress must be a list.");
+    }
+
+    const ids = new Set(all.map(topic => topic.id));
+    const legacyIds = new Map(all.map(topic => [topic.legacyId,topic.id]));
+    const progress = new Set(values
+      .filter(value => typeof value === "string")
+      .map(value => ids.has(value) ? value : legacyIds.get(value))
+      .filter(value => value !== undefined));
+    const normalized = JSON.stringify([...progress]);
+
+    if (JSON.stringify(values) !== normalized) {
+      try {
+        localStorage.setItem(STORAGE_KEY,normalized);
+      } catch {
+        setStorageMessage(
+          "Progress was loaded, but this browser could not update its saved format."
+        );
+      }
+    }
+
+    return progress;
+  } catch {
+    setStorageMessage(
+      "Progress could not be loaded from this browser. You can keep learning, but changes may not persist."
+    );
+    return new Set();
+  }
+}
+
+let done = loadProgress();
+
+function saveProgress() {
+  try {
+    localStorage.setItem(STORAGE_KEY,JSON.stringify([...done]));
+    setStorageMessage("");
+  } catch {
+    setStorageMessage(
+      "Progress is updated for this visit, but this browser could not save it."
+    );
+  }
+}
+
+function normalizeSearch(value) {
+  return value
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g,"")
+    .toLowerCase();
+}
+
+function render() {
+  const query = normalizeSearch($("search").value.trim());
+  const layer = $("layer-filter").value;
+  const status = $("status-filter").value;
+  const filtering = Boolean(query) || layer !== "all" || status !== "all";
+
+  let shown = 0;
+
+  $("phases").innerHTML = groups.map(group => {
+
+    if (layer !== "all" && group.key !== layer) {
+      return "";
+    }
+
+    const items = group.items
+      .map((item,index) => ({
+        id: group.key + "-" + slugify(item[0]),
+        item
+      }))
+      .filter(({id,item}) => {
+
+        const matchesSearch =
+          normalizeSearch(item.join(" ") + " " + group.title + " " + group.key)
+            .includes(query);
+
+        const matchesStatus =
+          status === "all" ||
+          (status === "done" && done.has(id)) ||
+          (status === "todo" && !done.has(id));
+
+        return matchesSearch && matchesStatus;
+      });
+
+    if (!items.length) return "";
+
+    shown += items.length;
+
+    const completedInGroup = group.items.filter(item =>
+      done.has(group.key + "-" + slugify(item[0]))
+    ).length;
+
+    return `
+      <section class="phase" id="phase-${group.key}">
+        <div class="phasehead">
+          <div>
+            <span class="phase-num">PHASE ${group.number}</span>
+            <h3>${escapeHTML(group.title)}</h3>
+          </div>
+          <div class="phase-summary">
+            <p class="phase-desc">${escapeHTML(group.desc)}</p>
+            <span class="phase-progress">${completedInGroup} / ${group.items.length} read</span>
+          </div>
+        </div>
+
+        <div class="cards">
+          ${items.map(({id,item}) => `
+            <button class="topic" type="button" data-id="${escapeHTML(id)}">
+              <span class="topic-top">
+                <span class="layer">PHASE ${group.number} · ${escapeHTML(group.key)}</span>
+                ${done.has(id) ? '<span class="done">✓ Complete</span>' : ""}
+              </span>
+
+              <span class="topic-title">${escapeHTML(item[0])}</span>
+              <span class="topic-subtitle">${escapeHTML(item[1])}</span>
+
+              <span class="topic-foot">
+                <span>Protocol note</span>
+                <span>Read note ↗</span>
+              </span>
+            </button>
+          `).join("")}
+        </div>
+      </section>
+    `;
+  }).join("");
+
+  $("empty").hidden = shown > 0;
+  $("count").textContent = shown + " of " + all.length + " topics";
+  $("reset-filters").disabled = !filtering;
+  $("reset-filters").hidden = !filtering;
+  $("topic-total").textContent = all.length;
+  $("completed-count").textContent = done.size + " of " + all.length + " complete";
+  $("progress-summary").textContent = done.size + " / " + all.length + " completed";
+
+  const percentage = Math.round(done.size / all.length * 100);
+
+  $("progress-fill").style.width = percentage + "%";
+  $("overall-progress").setAttribute("aria-valuenow", percentage);
+  $("overall-progress").setAttribute(
+    "aria-valuetext",
+    done.size + " of " + all.length + " topics completed"
+  );
+
+  const phaseLinks = `
+    <a class="nav-utility" href="#library">All protocols</a>
+    <a class="nav-utility" href="#progress">Progress</a>
+    ${groups.map(group =>
+      `<a href="#phase-${group.key}">${escapeHTML(group.number)} · ${escapeHTML(group.title)}</a>`
+    ).join("")}
+    <a class="nav-utility" href="#top">Back to top ↑</a>
+  `;
+  $("phase-nav-top").innerHTML = phaseLinks;
+  $("phase-nav-bottom").innerHTML = phaseLinks;
+}
+
+const overlay = $("overlay");
+const drawer = document.querySelector(".drawer");
+let previousFocus = null;
+let previousBodyOverflow = "";
+
+function openLesson(id) {
+  const topic = all.find(item => item.id === id);
+
+  if (!topic) return;
+
+  previousFocus = document.activeElement;
+  previousBodyOverflow = document.body.style.overflow;
+
+  $("lesson-position").textContent =
+    "PHASE " + topic.group.number + " · " +
+    topic.group.title.toUpperCase();
+
+  const flowHTML = topic.flow
+    .split(" → ")
+    .map((part,index) =>
+      (index ? '<b aria-hidden="true">→</b>' : "") +
+      "<span>" + escapeHTML(part) + "</span>"
+    )
+    .join("");
+
+  const conceptsHTML = topic.concepts
+    .split("; ")
+    .map(concept => "<li>" + escapeHTML(concept) + "</li>")
+    .join("");
+
+  $("lesson-content").innerHTML = `
+    <div class="lesson-kicker">
+      ${escapeHTML(topic.group.title)} / PROTOCOL NOTE
+    </div>
+
+    <h2 id="lesson-title">${escapeHTML(topic.title)}</h2>
+
+    <p class="lead" id="lesson-lead">
+      ${escapeHTML(topic.subtitle)}.
+      ${escapeHTML(topic.summary)}
+    </p>
+
+    <section class="lesson-section">
+      <h3>What happens under the hood</h3>
+      <p>${escapeHTML(topic.mechanism)}</p>
+
+      <div class="flow" aria-label="Simplified message flow">
+        ${flowHTML}
+      </div>
+    </section>
+
+    <section class="lesson-section">
+      <h3>Concepts to understand</h3>
+      <ul>${conceptsHTML}</ul>
+    </section>
+
+    <section class="lesson-section mistakes">
+      <strong>Common misconception</strong>
+      <p>${escapeHTML(topic.misconception)}</p>
+    </section>
+
+    <section class="lesson-section">
+      <h3>Why it matters</h3>
+      <div class="callout">
+        ${escapeHTML(topic.takeaway)}
+      </div>
+    </section>
+
+    <div class="markrow">
+      <span>Progress is saved in this browser when storage is available.</span>
+
+      <button
+        class="markbtn"
+        id="mark-done"
+        type="button"
+        aria-pressed="${done.has(id)}"
+      >
+        ${done.has(id) ? "Completed ✓" : "Mark as read"}
+      </button>
+    </div>
+  `;
+
+  overlay.classList.add("open");
+  overlay.setAttribute("aria-hidden","false");
+  document.body.style.overflow = "hidden";
+
+  $("close").focus();
+
+  $("mark-done").addEventListener("click", () => {
+
+    if (done.has(id)) {
+      done.delete(id);
+    } else {
+      done.add(id);
+    }
+
+    saveProgress();
+
+    $("mark-done").setAttribute(
+      "aria-pressed",
+      String(done.has(id))
+    );
+
+    $("mark-done").textContent =
+      done.has(id) ? "Completed ✓" : "Mark as read";
+
+    render();
+  });
+}
+
+function closeLesson() {
+  if (!overlay.classList.contains("open")) return;
+
+  overlay.classList.remove("open");
+  overlay.setAttribute("aria-hidden","true");
+  document.body.style.overflow = previousBodyOverflow;
+
+  if (previousFocus instanceof HTMLElement && previousFocus.isConnected) {
+    previousFocus.focus();
+  } else {
+    $("search").focus();
+  }
+}
+
+$("phases").addEventListener("click", event => {
+  const button = event.target.closest("[data-id]");
+
+  if (button) {
+    openLesson(button.dataset.id);
+  }
+});
+
+$("search").addEventListener("input",render);
+$("layer-filter").addEventListener("change",render);
+$("status-filter").addEventListener("change",render);
+
+$("reset-filters").addEventListener("click",resetFilters);
+$("empty-reset").addEventListener("click",resetFilters);
+
+function resetFilters() {
+  $("search").value = "";
+  $("layer-filter").value = "all";
+  $("status-filter").value = "all";
+  render();
+  $("search").focus();
+}
+
+$("close").addEventListener("click",closeLesson);
+
+overlay.addEventListener("click",event => {
+  if (event.target === overlay) {
+    closeLesson();
+  }
+});
+
+document.addEventListener("keydown",event => {
+
+  if (overlay.classList.contains("open")) {
+    if (event.key === "Escape") {
+      closeLesson();
+      return;
+    }
+
+    if (event.key === "Tab") {
+      const focusable = drawer.querySelectorAll(
+        'button:not([disabled]),a[href],input:not([disabled]),select:not([disabled]),[tabindex]:not([tabindex="-1"])'
+      );
+      const first = focusable[0];
+      const last = focusable[focusable.length - 1];
+
+      if (!drawer.contains(document.activeElement)) {
+        event.preventDefault();
+        (event.shiftKey ? last : first).focus();
+      } else if (event.shiftKey && document.activeElement === first) {
+        event.preventDefault();
+        last.focus();
+      } else if (!event.shiftKey && document.activeElement === last) {
+        event.preventDefault();
+        first.focus();
+      }
+    }
+
+    return;
+  }
+
+  if (
+    event.key === "/" &&
+    !["INPUT","SELECT","TEXTAREA"].includes(
+      document.activeElement.tagName
+    ) &&
+    !document.activeElement.isContentEditable
+  ) {
+    event.preventDefault();
+    $("search").focus();
+  }
+});
+
+render();
+</script>
+
+</body>
+</html>

@@ -79,6 +79,10 @@ The [Setup Guides page](https://samikhan43.github.io/roadmap-hub/setup-guides/) 
 
 To add another guide, add its Markdown file and one metadata entry in `setup-guides/guides.js`. The guide catalog and shared reader use this registry; no generated page or rebuild is needed.
 
+## Architecture Library
+
+The [Architecture Library](https://samikhan43.github.io/roadmap-hub/architecture/) collects in-depth explanations of how developer tools and systems work internally. PostgreSQL 18 is the first guide; its content is being added incrementally.
+
 ---
 
 ## Quick Start
@@ -131,6 +135,11 @@ roadmap-hub/
 │   ├── guides.js         # Shared metadata registry for setup guides
 │   ├── index.html        # Setup guide catalog
 │   └── guide.html        # Shared Markdown guide reader
+├── architecture/
+│   ├── index.html          # Architecture Library catalog
+│   ├── architecture.css    # Shared styles for architecture pages
+│   └── postgresql/
+│       └── index.html      # PostgreSQL 18 architecture guide
 ├── POSTGRESQL_GUIDE.md   # PostgreSQL setup guide
 ├── content/              # Source files for community roadmaps
 │   └── <roadmap>/
