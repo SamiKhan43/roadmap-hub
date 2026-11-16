@@ -1241,3 +1241,37 @@ html[data-explanation-mode="technical"] .explanation[data-kind="plain"] {
     transition-duration: .01ms !important;
   }
 }
+
+
+/* Final UX pass: clearer hierarchy, resilient navigation, and comfortable reading. */
+:where(a, button, summary, input, select, textarea):focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 3px;
+}
+.site-header { z-index: 20; }
+.docs-header { z-index: 20; }
+.page-shell { padding-bottom: clamp(3rem, 7vw, 6rem); }
+.hero { max-width: 820px; }
+.hero-copy { max-width: 70ch; }
+.architecture-card {
+  min-width: 0;
+  transition: border-color .18s ease, background-color .18s ease, transform .18s ease;
+}
+.architecture-card:hover { transform: translateY(-2px); }
+.docs-main { min-width: 0; }
+.docs-section { scroll-margin-top: 5.5rem; }
+.docs-section p, .docs-section li { max-width: 78ch; }
+.docs-section :where(pre, .code-block) { max-width: 100%; overflow-x: auto; }
+.docs-toc a { line-height: 1.45; }
+@media (max-width: 760px) {
+  .site-nav { flex-wrap: wrap; padding: .45rem 0; }
+  .site-nav-links { width: 100%; justify-content: flex-start; overflow-x: auto; flex-wrap: nowrap; padding-bottom: .2rem; }
+  .site-nav-links a { flex: 0 0 auto; }
+  .docs-header-inner { flex-wrap: wrap; padding: .55rem 0; }
+  .docs-breadcrumb { min-width: 0; overflow-x: auto; white-space: nowrap; }
+  .docs-main { overflow-wrap: anywhere; }
+  .docs-section { scroll-margin-top: 1rem; }
+}
+@media (hover: none) {
+  .architecture-card:hover { transform: none; }
+}
