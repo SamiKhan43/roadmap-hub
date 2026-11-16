@@ -1,0 +1,11 @@
+01. How Computers Work — 9 min
+02. CPU and CPU Cores — 10 min
+03. RAM, ROM, and Storage — 11 min
+04. CPU vs RAM vs Storage — 8 min
+05. Bits, Bytes, and Binary — 10 min
+06. How Programs Are Executed — 12 min
+07. Machine Code and Instructions — 11 min
+08. 32-bit vs 64-bit Architecture — 10 min
+09. What Is an Operating System? — 12 min
+10. Kernel vs User Space — 13 min
+11. Hardware vs Software — 9 min
