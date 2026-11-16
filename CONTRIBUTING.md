@@ -58,6 +58,10 @@ A finished example is in [`docs/example-roadmap.json`](docs/example-roadmap.json
 
 Levels, level projects, milestones and the title live in `content/<roadmap>/roadmap.json`. Please open an issue before large structural changes. Layout fixes belong in `assets/template.html` so every roadmap benefits.
 
+## Shared footer convention
+
+Every new standalone page, guide, or journey must use the shared two-column editorial footer. It should include a **Go back** link to Roadmap Hub and an **Explore more** link to the most relevant related section. Use the existing `editorial-footer`, `editorial-footer__item`, `editorial-footer__label`, `editorial-footer__link`, and `editorial-footer__arrow` classes so its layout, accessibility label, hover behavior, and responsive styling remain consistent across the project.
+
 ## Commit and PR style
 
 - Use short, clear messages: `Add topic: Error Handling`, `Fix output in Variables topic`.
