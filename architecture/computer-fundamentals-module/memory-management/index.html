@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Learn how computers manage memory, from stack and heap to virtual memory and garbage collection.">
+    <title>Memory Management | Architecture Library</title>
+
+    <link rel="stylesheet" href="memory-management.css">
+    <script src="lessons-data.js" defer></script>
+    <script src="memory-management.js" defer></script>
+</head>
+<body>
+    <a class="mm-skip" href="#main-content">Skip to content</a>
+    <header class="mm-topbar">
+        <div class="mm-topbar-inner">
+            <a class="mm-brand" href="../../../index.html" aria-label="Roadmap Hub home">
+                <img src="../../../logos/logo-horizontal-dark.svg" alt="Roadmap Hub">
+                <span class="mm-brand-label">Architecture Library / Module 02</span>
+            </a>
+            <nav class="mm-header-links" aria-label="Module navigation">
+                <a href="../../../index.html">Roadmap Hub</a>
+                <a href="../../index.html">Architecture Library</a>
+            </nav>
+        </div>
+    </header>
+
+    <main class="mm-layout" id="main-content">
+        <aside class="mm-sidebar">
+            <div class="mm-sidebar-heading">
+                <span class="mm-eyebrow">COMPUTER FUNDAMENTALS</span>
+                <h2>Memory Management</h2>
+                <p>Understand how programs use memory and how the operating system manages it.</p>
+            </div>
+
+            <div class="mm-progress">
+                <div class="mm-progress-heading">
+                    <span>YOUR PROGRESS</span>
+                    <strong id="progress-count" aria-live="polite">0 / 15</strong>
+                </div>
+                <div class="mm-progress-track">
+                    <div id="progress-fill" class="mm-progress-fill" role="progressbar" aria-label="Lessons completed" aria-valuemin="0" aria-valuemax="15" aria-valuenow="0"></div>
+                </div>
+            </div>
+
+            <nav class="mm-lesson-nav" aria-label="Module lessons">
+                <span class="mm-nav-label">LESSONS</span>
+                <div id="lesson-list"></div>
+            </nav>
+
+            <a class="mm-previous-module" href="../computer-fundamentals/index.html">
+                <span>PREVIOUS MODULE</span>
+                <strong>Computer Fundamentals</strong>
+                <span aria-hidden="true">↗</span>
+            </a>
+        </aside>
+
+        <section class="mm-content">
+            <div class="mm-content-inner">
+                <div class="mm-breadcrumb">
+                    <span>Architecture Library</span>
+                    <span>/</span>
+                    <span>Computer Fundamentals</span>
+                    <span>/</span>
+                    <strong>Memory Management</strong>
+                </div>
+
+                <section class="mm-hero" id="module-overview">
+                    <span class="mm-eyebrow">MODULE 02 · 15 LESSONS</span>
+                    <h1>Memory <span>Management</span></h1>
+                    <p>
+                        Every running program needs memory. Learn how programs store data,
+                        how operating systems allocate memory, and why concepts like stack,
+                        heap and virtual memory matter.
+                    </p>
+                    <div class="mm-hero-meta">
+                        <span>15 lessons</span>
+                        <span>Concepts + diagrams</span>
+                        <span>Beginner to intermediate</span>
+                    </div>
+                    <button class="mm-primary-button" id="start-button" type="button">
+                        Start learning <span aria-hidden="true">→</span>
+                    </button>
+                </section>
+
+                <article id="lesson-content" class="mm-lesson-content" hidden>
+                    <div class="mm-lesson-topline">
+                        <span id="lesson-number" class="mm-eyebrow"></span>
+                        <span id="lesson-duration" class="mm-duration"></span>
+                    </div>
+
+                    <h1 id="lesson-title"></h1>
+                    <p id="lesson-intro" class="mm-lesson-intro"></p>
+
+                    <div id="lesson-body"></div>
+
+                    <section class="mm-check-section">
+                        <span class="mm-eyebrow">CHECK YOUR UNDERSTANDING</span>
+                        <h2 id="question-title">Knowledge check</h2>
+                        <p id="question-text"></p>
+                        <div id="question-options" class="mm-options"></div>
+                        <p id="question-feedback" class="mm-feedback" aria-live="polite"></p>
+                    </section>
+
+                    <div class="mm-lesson-actions">
+                        <button class="mm-secondary-button" id="previous-button" type="button">
+                            ← Previous lesson
+                        </button>
+                        <button class="mm-primary-button" id="complete-button" type="button">
+                            Mark as complete
+                        </button>
+                        <button class="mm-secondary-button" id="next-button" type="button">
+                            Next lesson →
+                        </button>
+                    </div>
+                </article>
+
+                <section id="module-complete" class="mm-complete" hidden>
+                    <span class="mm-eyebrow">MODULE COMPLETED</span>
+                    <h2>You have reached the end.</h2>
+                    <p>
+                        You have covered the core ideas behind memory management.
+                        Revisit any lesson to review its concepts.
+                    </p>
+                    <button class="mm-primary-button" id="review-button" type="button">
+                        Review first lesson →
+                    </button>
+                </section>
+
+            </div>
+        </section>
+    </main>
+
+    <footer class="mm-editorial-footer">
+        <div class="mm-footer-inner">
+            <nav class="mm-editorial-footer-nav" aria-label="Related navigation">
+                <div class="mm-editorial-footer-item">
+                    <span class="mm-editorial-footer-label">Go back</span>
+                    <a class="mm-editorial-footer-link" href="../computer-fundamentals/index.html"><span class="mm-editorial-footer-arrow" aria-hidden="true">←</span> Computer Fundamentals</a>
+                </div>
+                <div class="mm-editorial-footer-item">
+                    <span class="mm-editorial-footer-label">Continue learning</span>
+                    <a class="mm-editorial-footer-link" href="../../index.html">Architecture Library <span class="mm-editorial-footer-arrow" aria-hidden="true">→</span></a>
+                </div>
+            </nav>
+        </div>
+    </footer>
+</body>
+</html>

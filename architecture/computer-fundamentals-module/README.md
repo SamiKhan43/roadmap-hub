@@ -1,33 +1,24 @@
-# Computer Fundamentals — Architecture Library Module 01
+# Computer & OS Fundamentals — Architecture Library modules
 
-## Included
-- Module overview page
-- 11 individual lesson pages
-- Shared lesson data, styling, and behavior
-- Responsive lesson navigation and progress tracking
-- Interactive knowledge checks with immediate explanations
-- Inline SVG diagrams
-- Architecture Library integration snippet
+| Module | Folder | Lessons | Progress key |
+|---|---|---|---|
+| 01 Computer Fundamentals | `computer-fundamentals/` | 11 | `roadmap-hub:architecture:computer-fundamentals:v1` |
+| 02 Memory Management | `memory-management/` | 15 | `roadmap-hub-memory-management-progress` |
 
-## Install
-1. This repository keeps the included `computer-fundamentals/` folder within `architecture/computer-fundamentals-module/`.
-2. Copy `ARCHITECTURE-LIBRARY-INTEGRATION.html`'s article into the existing `.architecture-grid` in `architecture/index.html`.
-3. Keep the existing `architecture.css` and PostgreSQL guide unchanged.
-4. Commit and deploy the static files through GitHub Pages.
+Static HTML, CSS and vanilla JavaScript. No build step. Deployed via GitHub Pages.
 
-No build step, framework, backend, or external JavaScript dependency is required.
+## Structure
+- Both modules are linked from `architecture/index.html` (cards already added).
+- `architecture/arch-progress.js` reads both progress keys and shows progress on the cards.
+- Module 01 renders lessons from `lessons-data.js` into 11 thin HTML pages (`lessons/NN-*.html`).
+- Module 02 is a single page; lessons have URLs like `index.html#lesson-4`.
+- UX enhancements live at the end of each module's `.js` and `.css` files (`cf-*` / `mm-*`).
 
-## Progress
-The module stores completed lesson IDs in localStorage under:
-`roadmap-hub:architecture:computer-fundamentals:v1`
+## Adding a lesson
+- Module 01: add an object to `lessons-data.js`, copy an existing `lessons/*.html`, set `data-lesson` to its index, update `LESSON-INVENTORY.txt`, the "11" counts, and the overview time total.
+- Module 02: add an object to `memoryLessons`; update the "15" counts in `index.html` and `arch-progress.js`.
 
-This is intentionally isolated from other roadmap progress keys. It can be unified later if the Architecture Library adopts a shared progress contract.
-
-## Paths
-The page links assume the current repository structure:
-- `architecture/index.html`
-- `architecture/computer-fundamentals-module/computer-fundamentals/index.html`
-- `logos/logo-mark.svg`
-- `logos/logo-horizontal-dark.svg`
-
-If the logo paths change, update the relative paths in the generated HTML files.
+## Notes
+- Progress is stored per browser (localStorage) and is not synced across devices.
+- Quiz options are shuffled on each page load, so data order does not matter.
+- `ARCHITECTURE-LIBRARY-INTEGRATION.html` is obsolete (the card is live) and can be deleted.

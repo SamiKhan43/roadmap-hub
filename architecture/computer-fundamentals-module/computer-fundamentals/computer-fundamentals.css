@@ -8,3 +8,63 @@
 @media(max-width:900px){.cf-layout{grid-template-columns:220px minmax(0,1fr)}}@media(max-width:700px){.cf-header-inner{align-items:flex-start;padding:.6rem 0}.cf-brand-label{display:none}.cf-header-links a{font-size:.72rem;padding:.35rem}.cf-layout{grid-template-columns:1fr;gap:.75rem}.cf-sidebar{position:static;max-height:none;padding:.5rem 0}.cf-sidebar-heading{margin-bottom:.45rem}.cf-lesson-list{grid-template-columns:repeat(2,minmax(0,1fr));gap:.25rem}.cf-lesson-link{font-size:.7rem;padding:.45rem}.cf-hero{padding-top:2.5rem}}@media(max-width:430px){.cf-header-links a:first-child{display:none}.cf-lesson-list{grid-template-columns:1fr}.cf-hero h1{font-size:2rem}.cf-card{padding:1rem}}
 @media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}*,*::before,*::after{transition:none!important;animation:none!important}}
 .cf-editorial-footer{padding:0 0 2.5rem}.cf-editorial-footer__nav{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:1.5rem;padding-top:1.25rem;border-top:1px solid var(--cf-border)}.cf-editorial-footer__item:last-child{text-align:right}.cf-editorial-footer__label{display:block;margin-bottom:.35rem;color:var(--cf-quiet);font-size:.64rem;font-weight:650;letter-spacing:.12em;line-height:1.4;text-transform:uppercase}.cf-editorial-footer__link{display:inline-flex;max-width:100%;align-items:center;gap:.4rem;color:var(--cf-text);font-size:.9rem;font-weight:550;line-height:1.5;text-decoration:none}.cf-editorial-footer__arrow{flex:none;color:var(--cf-accent);transition:transform .16s ease}.cf-editorial-footer__item:first-child .cf-editorial-footer__link:hover .cf-editorial-footer__arrow,.cf-editorial-footer__item:first-child .cf-editorial-footer__link:focus-visible .cf-editorial-footer__arrow{transform:translateX(-3px)}.cf-editorial-footer__item:last-child .cf-editorial-footer__link:hover .cf-editorial-footer__arrow,.cf-editorial-footer__item:last-child .cf-editorial-footer__link:focus-visible .cf-editorial-footer__arrow{transform:translate(2px,-2px)}.cf-editorial-footer__link:hover,.cf-editorial-footer__link:focus-visible{color:var(--cf-accent)}@media(max-width:640px){.cf-editorial-footer__nav{grid-template-columns:1fr;gap:1rem}.cf-editorial-footer__item:last-child{text-align:left}}
+
+/* ===== Computer Fundamentals — UX polish. Append to the END of computer-fundamentals.css ===== */
+:root{--cf-quiet:#8b968c}
+.cf-card p,.cf-card li{font-size:1rem;line-height:1.8}
+.cf-card h2{font-size:1.4rem}
+.cf-callout{font-size:1rem;line-height:1.75}
+.cf-section-kicker,.cf-sidebar-heading,.cf-pill{font-size:.75rem!important}
+.cf-lesson-link{font-size:.87rem}
+.cf-layout{grid-template-columns:270px minmax(0,780px) 200px;justify-content:center}
+.cf-toc{position:sticky;top:5rem;display:grid;gap:.1rem;padding:.75rem 0;align-content:start}
+.cf-toc a{padding:.35rem .6rem;border-left:2px solid var(--cf-border);color:var(--cf-muted);font-size:.8rem;line-height:1.4;text-decoration:none}
+.cf-toc a:hover{color:var(--cf-text)}
+.cf-toc a[aria-current]{border-color:var(--cf-accent);color:var(--cf-accent)}
+.cf-cta{margin-top:.4rem;margin-bottom:1.1rem}
+.cf-options{flex-direction:column;align-items:stretch;counter-reset:opt}
+.cf-option{width:100%;text-align:left;font-size:.92rem;display:flex;gap:.65rem}
+.cf-option::before{counter-increment:opt;content:counter(opt,upper-alpha);color:var(--cf-accent);font-weight:700}
+.cf-option.is-correct{border-color:var(--cf-accent);background:rgba(198,243,106,.14);color:var(--cf-text)}
+.cf-option.is-wrong{border-color:#d9ad68;background:rgba(217,173,104,.1);color:var(--cf-text)}
+.cf-question .cf-feedback{font-weight:400;font-size:.88rem!important}
+.cf-diagram svg{min-width:760px}
+.cf-diagram:focus-visible{outline:2px solid var(--cf-accent);outline-offset:3px}
+.cf-lessons-details>summary{display:none}
+@media(max-width:1180px){.cf-layout{grid-template-columns:260px minmax(0,1fr)}.cf-toc{display:none}}
+@media(max-width:700px){
+  .cf-layout{grid-template-columns:1fr}
+  .cf-lessons-details{border:1px solid var(--cf-border);border-radius:6px;background:#101310}
+  .cf-lessons-details>summary{display:flex;justify-content:space-between;min-height:2.9rem;align-items:center;padding:.5rem .8rem;cursor:pointer;font-size:.9rem;font-weight:600;list-style:none}
+  .cf-lessons-details>summary::after{content:"Show";color:var(--cf-muted);font-size:.78rem;font-weight:500}
+  .cf-lessons-details[open]>summary::after{content:"Hide"}
+  .cf-lessons-details .cf-sidebar-heading{display:none}
+  .cf-lessons-details .cf-lesson-list{grid-template-columns:1fr;padding:0 .4rem .5rem}
+  .cf-header-inner{align-items:center}
+}
+
+
+/* Final UX pass */
+.cf-header { z-index: 30; }
+.cf-wrap { padding-bottom: 3rem; }
+.cf-hero { max-width: 850px; }
+.cf-lede { max-width: 74ch; }
+.cf-layout { align-items: start; }
+.cf-sidebar, .cf-content, .cf-toc { min-width: 0; }
+.cf-content { overflow-wrap: anywhere; }
+.cf-content :where(pre, code) { overflow-wrap: anywhere; }
+.cf-lesson-link { min-height: 42px; }
+.cf-progress { position: relative; }
+.cf-diagram { max-width: 100%; overflow-x: auto; }
+.cf-option { min-height: 44px; align-items: center; }
+@media(max-width:700px) {
+  .cf-brand-label { display:none; }
+  .cf-header-inner { min-height:3.5rem; }
+  .cf-wrap { width:min(100% - 1.25rem, 1440px); }
+  .cf-hero { padding-top:2.5rem; }
+  .cf-content { padding-inline:0; }
+  .cf-diagram { margin-inline:0; }
+}
+@media(prefers-reduced-motion:reduce) {
+  .cf-card, .cf-lesson-link, .cf-option { transition:none !important; }
+}

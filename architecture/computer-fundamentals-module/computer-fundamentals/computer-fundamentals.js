@@ -26,10 +26,10 @@
       case "binary": return wrap("Binary place values","Each binary position represents a power of two. The example 1011 equals decimal eleven.",`${[8,4,2,1].map((v,i)=>box(90+i*150,55,105,90,String("1011"[i]),"place value "+v,true)).join("")}<text x="380" y="185">8 + 0 + 2 + 1 = 11</text>`);
       case "execution": return wrap("Program execution lifecycle","The operating system creates a process, maps code and data, schedules a thread, and the CPU executes instructions.",`${box(20,75,125,65,"Program","stored executable")}${box(185,75,145,65,"OS creates","process + memory",true)}${box(370,75,125,65,"Thread","runnable work")}${box(535,75,100,65,"CPU","executes")}${box(675,75,75,65,"Exit","cleanup")}${line(145,108,177,108)}${line(330,108,362,108)}${line(495,108,527,108)}${line(635,108,667,108)}`);
       case "instruction": return wrap("Fetch decode execute cycle","The processor fetches an instruction, decodes its operation, executes it, and advances or branches to the next instruction.",`${box(35,70,180,80,"1 · Fetch","read next instruction",true)}${box(290,70,180,80,"2 · Decode","identify operation")}${box(545,70,180,80,"3 · Execute","perform operation")}${line(215,110,282,110)}${line(470,110,537,110)}<path class="arrow" marker-end="url(#cf-arrow)" d="M635 158 V190 H125 V158"/>`);
-      case "bits": return wrap("Address width and possible values","A 32-bit field has 2 to the power of 32 possible bit patterns; a 64-bit field has 2 to the power of 64.",`${box(90,45,245,100,"32-bit","2³² possible patterns")}${box(425,45,245,100,"64-bit","2⁶⁴ possible patterns",true)}<text class="small" x="380" y="185">Actual usable address width depends on the platform.</text>`);
+      case "bits": return wrap("Address width and possible values","A field with 32 bits has 2 to the power of 32 possible patterns; a field with 64 bits has 2 to the power of 64.",`${box(90,45,245,100,"32 bit","2³² possible patterns")}${box(425,45,245,100,"64 bit","2⁶⁴ possible patterns",true)}<text class="small" x="380" y="185">Actual usable address width depends on the platform.</text>`);
       case "os": return wrap("Operating system as a resource manager","Applications request services from the operating system, which coordinates hardware resources.",`${box(265,15,230,55,"Applications","backend · database · tools")}${box(265,90,230,55,"Operating system","process · memory · files · network",true)}${box(75,170,150,40,"CPU")}${box(305,170,150,40,"RAM")}${box(535,170,150,40,"Storage / devices")}${line(380,70,380,82)}${line(315,145,150,162)}${line(380,145,380,162)}${line(445,145,610,162)}`);
       case "kernel": return wrap("User space and kernel space boundary","Applications run in user space. System calls cross into kernel space for privileged services, then return to user space.",`${box(70,25,620,65,"USER SPACE","application process · restricted privileges",true)}${box(70,135,620,65,"KERNEL SPACE","system calls · drivers · networking · memory")}${line(380,90,380,127,true)}<text class="small" x="455" y="115">system call / return</text>`);
-      case "layers": return wrap("Hardware and software layers","Applications use operating-system services; the operating system manages hardware.",`${box(230,15,300,45,"Applications","backend service and tools")}${box(230,80,300,45,"System software","operating system and drivers",true)}${box(230,145,300,45,"Hardware","CPU · RAM · storage · network")}${line(380,60,380,72)}${line(380,125,380,137)}`);
+      case "layers": return wrap("Hardware and software layers","Applications use services provided by the operating system; the operating system manages hardware.",`${box(230,15,300,45,"Applications","backend service and tools")}${box(230,80,300,45,"System software","operating system and drivers",true)}${box(230,145,300,45,"Hardware","CPU · RAM · storage · network")}${line(380,60,380,72)}${line(380,125,380,137)}`);
       default:return "";
     }
   };
@@ -42,7 +42,7 @@
       <section class="cf-section" id="why-it-matters"><p class="cf-section-kicker">02 · Backend connection</p><h2>Why it matters</h2><p>${escapeHTML(lesson.why)}</p></section>
       <section class="cf-section" id="mental-model"><p class="cf-section-kicker">03 · Mental model</p><h2>A way to picture it</h2><div class="cf-callout">${escapeHTML(lesson.mental)}</div></section>
       <section class="cf-section" id="how-it-works"><p class="cf-section-kicker">04 · Under the hood</p><h2>How it works</h2><ol>${lesson.steps.map(step=>`<li>${escapeHTML(step)}</li>`).join("")}</ol>${diagram(lesson.diagram)}</section>
-      <section class="cf-section" id="real-world-example"><p class="cf-section-kicker">05 · In practice</p><h2>Real-world backend example</h2><p>${escapeHTML(lesson.example)}</p></section>
+      <section class="cf-section" id="real-world-example"><p class="cf-section-kicker">05 · In practice</p><h2>Real world backend example</h2><p>${escapeHTML(lesson.example)}</p></section>
       <section class="cf-section" id="misconceptions"><p class="cf-section-kicker">06 · Clear up the confusion</p><h2>Common misconceptions</h2><ul>${lesson.misconceptions.map(item=>`<li>${escapeHTML(item)}</li>`).join("")}</ul></section>
       <section class="cf-section" id="takeaways"><p class="cf-section-kicker">07 · Review</p><h2>Key takeaways</h2><ul>${lesson.takeaways.map(item=>`<li>${escapeHTML(item)}</li>`).join("")}</ul></section>
       <section class="cf-section" id="knowledge-check"><p class="cf-section-kicker">08 · Check your understanding</p><h2>Knowledge check</h2><p>Choose an answer for each question. Feedback explains why the answer is correct or incorrect.</p><div class="cf-check" id="quiz">${lesson.questions.map((q,i)=>`<div class="cf-question" data-question="${i}"><p>${i+1}. ${escapeHTML(q[0])}</p><div class="cf-options">${q[1].map((option,j)=>`<button class="cf-option" type="button" data-answer="${j}" aria-pressed="false">${escapeHTML(option)}</button>`).join("")}</div><p class="cf-feedback" aria-live="polite"></p></div>`).join("")}<p class="cf-quiz-summary" id="quiz-summary" aria-live="polite">0 of ${lesson.questions.length} answered correctly.</p></div></section>
@@ -100,4 +100,90 @@
     });
     updateProgress();
   }else renderOverview();
+})();
+
+/* ===== Computer Fundamentals — UX enhancements. Append to the END of computer-fundamentals.js (after the existing IIFE) ===== */
+(() => {
+  const lessons = window.COMPUTER_FUNDAMENTALS_LESSONS || [];
+  const key = "roadmap-hub:architecture:computer-fundamentals:v1";
+  const $ = id => document.getElementById(id);
+  const read = () => { try { const s = JSON.parse(localStorage.getItem(key) || "{}"); return Array.isArray(s.completed) ? s.completed : []; } catch { return []; } };
+  const write = completed => { try { localStorage.setItem(key, JSON.stringify({ completed })); } catch { /* storage unavailable */ } };
+  const sync = () => {
+    const done = read(), pct = Math.round(done.length / lessons.length * 100);
+    if ($("progress-text")) $("progress-text").textContent = `${done.length} / ${lessons.length} lessons · ${pct}%`;
+    if ($("progress-fill")) $("progress-fill").style.width = pct + "%";
+    if ($("progress-bar")) $("progress-bar").setAttribute("aria-valuenow", done.length);
+    document.querySelectorAll("[data-done]").forEach(el => {
+      const d = done.includes(el.dataset.done);
+      el.textContent = d ? "✓" : "";
+      el.setAttribute("aria-label", d ? "Completed" : "Not completed");
+    });
+  };
+  if (document.body.dataset.page !== "lesson") {
+    const done = read(), next = lessons.findIndex(l => !done.includes(l.id)), meta = document.querySelector(".cf-meta");
+    if (meta && lessons.length) {
+      const a = document.createElement("a");
+      a.className = "cf-btn primary cf-cta";
+      a.href = `lessons/${lessons[next < 0 ? 0 : next].id}.html`;
+      a.textContent = !done.length ? "Start lesson 01 →" : next < 0 ? "Review from lesson 01 →" : `Continue with lesson ${String(next + 1).padStart(2, "0")} →`;
+      meta.after(a);
+    }
+    sync();
+    return;
+  }
+  const current = Number(document.body.dataset.lesson || 0), lesson = lessons[current];
+  if (!lesson) return;
+  $("introduction")?.remove();
+  document.querySelectorAll(".cf-section-kicker").forEach(k => {
+    k.textContent = k.textContent.replace(/^\d+/, n => String(Number(n) - 1).padStart(2, "0"));
+  });
+  document.querySelectorAll(".cf-options").forEach(box => {
+    const b = [...box.children];
+    if (b.length < 3) return;
+    for (let i = b.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [b[i], b[j]] = [b[j], b[i]]; }
+    b.forEach(x => box.appendChild(x));
+  });
+  document.querySelectorAll(".cf-question").forEach(row => row.querySelectorAll(".cf-option").forEach(btn =>
+    btn.addEventListener("click", () => {
+      const ok = row.querySelector(".cf-feedback").classList.contains("good");
+      row.querySelectorAll(".cf-option").forEach(o => o.classList.remove("is-correct", "is-wrong"));
+      btn.classList.add(ok ? "is-correct" : "is-wrong");
+    })));
+  const side = document.querySelector(".cf-sidebar");
+  if (side) {
+    const d = document.createElement("details"), s = document.createElement("summary");
+    d.className = "cf-lessons-details";
+    s.textContent = `All lessons · ${lessons.length}`;
+    d.append(s, ...[...side.childNodes]);
+    side.append(d);
+    const mq = matchMedia("(max-width:700px)"), set = () => { d.open = !mq.matches; };
+    set(); mq.addEventListener("change", set);
+  }
+  const old = $("complete-button"), btn = old.cloneNode(true);
+  old.replaceWith(btn);
+  const paint = () => { const d = read().includes(lesson.id); btn.textContent = d ? "Completed ✓ (undo)" : "Mark lesson complete"; btn.setAttribute("aria-pressed", String(d)); };
+  btn.addEventListener("click", () => { const d = read(); write(d.includes(lesson.id) ? d.filter(x => x !== lesson.id) : [...d, lesson.id]); paint(); sync(); });
+  paint(); sync();
+  const links = document.querySelectorAll(".cf-actions a"), nextLink = links[links.length - 1];
+  if (current === lessons.length - 1 && nextLink) { nextLink.href = "../../memory-management/index.html"; nextLink.textContent = "Next module: Memory Management →"; }
+  document.querySelector(".cf-progress")?.setAttribute("role", "group");
+  document.querySelectorAll(".cf-diagram").forEach(f => { f.tabIndex = 0; f.setAttribute("role", "group"); f.setAttribute("aria-label", "Diagram (scroll sideways if needed)"); });
+  const secs = [...document.querySelectorAll(".cf-section")], layout = document.querySelector(".cf-layout");
+  if (layout && secs.length) {
+    const toc = document.createElement("nav");
+    toc.className = "cf-toc"; toc.setAttribute("aria-label", "On this page");
+    toc.innerHTML = '<p class="cf-sidebar-heading">On this page</p>' + secs.map(x => `<a href="#${x.id}">${x.querySelector("h2").textContent}</a>`).join("");
+    layout.append(toc);
+    const tl = [...toc.querySelectorAll("a")];
+    if ("IntersectionObserver" in window) {
+      const io = new IntersectionObserver(es => es.forEach(e => { if (e.isIntersecting) tl.forEach(a => a.toggleAttribute("aria-current", a.hash === "#" + e.target.id)); }), { rootMargin: "-15% 0px -70% 0px" });
+      secs.forEach(x => io.observe(x));
+    }
+  }
+  addEventListener("keydown", e => {
+    if (e.altKey || e.ctrlKey || e.metaKey || e.shiftKey || /INPUT|TEXTAREA|SELECT/.test(e.target.tagName) || e.target.closest?.(".cf-diagram")) return;
+    const go = e.key === "ArrowRight" ? nextLink : e.key === "ArrowLeft" ? links[0] : null;
+    if (go) location.href = go.href;
+  });
 })();
