@@ -1,0 +1,214 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Learn Git, GitHub collaboration, practical workflows, and safe ways to diagnose and recover from common Git problems.">
+  <meta name="theme-color" content="#0d0f0e">
+  <title>Git &amp; GitHub | Roadmap Hub</title>
+  <link rel="icon" type="image/svg+xml" href="../logos/logo-mark.svg">
+  <link rel="stylesheet" href="git-github.css">
+  <script src="content.js" defer></script>
+  <script src="git-github.js" defer></script>
+</head>
+<body>
+  <a class="skip-link" href="#main-content">Skip to content</a>
+  <header class="topbar">
+    <a class="brand" href="../index.html" aria-label="Back to Roadmap Hub">
+      <img src="../logos/logo-horizontal-dark.svg" alt="Roadmap Hub">
+      <span>Git &amp; GitHub</span>
+    </a>
+    <nav class="hub-nav" aria-label="Roadmap Hub">
+      <a href="../index.html#roadmaps">Roadmaps</a>
+      <a href="../backend-engineer-journey/index.html">Backend Journey</a>
+      <a href="../architecture/index.html">Architecture</a>
+      <a href="../setup-guides/index.html">Setup Guides</a>
+    </nav>
+    <div class="topbar-tools">
+      <label class="search-wrap">
+        <span class="sr-only">Search Git documentation</span>
+        <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="10.8" cy="10.8" r="6.8"></circle><path d="m16 16 4.5 4.5"></path></svg>
+        <input id="docs-search" type="search" placeholder="Search documentation" autocomplete="off" aria-controls="search-results" aria-expanded="false">
+        <kbd aria-hidden="true">/</kbd>
+      </label>
+      <button class="mobile-menu-button" id="mobile-menu-button" type="button" aria-expanded="false" aria-controls="sidebar">
+        <span class="sr-only">Open navigation</span>
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 6h16M4 12h16M4 18h16"></path></svg>
+      </button>
+    </div>
+    <div id="search-results" class="search-results" role="listbox" aria-label="Documentation search results" hidden></div>
+  </header>
+
+  <div class="app-shell">
+    <aside class="sidebar" id="sidebar" aria-label="Documentation navigation">
+      <a class="back-link" href="../index.html"><span aria-hidden="true">←</span> Roadmap Hub</a>
+      <div class="sidebar-title">
+        <span class="eyebrow">VERSION CONTROL</span>
+        <h2>Git &amp; GitHub</h2>
+        <p>A practical field guide for learning, shipping, and recovering.</p>
+      </div>
+      <div class="progress-box">
+        <div class="progress-heading"><span>LEARNING PROGRESS</span><strong id="progress-count">0 / 7</strong></div>
+        <div class="progress-track"><span id="progress-fill"></span></div>
+        <span id="progress-message" class="sr-only" aria-live="polite"></span>
+      </div>
+      <p id="storage-warning" class="storage-warning" role="status" hidden></p>
+      <nav class="side-nav" aria-label="Guide sections">
+        <details open>
+          <summary>GETTING STARTED</summary>
+          <button class="side-link is-active" type="button" data-kind="overview" aria-current="page">Overview</button>
+          <button class="side-link" type="button" data-kind="lesson" data-id="fundamentals" data-nav-key="getting-started-basics" data-section="Overview">Git Basics</button>
+        </details>
+        <details open>
+          <summary>GIT</summary>
+          <button class="side-link" type="button" data-kind="lesson" data-id="fundamentals" data-nav-key="git-fundamentals" data-section="Under the Hood">Fundamentals</button>
+          <button class="side-link" type="button" data-kind="lesson" data-id="daily-workflows">Daily Workflows</button>
+          <button class="side-link" type="button" data-kind="lesson" data-id="branching">Branching &amp; Integration</button>
+          <button class="side-link" type="button" data-kind="lesson" data-id="remotes">Remote Repositories</button>
+          <button class="side-link" type="button" data-kind="lesson" data-id="internals">Git Internals</button>
+        </details>
+        <details open>
+          <summary>TROUBLESHOOTING</summary>
+          <button class="side-link" type="button" data-kind="scenario" data-id="merge-conflicts">Merge Conflicts</button>
+          <button class="side-link" type="button" data-kind="scenario" data-id="rejected-push">Rejected Pushes</button>
+          <button class="side-link" type="button" data-kind="scenario" data-id="lost-commits">Lost Commits</button>
+          <button class="side-link" type="button" data-kind="scenario" data-id="staged-files">Accidental Changes</button>
+          <button class="side-link" type="button" data-kind="scenario" data-id="rebase-conflicts">Rebase Problems</button>
+          <button class="side-link" type="button" data-kind="scenario" data-id="deleted-branch">Branch Recovery</button>
+        </details>
+        <details open>
+          <summary>GITHUB</summary>
+          <button class="side-link" type="button" data-kind="lesson" data-id="github-collaboration" data-nav-key="github-repositories" data-section="Overview">Repositories &amp; Clones</button>
+          <button class="side-link" type="button" data-kind="lesson" data-id="github-collaboration" data-nav-key="github-pull-requests" data-section="How It Works">Forks &amp; Pull Requests</button>
+          <button class="side-link" type="button" data-kind="lesson" data-id="github-collaboration" data-nav-key="github-reviews" data-section="Real-World Backend/Engineering Example">Issues &amp; Code Reviews</button>
+          <button class="side-link" type="button" data-kind="lesson" data-id="github-collaboration" data-nav-key="github-workflows" data-section="Practice Exercise">Collaboration Workflows</button>
+        </details>
+        <details>
+          <summary>ADVANCED</summary>
+          <button class="side-link" type="button" data-kind="command" data-id="git reflog">Reflog</button>
+          <button class="side-link" type="button" data-kind="command" data-id="git bisect">Bisect</button>
+          <button class="side-link" type="button" data-kind="command" data-id="git stash">Stash</button>
+          <button class="side-link" type="button" data-kind="command" data-id="git worktree">Worktrees</button>
+          <button class="side-link" type="button" data-kind="lesson" data-id="advanced">Hooks &amp; Submodules</button>
+        </details>
+        <details>
+          <summary>REFERENCE</summary>
+          <button class="side-link" type="button" data-kind="section" data-id="commands">Command Reference</button>
+          <button class="side-link" type="button" data-kind="section" data-id="visual-lab">Interactive Git Lab</button>
+          <button class="side-link" type="button" data-kind="section" data-id="troubleshooting">Troubleshooting Lab</button>
+        </details>
+      </nav>
+      <p class="sidebar-note">Progress is saved in this browser only.</p>
+    </aside>
+    <button class="sidebar-scrim" id="sidebar-scrim" type="button" aria-label="Close navigation" tabindex="-1"></button>
+
+    <main class="content" id="main-content">
+      <div id="overview-view">
+        <section class="hero" aria-labelledby="page-title">
+          <p class="eyebrow">VERSION CONTROL · DEVELOPER GUIDE</p>
+          <h1 id="page-title" tabindex="-1">Git &amp; GitHub</h1>
+          <p class="hero-copy">Understand version control. Manage code changes. Collaborate with developers. Learn to diagnose and recover from Git problems.</p>
+          <div class="hero-actions">
+            <button class="button button-primary" type="button" data-kind="lesson" data-id="fundamentals">Explore Git <span aria-hidden="true">→</span></button>
+            <a class="button button-secondary" href="#troubleshooting">Troubleshooting Lab <span aria-hidden="true">↘</span></a>
+          </div>
+          <div class="hero-meta"><span>Git is version control</span><span>GitHub is collaboration</span><span>Work safely, recover confidently</span></div>
+        </section>
+
+        <section class="learning-section" aria-labelledby="areas-title">
+          <div class="section-heading">
+            <div><p class="eyebrow">LEARN THE SYSTEM</p><h2 id="areas-title">Start with the work you need to do</h2></div>
+            <p>Documentation-style guides, practical workflows, and clear explanations of what Git changes.</p>
+          </div>
+          <div class="area-grid" id="topic-panels"></div>
+        </section>
+
+        <section class="workflow-panel overview-extra" aria-labelledby="workflow-title">
+          <div class="section-heading">
+            <div><p class="eyebrow">A TEAM WORKFLOW</p><h2 id="workflow-title">From issue to merged change</h2></div>
+            <p>Git records the work. GitHub gives the team a place to discuss, review, and ship it.</p>
+          </div>
+          <ol class="workflow-list">
+            <li><span>01</span><strong>Issue</strong><small>Define the problem and expected behavior.</small></li>
+            <li><span>02</span><strong>Feature branch</strong><small>Isolate work from the shared default branch.</small></li>
+            <li><span>03</span><strong>Changes &amp; commits</strong><small>Implement, test, and save focused snapshots.</small></li>
+            <li><span>04</span><strong>Pull request</strong><small>Push the branch and explain the proposed change.</small></li>
+            <li><span>05</span><strong>Review &amp; merge</strong><small>Address feedback, pass checks, then integrate.</small></li>
+          </ol>
+        </section>
+      </div>
+
+      <section id="lesson-view" class="detail-view" aria-live="polite" hidden>
+        <button class="text-button" type="button" data-kind="overview">← All guides</button>
+        <article id="lesson-article"></article>
+        <div class="lesson-footer">
+          <button class="button button-secondary" id="lesson-previous" type="button">← Previous guide</button>
+          <button class="button button-primary" id="lesson-complete" type="button">Mark guide complete</button>
+          <button class="button button-secondary" id="lesson-next" type="button">Next guide →</button>
+        </div>
+      </section>
+
+      <section class="troubleshooting-section overview-extra" id="troubleshooting" aria-labelledby="troubleshooting-title">
+        <div class="section-heading">
+          <div><p class="eyebrow">RECOVER WITHOUT PANIC</p><h2 id="troubleshooting-title">Troubleshooting lab</h2></div>
+          <p>Start by inspecting state and preserving work. Choose a problem for a diagnosis and safe recovery path.</p>
+        </div>
+        <div class="safety-note"><strong>Before recovery:</strong> check <code>git status</code>, save a copy of important work, and understand whether the history is shared. Rewriting published history can disrupt your team.</div>
+        <div class="scenario-grid" id="scenario-list"></div>
+        <article id="scenario-detail" class="scenario-detail" hidden aria-live="polite"></article>
+      </section>
+
+      <section class="commands-section overview-extra" id="commands" aria-labelledby="commands-title">
+        <div class="section-heading">
+          <div><p class="eyebrow">LOOK IT UP, UNDERSTAND THE IMPACT</p><h2 id="commands-title">Git command reference</h2></div>
+          <label class="command-search"><span class="sr-only">Filter Git commands</span><input id="command-filter" type="search" placeholder="Filter commands"></label>
+        </div>
+        <p class="section-copy">Commands that change history or discard work are called out explicitly. Start with read-only inspection whenever you are uncertain.</p>
+        <div id="command-list" class="command-list"></div>
+        <p id="command-empty" class="empty-state" hidden>No commands match that search.</p>
+      </section>
+
+      <section class="visual-section overview-extra" id="visual-lab" aria-labelledby="visual-title">
+        <div class="section-heading">
+          <div><p class="eyebrow">INTERACTIVE MODEL</p><h2 id="visual-title">See what Git moves</h2></div>
+          <p>Make commits, move HEAD, merge, rebase, reset, or revert. The graph shows commit ancestry and branch references.</p>
+        </div>
+        <div class="visual-panel">
+          <div class="visual-toolbar">
+            <div class="visual-label"><span class="status-dot"></span><span>LOCAL REPOSITORY</span></div>
+            <div class="visual-controls" aria-label="Git graph operations">
+              <button type="button" data-op="branch">Create feature</button>
+              <button type="button" data-op="switch">Switch branch</button>
+              <button type="button" data-op="commit">Commit on HEAD</button>
+              <button type="button" data-op="main-commit">Commit on main</button>
+              <button type="button" data-op="merge">Merge into main</button>
+              <button type="button" data-op="rebase">Rebase feature</button>
+              <button type="button" data-op="reset" class="caution-control">Reset back one</button>
+              <button type="button" data-op="revert">Revert HEAD</button>
+              <button type="button" data-op="restart">Restart graph</button>
+            </div>
+          </div>
+          <div class="graph-scroll"><svg id="commit-graph" role="img" aria-labelledby="graph-title graph-description"></svg></div>
+          <p id="graph-description" class="sr-only">Interactive commit ancestry graph. Use the controls above to update commits and branch references.</p>
+          <div class="graph-status"><p id="graph-message" aria-live="polite">Start by creating a feature branch or adding a commit.</p><p id="graph-state" class="mono"></p></div>
+          <div class="graph-legend"><span><i class="legend-dot main-dot"></i>main</span><span><i class="legend-dot feature-dot"></i>feature</span><span><i class="legend-head"></i>HEAD (current branch)</span></div>
+        </div>
+        <div class="safety-note compact"><strong>Model only:</strong> Reset moves a branch reference and may make commits unreachable; it does not demonstrate deleting real files. Revert adds a new commit that reverses a change. For shared history, revert is usually safer.</div>
+      </section>
+
+      <footer class="guide-footer">
+        <nav class="editorial-footer" aria-label="Related navigation">
+          <div class="editorial-footer__item">
+            <span class="editorial-footer__label">Go back</span>
+            <a class="editorial-footer__link" href="../index.html"><span class="editorial-footer__arrow" aria-hidden="true">←</span>Roadmap Hub</a>
+          </div>
+          <div class="editorial-footer__item">
+            <span class="editorial-footer__label">Explore more</span>
+            <a class="editorial-footer__link" href="../backend-engineer-journey/index.html">Backend Journey <span class="editorial-footer__arrow" aria-hidden="true">↗</span></a>
+          </div>
+        </nav>
+      </footer>
+    </main>
+  </div>
+</body>
+</html>
