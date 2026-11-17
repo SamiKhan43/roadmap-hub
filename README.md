@@ -64,14 +64,19 @@ Traditional learning guides are often just overwhelming walls of links. This pro
 
 ## Available Roadmaps
 
+Roadmap Hub currently includes a mix of full learning tracks and practical reference guides built for real-world software engineering work.
+
 | Learning Path | Levels | Total Topics | Release Status |
 | :--- | :---: | :---: | :--- |
-| [SQL Fundamentals](https://samikhan43.github.io/roadmap-hub/sql-roadmap/) | 5 | 32 | **Production Live** |
-| [PostgreSQL Roadmap](https://samikhan43.github.io/roadmap-hub/postgres-roadmap/) | 5 | 39 | **Production Live** |
-| [FastAPI Roadmap](https://samikhan43.github.io/roadmap-hub/fastapi-roadmap/) | 6 | 39 | **Production Live** |
-| .[Auth Roadmap](https://samikhan43.github.io/roadmap-hub/Auth-roadmap/) | 6 | 26 | **Production Live** |
+| [SQL](https://samikhan43.github.io/roadmap-hub/sql-roadmap/) | 5 | 32 | **Production Live** |
+| [PostgreSQL](https://samikhan43.github.io/roadmap-hub/postgres-roadmap/) | 5 | 39 | **Production Live** |
+| [FastAPI](https://samikhan43.github.io/roadmap-hub/fastapi-roadmap/) | 6 | 39 | **Production Live** |
+| [Authentication & Authorization](https://samikhan43.github.io/roadmap-hub/Auth-roadmap/) | 6 | 26 | **Production Live** |
+| [HTTP](https://samikhan43.github.io/roadmap-hub/http-roadmap/) | 7 | 32 | **Production Live** |
+| [Protocols](https://samikhan43.github.io/roadmap-hub/protocols/) | 7 | 35 | **Production Live** |
+| [Git & GitHub](https://samikhan43.github.io/roadmap-hub/git-github/) | — | — | **Reference Guide** |
 
-> The **SQL Roadmap** covers SQL fundamentals, joins, analytical queries, indexing, transactions, and security. The **PostgreSQL Roadmap** progresses from `psql` and database architecture through schema design, performance, replication, and production operations.
+> The **SQL** and **PostgreSQL** tracks cover database fundamentals, query design, indexing, transactions, and production operations. **FastAPI** and **Authentication & Authorization** focus on API and security architecture, while **HTTP**, **Protocols**, and **Git & GitHub** provide deeper operational and systems-level foundations.
 
 ## Setup Guides
 
@@ -115,43 +120,57 @@ The codebase is structured to maximize simplicity and modularity:
 
 ```text
 roadmap-hub/
-├── index.html            # Main dashboard and Roadmap Picker
-├── README.md             # Repository documentation
-├── logos/                # Project logo assets
+├── index.html                   # Main dashboard and roadmap picker
+├── README.md                    # Repository documentation
+├── logos/                       # Project logo assets
 │   ├── logo-horizontal.svg
 │   ├── logo-horizontal-dark.svg
 │   ├── logo-mark.svg
 │   └── logo-mark-512.png
-├── CONTRIBUTING.md       # How to add or fix a topic
-├── CODE_OF_CONDUCT.md    # Community standards
-├── LICENSE               # Open-source license terms
-├── sql-roadmap/
-│   └── index.html        # Self-contained single-page roadmap
-├── postgres-roadmap/
-│   └── index.html        # PostgreSQL roadmap (5 levels, 39 topics)
-├── fastapi-roadmap/
-│   └── index.html        # FastAPI roadmap (6 levels, 39 topics)
-├── setup-guides/
-│   ├── guides.js         # Shared metadata registry for setup guides
-│   ├── index.html        # Setup guide catalog
-│   └── guide.html        # Shared Markdown guide reader
-├── architecture/
-│   ├── index.html          # Architecture Library catalog
-│   ├── architecture.css    # Shared styles for architecture pages
+├── CONTRIBUTING.md              # How to add or fix a topic
+├── CODE_OF_CONDUCT.md           # Community standards
+├── LICENSE                      # Open-source license terms
+├── sql-roadmap/                 # SQL fundamentals roadmap
+│   └── index.html
+├── postgres-roadmap/            # PostgreSQL roadmap
+│   └── index.html
+├── fastapi-roadmap/             # FastAPI roadmap
+│   └── index.html
+├── Auth-roadmap/                # Authentication and authorization roadmap
+│   └── index.html
+├── http-roadmap/                # HTTP roadmap
+│   └── index.html
+├── protocols/                   # Networking and protocol roadmap
+│   └── index.html
+├── git-github/                  # Git and GitHub resource guide
+│   └── index.html
+├── setup-guides/                # Setup guide catalog and readers
+│   ├── guides.js
+│   ├── index.html
+│   ├── guide.html
 │   └── postgresql/
-│       └── index.html      # PostgreSQL 18 architecture guide
-├── POSTGRESQL_GUIDE.md   # PostgreSQL setup guide
-├── content/              # Source files for community roadmaps
-│   └── <roadmap>/
-│       ├── roadmap.json  # Title, levels, projects, milestones
-│       └── topics/       # One JSON file per topic
-├── _template/            # Starter roadmap copied by --new
-├── scripts/
-│   ├── build.py          # Builds <roadmap>/index.html from content/
-│   └── build_roadmap.py  # Page generator
-├── assets/template.html  # Shared page layout
-├── docs/                 # Example roadmap file
-└── .github/              # Issue forms, PR template, validation workflow
+│       └── POSTGRESQL_GUIDE.md
+├── architecture/                # Architecture library pages
+│   ├── index.html
+│   ├── architecture.css
+│   └── postgresql/
+│       └── index.html
+├── content/                     # Source files for roadmap content
+│   ├── roadmap.json             # Global roadmap registry metadata
+│   └── topics/
+│       └── *.json               # One JSON file per topic
+├── scripts/                     # Build tooling
+│   ├── build.py
+│   └── build_roadmap.py
+├── assets/
+│   └── template.html            # Shared page layout
+├── docs/
+│   └── example-roadmap.json     # Example roadmap schema
+├── backend-engineer-journey/    # Additional roadmap or project content
+├── archi.md                     # Architecture notes
+├── patch-roadmap.py             # Utility script for roadmap maintenance
+├── .github/                     # Issue templates and validation workflow
+└── .gitignore                   # Repository ignore rules
 ```
 
 Each published roadmap page is self-contained in its own directory, with its content embedded in a single HTML file.

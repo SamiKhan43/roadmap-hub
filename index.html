@@ -923,7 +923,10 @@ const ROADMAPS=[
   desc:"See what really happens when your browser talks to a server, from the first request and response to HTTP/1.1, HTTP/2, and HTTP/3.",tags:["Networking","Backend","Protocol internals"]},
 
  {slug:"protocols",key:"protocols",title:"Protocols",icon:"radio",rgb:"198,243,106",status:"live",levels:7,topics:35,
-  desc:"Understand how systems communicate, from the network underneath your apps to the protocols they use every day.",tags:["Networking","Infrastructure","Beginner to Pro"]}
+  desc:"Understand how systems communicate, from the network underneath your apps to the protocols they use every day.",tags:["Networking","Infrastructure","Beginner to Pro"]},
+
+ {slug:"git-github",key:"git-github",title:"Git & GitHub",icon:"git-branch",rgb:"158,188,255",status:"live",resource:true,
+  desc:"Understand version control, manage code changes, collaborate through GitHub, and troubleshoot real-world Git problems.",tags:["Version Control","Developer Guide"]}
 
 ];
 
@@ -958,6 +961,18 @@ function card(r){
  const label=!live?"Coming soon":p>=100?"Completed":p>0?"In progress":"Live";
 
  const pillStyle=live?`color:rgb(${r.rgb});border-color:rgba(${r.rgb},.4);background:rgba(${r.rgb},.1)`:"color:#d4d4d8;border-color:#3f3f46";
+
+ if(r.resource){
+
+  const inner=`<div class="flex items-start gap-3"><span class="ico"><i data-lucide="${r.icon}" class="w-5 h-5" aria-hidden="true"></i></span><div class="flex-1 min-w-0"><h3 class="text-xl font-semibold text-white" style="line-height:1.25;letter-spacing:-.02em">${r.title}</h3><div class="mt-1 text-xs text-slate-400">${r.tags.join(" · ")}</div></div><span class="pill" style="${pillStyle}">Resource</span></div>
+
+  <p class="text-slate-300 text-sm" style="line-height:1.65">${r.desc}</p>
+
+  <span class="cta self-start mt-auto"><span>Explore</span><i data-lucide="arrow-right" class="go w-4 h-4" aria-hidden="true"></i></span>`;
+
+  return `<a href="${r.slug}/" class="card" style="--rgb:${r.rgb}">${inner}</a>`;
+
+ }
 
  const inner=`<div class="flex items-start gap-3"><span class="ico"><i data-lucide="${r.icon}" class="w-5 h-5" aria-hidden="true"></i></span><div class="flex-1 min-w-0"><h3 class="text-xl font-semibold text-white" style="line-height:1.25;letter-spacing:-.02em">${r.title}</h3><div class="mt-1 text-xs text-slate-400">${r.tags.join(" · ")}</div></div>
 
