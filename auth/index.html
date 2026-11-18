@@ -1,0 +1,317 @@
+<!doctype html>
+<html lang="en" class="h-full">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Sign in to Roadmap Hub</title>
+  <meta name="description" content="Sign in to Roadmap Hub to sync your learning progress, saved roadmaps, and completed level projects across devices.">
+  <meta name="theme-color" content="#0d0f0e">
+  <link rel="icon" type="image/svg+xml" href="https://samikhan43.github.io/roadmap-hub/logos/logo-mark.svg">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+
+  <!-- Supabase (unchanged from your working page) -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="../assets/supabase-config.js"></script>
+  <script src="../assets/supabase-client.js"></script>
+
+  <script src="https://cdn.tailwindcss.com/3.4.17"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['Inter', 'ui-sans-serif', 'system-ui', '-apple-system', 'Segoe UI', 'sans-serif'],
+            mono: ['JetBrains Mono', 'ui-monospace', 'SFMono-Regular', 'Menlo', 'monospace'],
+          },
+          colors: {
+            page: '#0d0f0e', surface: '#131614', raised: '#181d19',
+            line: '#29312b', 'line-soft': '#202721', 'line-strong': '#3a443b',
+            ink: '#f0f2ec', muted: '#a0aaa0', quiet: '#737e74',
+            accent: '#c6f36a', 'accent-hover': '#d6ff83', 'accent-ink': '#17200b',
+            danger: '#f87171', success: '#86efac',
+          },
+          borderRadius: { btn: '5px' },
+        },
+      },
+    };
+  </script>
+  <script src="https://unpkg.com/lucide@0.468.0/dist/umd/lucide.min.js"></script>
+  <style>
+    body {
+      background-color: #0d0f0e;
+      background-image:
+        radial-gradient(60% 420px at 50% -120px, rgba(198, 243, 106, .07), transparent 70%),
+        linear-gradient(to right, rgba(255, 255, 255, .028) 1px, transparent 1px),
+        linear-gradient(to bottom, rgba(255, 255, 255, .028) 1px, transparent 1px);
+      background-size: 100% 100%, 48px 48px, 48px 48px;
+      background-position: 0 0, -1px -1px, -1px -1px;
+      -webkit-font-smoothing: antialiased;
+      letter-spacing: -0.011em;
+    }
+    .grid-fade::before {
+      content: ""; position: fixed; inset: 0; pointer-events: none; z-index: 0;
+      background: radial-gradient(ellipse at center, transparent 35%, #0d0f0e 85%);
+    }
+    .kicker-mark { width: 5px; height: 5px; display: inline-block; background: #c6f36a; transform: rotate(45deg); }
+    .field:-webkit-autofill, .field:-webkit-autofill:hover, .field:-webkit-autofill:focus {
+      -webkit-text-fill-color: #f0f2ec; -webkit-box-shadow: 0 0 0 1000px #0f1210 inset; caret-color: #f0f2ec;
+    }
+
+    /* Mode tabs — "active" is toggled by script */
+    .tab-btn { color: #a0aaa0; }
+    .tab-btn:hover { color: #f0f2ec; }
+    .tab-btn.active { background: rgba(198, 243, 106, .1); color: #f0f2ec; box-shadow: inset 0 0 0 1px rgba(198, 243, 106, .28); }
+
+    /* Submit arrow survives any textContent changes from supabase-app.js */
+    #auth-submit::after { content: "→"; margin-left: .5rem; transition: transform .15s; }
+    #auth-submit:hover::after { transform: translateX(2px); }
+    #auth-submit:disabled::after { content: ""; margin: 0; }
+
+    /* Status line — supabase-app.js sets text + data-state */
+    #auth-status:empty { display: none; }
+    #auth-status { border: 1px solid #29312b; background: rgba(255,255,255,.02); color: #a0aaa0; }
+    #auth-status[data-state="error"] { color: #fda4af; border-color: rgba(248,113,113,.35); background: rgba(248,113,113,.06); }
+    #auth-status[data-state="success"] { color: #86efac; border-color: rgba(134,239,172,.3); background: rgba(134,239,172,.06); }
+
+    /* Anything supabase-app.js renders into the header slot */
+    [data-auth-nav] a, [data-auth-nav] button, .nav-item {
+      display: inline-flex; align-items: center; gap: .375rem; padding: .375rem .625rem; border-radius: 5px;
+      font-size: .875rem; color: #a0aaa0; background: transparent; border: 0; cursor: pointer; font-family: inherit;
+      transition: background-color .15s, color .15s;
+    }
+    [data-auth-nav] a:hover, [data-auth-nav] button:hover, .nav-item:hover { background: rgba(255,255,255,.05); color: #f0f2ec; }
+
+    .fade-up { animation: fadeUp .5s cubic-bezier(.2, .8, .2, 1) both; }
+    @keyframes fadeUp { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: none; } }
+    @media (prefers-reduced-motion: reduce) { .fade-up { animation: none; } }
+  </style>
+</head>
+<body class="grid-fade min-h-full font-sans text-ink selection:bg-accent selection:text-accent-ink">
+  <div class="relative z-10 flex min-h-screen flex-col">
+
+    <!-- Top bar -->
+    <header class="border-b border-white/[.06] bg-page/70 backdrop-blur">
+      <div class="mx-auto flex h-14 max-w-6xl items-center justify-between gap-3 px-4 sm:px-6">
+        <a href="../"
+           class="group -ml-2 inline-flex items-center gap-1.5 rounded-btn px-2 py-1.5 text-sm text-muted transition-colors hover:bg-white/[.05] hover:text-ink focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-page">
+          <i data-lucide="arrow-left" class="h-4 w-4 transition-transform group-hover:-translate-x-0.5" aria-hidden="true"></i>
+          Back to roadmaps
+        </a>
+        <nav class="flex items-center gap-2" aria-label="Account navigation">
+          <span class="hidden font-mono text-[11px] uppercase tracking-[.14em] text-quiet md:inline">01 / Authentication</span>
+          <div data-auth-nav></div>
+        </nav>
+      </div>
+    </header>
+
+    <main class="flex flex-1 items-start justify-center px-4 py-10 sm:items-center sm:py-14" aria-live="polite">
+      <div class="w-full max-w-md fade-up">
+
+        <!-- Brand -->
+        <div class="mb-8 flex flex-col items-center text-center">
+          <a href="../" aria-label="Roadmap Hub home"
+             class="rounded-[14px] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-4 focus-visible:ring-offset-page">
+            <svg class="h-12 w-12" viewBox="0 0 64 64" aria-hidden="true">
+              <rect x="1" y="1" width="62" height="62" rx="15" fill="#131614" stroke="#29312b" stroke-width="2"/>
+              <path d="M12 50h9a5 5 0 0 0 5-5V36h4m4-2h3a4 4 0 0 0 4-4v-8a4 4 0 0 1 4-4h4m-15 20h3a4 4 0 0 1 4 4v4a4 4 0 0 0 4 4h4" fill="none" stroke="#c6f36a" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"/>
+              <circle cx="12" cy="50" r="3.5" fill="#c6f36a"/>
+              <circle cx="31" cy="36" r="5" fill="#131614" stroke="#c6f36a" stroke-width="2"/>
+              <circle cx="49" cy="18" r="3.5" fill="#c6f36a"/>
+              <circle cx="49" cy="50" r="3.5" fill="#c6f36a"/>
+            </svg>
+          </a>
+          <p class="mt-3 text-[15px] font-semibold tracking-tight text-ink">Roadmap <span class="text-accent">Hub</span></p>
+          <p class="mt-0.5 font-mono text-[11px] uppercase tracking-[.12em] text-quiet">Practical paths for developers</p>
+        </div>
+
+        <!-- Card -->
+        <section aria-labelledby="auth-form-title"
+                 class="relative rounded-xl border border-line bg-surface/90 p-6 shadow-[0_24px_60px_-30px_rgba(0,0,0,.8)] backdrop-blur-sm sm:p-8">
+          <span aria-hidden="true" class="pointer-events-none absolute -left-px -top-px h-3 w-3 rounded-tl-xl border-l border-t border-accent/60"></span>
+          <span aria-hidden="true" class="pointer-events-none absolute -bottom-px -right-px h-3 w-3 rounded-br-xl border-b border-r border-accent/60"></span>
+
+          <!-- Mode tabs -->
+          <div class="mb-6 grid grid-cols-2 gap-1 rounded-[7px] border border-line bg-[#0f1210] p-1" role="group" aria-label="Choose sign in or create account">
+            <button type="button" class="tab-btn active h-9 rounded-btn text-[13px] font-semibold transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent" data-auth-mode="signin">Sign in</button>
+            <button type="button" class="tab-btn h-9 rounded-btn text-[13px] font-semibold transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent" data-auth-mode="signup">Create account</button>
+          </div>
+
+          <div class="mb-6">
+            <span class="inline-flex items-center gap-2 rounded-btn border border-accent/25 bg-accent/[.06] px-2 py-1 font-mono text-[10.5px] font-medium uppercase tracking-[.14em] text-accent">
+              <span class="kicker-mark" aria-hidden="true"></span>
+              <span id="auth-kicker">Optional account</span>
+            </span>
+            <h1 id="auth-form-title" class="mt-4 text-2xl font-semibold tracking-[-.03em] text-ink sm:text-[1.7rem]">Welcome back</h1>
+            <p id="auth-subtitle" class="mt-2 text-sm leading-relaxed text-muted">Sync your learning progress, saved roadmaps, and completed level projects across devices.</p>
+          </div>
+
+          <!-- Form (ids/names kept for supabase-app.js) -->
+          <form id="auth-form" data-mode="signin" class="space-y-4" novalidate>
+            <div>
+              <label for="auth-email" class="mb-1.5 block text-[13px] font-medium text-[#dce3d9]">Email address</label>
+              <div class="relative">
+                <i data-lucide="at-sign" class="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-quiet" aria-hidden="true"></i>
+                <input id="auth-email" name="email" type="email" inputmode="email" autocomplete="email" required
+                       placeholder="you@example.com" aria-describedby="auth-email-error"
+                       class="field h-11 w-full rounded-btn border border-line bg-[#0f1210] pl-9 pr-3 text-sm text-ink placeholder:text-quiet transition-colors hover:border-line-strong focus:border-accent/70 focus:outline-none focus:ring-2 focus:ring-accent/25 aria-[invalid=true]:border-danger/70 aria-[invalid=true]:ring-danger/20">
+              </div>
+              <p id="auth-email-error" class="mt-1.5 hidden font-mono text-[11px] text-danger" role="alert"></p>
+            </div>
+
+            <div>
+              <label for="auth-password" class="mb-1.5 block text-[13px] font-medium text-[#dce3d9]">Password</label>
+              <div class="relative">
+                <i data-lucide="key-round" class="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-quiet" aria-hidden="true"></i>
+                <input id="auth-password" name="password" type="password" autocomplete="current-password" required
+                       placeholder="At least 8 characters" aria-describedby="auth-password-error"
+                       class="field h-11 w-full rounded-btn border border-line bg-[#0f1210] pl-9 pr-11 text-sm text-ink placeholder:text-quiet transition-colors hover:border-line-strong focus:border-accent/70 focus:outline-none focus:ring-2 focus:ring-accent/25 aria-[invalid=true]:border-danger/70 aria-[invalid=true]:ring-danger/20">
+                <button type="button" id="password-toggle" aria-label="Show password" aria-controls="auth-password" aria-pressed="false"
+                        class="absolute right-1.5 top-1/2 inline-flex h-8 w-8 -translate-y-1/2 items-center justify-center rounded-[4px] text-quiet transition-colors hover:bg-white/[.06] hover:text-ink focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent">
+                  <span data-icon="show"><i data-lucide="eye" class="h-4 w-4" aria-hidden="true"></i></span>
+                  <span data-icon="hide" class="hidden"><i data-lucide="eye-off" class="h-4 w-4" aria-hidden="true"></i></span>
+                </button>
+              </div>
+              <p id="auth-password-error" class="mt-1.5 hidden font-mono text-[11px] text-danger" role="alert"></p>
+            </div>
+
+            <button id="auth-submit" type="submit"
+                    class="mt-1 flex h-11 w-full items-center justify-center rounded-btn border border-accent bg-accent px-4 text-sm font-semibold text-accent-ink transition-all duration-150 hover:border-accent-hover hover:bg-accent-hover active:scale-[.985] disabled:cursor-wait disabled:opacity-70 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-surface">Sign in</button>
+          </form>
+
+          <div id="auth-status" data-state="" role="status" aria-live="polite"
+               class="mt-4 rounded-btn px-3 py-2.5 font-mono text-[11.5px] leading-relaxed"></div>
+
+          <!-- Divider -->
+          <div class="my-6 flex items-center gap-3" role="separator" aria-label="Or continue with">
+            <span class="h-px flex-1 bg-line"></span>
+            <span class="font-mono text-[10.5px] uppercase tracking-[.14em] text-quiet">Or continue with</span>
+            <span class="h-px flex-1 bg-line"></span>
+          </div>
+
+          <!-- OAuth (id kept for supabase-app.js) -->
+          <button type="button" id="github-oauth"
+                  class="flex h-11 w-full items-center justify-center gap-2.5 rounded-btn border border-ink bg-ink px-4 text-sm font-semibold text-page transition-all duration-150 hover:bg-white active:scale-[.985] disabled:opacity-70 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-surface">
+            <i data-lucide="github" class="h-[18px] w-[18px]" aria-hidden="true"></i>
+            Continue with GitHub
+            <span class="ml-1 hidden rounded-[3px] bg-page/10 px-1.5 py-0.5 font-mono text-[10px] font-medium uppercase tracking-wider text-page/70 sm:inline">Recommended</span>
+          </button>
+
+          <p class="mt-6 border-t border-line-soft pt-5 text-center text-sm text-muted">
+            <button type="button" id="auth-mode"
+                    class="rounded-[3px] font-semibold text-ink underline-offset-4 transition-colors hover:text-accent hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-surface">New to Roadmap Hub? Create an account</button>
+          </p>
+        </section>
+
+        <!-- Sync note -->
+        <div class="mt-5 flex items-start justify-center gap-2 px-2 text-center">
+          <i data-lucide="refresh-cw" class="mt-[3px] h-3.5 w-3.5 shrink-0 text-accent/80" aria-hidden="true"></i>
+          <p class="text-[12.5px] leading-relaxed text-quiet">
+            <span class="font-mono text-[10.5px] uppercase tracking-[.12em] text-muted">Sync progress —</span>
+            Local browser progress will automatically merge upon sign-in. Roadmap Hub stays fully usable without an account.
+          </p>
+        </div>
+      </div>
+    </main>
+
+    <footer class="px-4 pb-6 text-center font-mono text-[10.5px] uppercase tracking-[.14em] text-quiet/70">
+      Roadmap Hub · Learn the tools. Understand the work.
+    </footer>
+  </div>
+
+  <!-- Your Supabase auth logic (unchanged) -->
+  <script src="../assets/supabase-app.js"></script>
+  <script>
+    if (window.lucide) lucide.createIcons();
+
+    // Runs in the capture phase so empty/invalid fields never reach supabase-app.js.
+    document.addEventListener("submit", (event) => {
+      const form = event.target;
+      if (!form || form.id !== "auth-form") return;
+      const email = document.getElementById("auth-email");
+      const password = document.getElementById("auth-password");
+      const isSignUp = form.dataset.mode === "signup";
+      const setError = (input, msg) => {
+        const el = document.getElementById(input.id + "-error");
+        input.setAttribute("aria-invalid", msg ? "true" : "false");
+        el.textContent = msg ? "→ " + msg : "";
+        el.classList.toggle("hidden", !msg);
+      };
+      let ok = true;
+      if (!email.value.trim()) { setError(email, "Email is required"); ok = false; }
+      else if (!email.validity.valid) { setError(email, "Enter a valid email address"); ok = false; }
+      else setError(email, "");
+      if (!password.value) { setError(password, "Password is required"); ok = false; }
+      else if (isSignUp && password.value.length < 8) { setError(password, "Use at least 8 characters"); ok = false; }
+      else setError(password, "");
+      if (!ok) {
+        event.preventDefault();
+        event.stopImmediatePropagation();
+        form.querySelector('[aria-invalid="true"]').focus();
+      }
+    }, true);
+
+    document.addEventListener("DOMContentLoaded", () => {
+      const authModeButtons = document.querySelectorAll("[data-auth-mode]");
+      const modeToggle = document.getElementById("auth-mode");
+      const loginForm = document.getElementById("auth-form");
+      const authTitle = document.getElementById("auth-form-title");
+      const authSubtitle = document.getElementById("auth-subtitle");
+      const submitButton = document.getElementById("auth-submit");
+      const passwordInput = document.getElementById("auth-password");
+      const passwordToggle = document.getElementById("password-toggle");
+
+      ["auth-email", "auth-password"].forEach((id) => {
+        const input = document.getElementById(id);
+        input.addEventListener("input", () => {
+          input.setAttribute("aria-invalid", "false");
+          document.getElementById(id + "-error").classList.add("hidden");
+        });
+      });
+
+      if (passwordToggle && passwordInput) {
+        passwordToggle.addEventListener("click", () => {
+          const isHidden = passwordInput.type === "password";
+          passwordInput.type = isHidden ? "text" : "password";
+          passwordToggle.setAttribute("aria-pressed", String(isHidden));
+          passwordToggle.setAttribute("aria-label", isHidden ? "Hide password" : "Show password");
+          passwordToggle.querySelector('[data-icon="show"]').classList.toggle("hidden", isHidden);
+          passwordToggle.querySelector('[data-icon="hide"]').classList.toggle("hidden", !isHidden);
+          passwordInput.focus();
+        });
+      }
+
+      const setMode = (mode) => {
+        const isSignUp = mode === "signup";
+        authModeButtons.forEach((button) => {
+          const active = button.dataset.authMode === mode;
+          button.classList.toggle("active", active);
+          button.setAttribute("aria-pressed", String(active));
+        });
+        loginForm.dataset.mode = mode;
+        authTitle.textContent = isSignUp ? "Create your account" : "Welcome back";
+        authSubtitle.textContent = isSignUp
+          ? "Free and optional. Save your progress to the cloud and pick up on any device."
+          : "Sync your learning progress, saved roadmaps, and completed level projects across devices.";
+        modeToggle.textContent = isSignUp ? "Already have an account? Sign in" : "New to Roadmap Hub? Create an account";
+        submitButton.textContent = isSignUp ? "Create account" : "Sign in";
+        passwordInput.setAttribute("autocomplete", isSignUp ? "new-password" : "current-password");
+      };
+
+      authModeButtons.forEach((button) => {
+        button.addEventListener("click", () => setMode(button.dataset.authMode));
+      });
+
+      modeToggle.addEventListener("click", () => {
+        setMode(loginForm.dataset.mode === "signup" ? "signin" : "signup");
+      });
+
+      setMode("signin");
+      if (window.ROADMAP_HUB_PROGRESS) {
+        window.ROADMAP_HUB_PROGRESS.configureAuthPage();
+      }
+    });
+  </script>
+</body>
+</html>

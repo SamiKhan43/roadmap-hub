@@ -1,0 +1,659 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#0f1210">
+  <title>Profile · Roadmap Hub</title>
+  <link rel="icon" type="image/svg+xml" href="logos/logo-mark.svg">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <script src="https://unpkg.com/lucide@0.468.0/dist/umd/lucide.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="assets/supabase-config.js"></script>
+  <script src="assets/supabase-client.js"></script>
+  <script src="assets/supabase-app.js"></script>
+  <style>
+    :root {
+      color-scheme: dark;
+      --bg: #0f1210;
+      --sidebar: #0c0f0d;
+      --card: #151916;
+      --raised: #1b201c;
+      --border: #2a322c;
+      --border-soft: #212722;
+      --muted-bg: #222823;
+      --text: #f0f2ec;
+      --muted: #a8b2a6;
+      --quiet: #737e74;
+      --accent: #c6f36a;
+      --accent-2: #8fe36b;
+      --accent-ink: #17200b;
+      --danger: #f2a59a;
+      --success: #82d9a2;
+      --radius: 12px;
+      --grad: linear-gradient(135deg, var(--accent), var(--accent-2));
+    }
+
+    * { box-sizing: border-box; }
+
+    html { min-width: 320px; background: var(--bg); }
+
+    body {
+      min-height: 100vh;
+      margin: 0;
+      color: var(--text);
+      background:
+        linear-gradient(rgba(255,255,255,.022) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255,255,255,.022) 1px, transparent 1px),
+        var(--bg);
+      background-size: 44px 44px;
+      font-family: Geist, ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
+      letter-spacing: -.011em;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    a { color: inherit; text-decoration: none; }
+    svg { flex: none; }
+    :focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
+
+    .sidebar {
+      position: fixed;
+      inset: 0 auto 0 0;
+      z-index: 30;
+      display: flex;
+      width: 256px;
+      flex-direction: column;
+      border-right: 1px solid var(--border-soft);
+      padding: 24px 16px 16px;
+      background: var(--sidebar);
+      transition: transform .2s ease;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 0 8px;
+      font-size: 15px;
+      font-weight: 600;
+      letter-spacing: -.025em;
+    }
+
+    .brand-mark {
+      display: grid;
+      width: 36px;
+      height: 36px;
+      flex: none;
+      place-items: center;
+      overflow: hidden;
+      border: 1px solid rgba(198,243,106,.2);
+      border-radius: 9px;
+      background: #171d17;
+    }
+    .brand-mark img { width: 100%; height: 100%; }
+    .brand b { color: var(--accent); font-weight: 600; }
+
+    .nav-group { display: grid; gap: 4px; margin-top: 36px; }
+    .eyebrow {
+      margin: 0;
+      color: var(--quiet);
+      font: 500 10.5px/1.4 "JetBrains Mono", ui-monospace, monospace;
+      letter-spacing: .12em;
+      text-transform: uppercase;
+    }
+    .nav-group .eyebrow { padding: 0 12px 8px; }
+
+    .side-link {
+      position: relative;
+      display: flex;
+      min-height: 40px;
+      align-items: center;
+      gap: 12px;
+      border-radius: 7px;
+      padding: 0 12px;
+      color: var(--muted);
+      font-size: 13px;
+      font-weight: 500;
+      transition: color .14s ease, background .14s ease;
+    }
+    .side-link svg { width: 17px; height: 17px; color: var(--quiet); }
+    .side-link:hover { color: var(--text); background: #1a221b; }
+    .side-link[aria-current="page"] { color: var(--text); background: #1a221b; }
+    .side-link[aria-current="page"]::before {
+      position: absolute;
+      inset: 8px auto 8px 0;
+      width: 3px;
+      border-radius: 3px;
+      background: var(--accent);
+      content: "";
+    }
+    .side-link[aria-current="page"] svg { color: var(--accent); }
+
+    .account-card {
+      margin-top: auto;
+      border: 1px solid var(--border-soft);
+      border-radius: 9px;
+      padding: 12px;
+      background: var(--card);
+    }
+    .identity { display: flex; min-width: 0; align-items: center; gap: 10px; }
+    .avatar {
+      display: grid;
+      width: 34px;
+      height: 34px;
+      flex: none;
+      place-items: center;
+      border: 1px solid var(--border);
+      border-radius: 7px;
+      color: var(--accent);
+      background: var(--raised);
+      font-size: 12px;
+      font-weight: 600;
+      text-transform: uppercase;
+    }
+    .user-email {
+      min-width: 0;
+      overflow: hidden;
+      color: var(--muted);
+      font-size: 11px;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+    [data-auth-nav] { display: grid; gap: 2px; margin-top: 10px; }
+    [data-auth-nav]:empty { display: none; }
+    [data-auth-nav] a,
+    [data-auth-nav] button {
+      display: flex;
+      width: 100%;
+      min-height: 34px;
+      align-items: center;
+      border: 0;
+      border-radius: 6px;
+      padding: 0 10px;
+      color: var(--muted);
+      background: transparent;
+      font: 500 12px Geist, ui-sans-serif, system-ui, sans-serif;
+      text-align: left;
+      cursor: pointer;
+    }
+    [data-auth-nav] a:hover,
+    [data-auth-nav] button:hover { color: var(--text); background: #1a221b; }
+    [data-auth-nav] a[href$="/dashboard.html"],
+    [data-auth-nav] a[href$="/profile.html"] { display: none; }
+
+    .scrim { display: none; }
+    .main { min-height: 100vh; margin-left: 256px; }
+    .topbar {
+      position: sticky;
+      top: 0;
+      z-index: 20;
+      border-bottom: 1px solid var(--border-soft);
+      background: rgba(15,18,16,.88);
+      backdrop-filter: blur(14px);
+    }
+    .topbar-inner, .content { max-width: 1080px; margin: 0 auto; padding: 0 32px; }
+    .topbar-inner { display: flex; min-height: 64px; align-items: center; gap: 12px; }
+    .crumbs {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      color: var(--quiet);
+      font: 11px/1.4 "JetBrains Mono", ui-monospace, monospace;
+      letter-spacing: .07em;
+      text-transform: uppercase;
+    }
+    .crumbs a:hover { color: var(--accent); }
+    .crumbs [aria-current] { color: var(--text); }
+    .menu-btn {
+      display: none;
+      width: 36px;
+      height: 36px;
+      place-items: center;
+      border: 1px solid var(--border-soft);
+      border-radius: 7px;
+      color: var(--muted);
+      background: transparent;
+      cursor: pointer;
+    }
+    .menu-btn svg { width: 16px; height: 16px; }
+
+    .page-head {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: flex-end;
+      justify-content: space-between;
+      gap: 20px;
+      padding: 42px 0 28px;
+    }
+    h1 { margin: 9px 0 0; font-size: clamp(26px, 3.2vw, 34px); font-weight: 600; letter-spacing: -.04em; line-height: 1.15; }
+    .lead { max-width: 520px; margin: 8px 0 0; color: var(--muted); font-size: 13px; line-height: 1.65; }
+
+    .profile-layout { display: grid; grid-template-columns: minmax(0, 1.3fr) minmax(250px, .7fr); gap: 18px; }
+    .panel {
+      overflow: hidden;
+      border: 1px solid var(--border-soft);
+      border-radius: var(--radius);
+      background: linear-gradient(180deg, rgba(255,255,255,.025), transparent 42%), var(--card);
+    }
+    .panel-heading { border-bottom: 1px solid var(--border-soft); padding: 20px 22px 17px; }
+    h2 { margin: 5px 0 0; font-size: 15px; font-weight: 600; letter-spacing: -.02em; }
+    .panel-description { margin: 6px 0 0; color: var(--quiet); font-size: 12px; line-height: 1.55; }
+    .panel-body { padding: 22px; }
+
+    .profile-preview {
+      display: flex;
+      min-width: 0;
+      align-items: center;
+      gap: 13px;
+      margin-bottom: 22px;
+    }
+    .profile-preview .avatar { width: 42px; height: 42px; border-radius: 9px; font-size: 15px; }
+    .preview-name { overflow: hidden; font-size: 14px; font-weight: 550; text-overflow: ellipsis; white-space: nowrap; }
+    .preview-email { overflow: hidden; margin-top: 3px; color: var(--quiet); font-size: 11px; text-overflow: ellipsis; white-space: nowrap; }
+
+    fieldset { min-width: 0; margin: 0; border: 0; padding: 0; }
+    fieldset:disabled { opacity: .65; }
+    .field-label { display: block; margin-bottom: 7px; color: var(--muted); font-size: 12px; font-weight: 500; }
+    .field-help { margin: 7px 0 0; color: var(--quiet); font-size: 11px; line-height: 1.5; }
+    input {
+      width: 100%;
+      min-height: 42px;
+      border: 1px solid var(--border);
+      border-radius: 7px;
+      padding: 0 12px;
+      color: var(--text);
+      background: #0f1310;
+      font: 13px Geist, ui-sans-serif, system-ui, sans-serif;
+      transition: border-color .14s ease, box-shadow .14s ease;
+    }
+    input:hover { border-color: #465146; }
+    input:focus { border-color: rgba(198,243,106,.65); outline: none; box-shadow: 0 0 0 3px rgba(198,243,106,.12); }
+    input:disabled { cursor: wait; }
+    .form-actions { display: flex; align-items: center; gap: 12px; margin-top: 20px; }
+    .button {
+      display: inline-flex;
+      min-height: 38px;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      border: 1px solid var(--border);
+      border-radius: 7px;
+      padding: 0 13px;
+      color: var(--text);
+      background: var(--raised);
+      font: 550 12px Geist, ui-sans-serif, system-ui, sans-serif;
+      text-decoration: none;
+      cursor: pointer;
+      transition: border-color .14s ease, background .14s ease, opacity .14s ease;
+    }
+    .button svg { width: 15px; height: 15px; }
+    .button:hover:not(:disabled) { border-color: #4a5944; background: #232b24; }
+    .button-primary { border-color: transparent; color: var(--accent-ink); background: var(--grad); font-weight: 600; }
+    .button-primary:hover:not(:disabled) { border-color: transparent; background: var(--accent); }
+    .button:disabled { cursor: wait; opacity: .6; }
+
+    .status { min-height: 20px; margin: 14px 0 0; color: var(--muted); font-size: 12px; line-height: 1.5; }
+    .status:empty { display: none; }
+    .status[data-state="error"] { color: var(--danger); }
+    .status[data-state="success"] { color: var(--success); }
+    .account-details { margin: 0; }
+    .detail-row { display: grid; grid-template-columns: minmax(88px, .7fr) minmax(0, 1.3fr); gap: 14px; border-bottom: 1px solid var(--border-soft); padding: 13px 0; }
+    .detail-row:first-child { padding-top: 0; }
+    .detail-row:last-child { border-bottom: 0; padding-bottom: 0; }
+    .detail-row dt { color: var(--quiet); font-size: 11px; }
+    .detail-row dd { overflow-wrap: anywhere; margin: 0; color: var(--text); font-size: 12px; text-align: right; }
+    .account-note { display: flex; align-items: flex-start; gap: 9px; margin: 18px 0 0; border-top: 1px solid var(--border-soft); padding-top: 15px; color: var(--quiet); font-size: 11px; line-height: 1.55; }
+    .account-note svg { width: 15px; height: 15px; flex: none; color: var(--accent); }
+
+    .load-error {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 14px;
+      margin-top: 18px;
+      border: 1px solid rgba(240,110,90,.32);
+      border-radius: 8px;
+      padding: 13px 15px;
+      background: rgba(240,110,90,.06);
+    }
+    .load-error[hidden] { display: none; }
+    .load-error p { margin: 0; color: var(--danger); font-size: 12px; line-height: 1.5; }
+
+    @media (max-width: 900px) {
+      .sidebar { transform: translateX(-100%); }
+      .sidebar.is-open { transform: none; }
+      .scrim.is-open { position: fixed; inset: 0; z-index: 25; display: block; background: rgba(0,0,0,.52); }
+      .main { margin-left: 0; }
+      .menu-btn { display: grid; }
+      .topbar-inner, .content { padding-right: 20px; padding-left: 20px; }
+    }
+
+    @media (max-width: 700px) {
+      .profile-layout { grid-template-columns: minmax(0, 1fr); }
+      .page-head { padding-top: 30px; }
+      .panel-heading { padding: 18px 18px 15px; }
+      .panel-body { padding: 18px; }
+    }
+
+    @media (max-width: 420px) {
+      .sidebar { width: min(280px, 86vw); }
+      .topbar-inner, .content { padding-right: 16px; padding-left: 16px; }
+      .page-head { padding-top: 25px; }
+      .detail-row { grid-template-columns: 90px minmax(0, 1fr); gap: 8px; }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after { animation: none !important; scroll-behavior: auto !important; transition-duration: .01ms !important; }
+    }
+  </style>
+</head>
+<body>
+  <aside class="sidebar" id="sidebar-navigation" aria-label="Profile sidebar">
+    <a class="brand" href="./" aria-label="Roadmap Hub home">
+      <span class="brand-mark"><img src="logos/logo-mark.svg" alt=""></span>
+      <span>Roadmap <b>Hub</b></span>
+    </a>
+
+    <nav class="nav-group" aria-label="Learning">
+      <p class="eyebrow">Learning</p>
+      <a class="side-link" href="./"><i data-lucide="library-big" aria-hidden="true"></i>All roadmaps</a>
+      <a class="side-link" href="./dashboard.html"><i data-lucide="chart-no-axes-column-increasing" aria-hidden="true"></i>Overview</a>
+    </nav>
+
+    <nav class="nav-group" aria-label="Account">
+      <p class="eyebrow">Account</p>
+      <a class="side-link" href="./profile.html" aria-current="page"><i data-lucide="user-round" aria-hidden="true"></i>Profile</a>
+    </nav>
+
+    <div class="account-card">
+      <div class="identity">
+        <span class="avatar" id="user-initial" aria-hidden="true">·</span>
+        <span class="user-email" id="user-email">Loading account…</span>
+      </div>
+      <div data-auth-nav aria-label="Account options"></div>
+    </div>
+  </aside>
+  <div class="scrim" id="scrim"></div>
+
+  <div class="main">
+    <header class="topbar">
+      <div class="topbar-inner">
+        <button class="menu-btn" id="sidebar-toggle" type="button" aria-expanded="false" aria-controls="sidebar-navigation" aria-label="Open navigation menu">
+          <i data-lucide="menu" aria-hidden="true"></i>
+        </button>
+        <nav class="crumbs" aria-label="Breadcrumb">
+          <a href="./">Roadmap Hub</a>
+          <span aria-hidden="true">/</span>
+          <span>Account</span>
+          <span aria-hidden="true">/</span>
+          <span aria-current="page">Profile</span>
+        </nav>
+      </div>
+    </header>
+
+    <main class="content" id="profile-content" aria-busy="true">
+      <header class="page-head">
+        <div>
+          <p class="eyebrow">Account</p>
+          <h1>Your profile</h1>
+          <p class="lead">Manage the name shown around Roadmap Hub. Your sign-in email and account details are read-only.</p>
+        </div>
+      </header>
+
+      <div class="profile-layout">
+        <section class="panel" aria-labelledby="profile-details-heading">
+          <div class="panel-heading">
+            <p class="eyebrow">Personal details</p>
+            <h2 id="profile-details-heading">Profile information</h2>
+            <p class="panel-description">Use a name that feels right. You can change it at any time.</p>
+          </div>
+          <div class="panel-body">
+            <div class="profile-preview">
+              <span class="avatar" id="profile-initial" aria-hidden="true">·</span>
+              <div style="min-width:0">
+                <div class="preview-name" id="profile-name">Loading profile…</div>
+                <div class="preview-email" id="profile-email"></div>
+              </div>
+            </div>
+
+            <form id="profile-form" novalidate>
+              <fieldset id="profile-fields" disabled>
+                <label class="field-label" for="display-name">Display name</label>
+                <input id="display-name" name="display_name" type="text" maxlength="80" autocomplete="nickname" aria-describedby="display-name-help profile-status">
+                <p class="field-help" id="display-name-help">Up to 80 characters. This name is visible only in your account experience.</p>
+                <div class="form-actions">
+                  <button class="button button-primary" id="save-button" type="submit">
+                    <i data-lucide="check" aria-hidden="true"></i>
+                    Save changes
+                  </button>
+                </div>
+              </fieldset>
+              <p class="status" id="profile-status" data-state="" role="status" aria-live="polite"></p>
+            </form>
+          </div>
+        </section>
+
+        <section class="panel" aria-labelledby="account-info-heading">
+          <div class="panel-heading">
+            <p class="eyebrow">Account</p>
+            <h2 id="account-info-heading">Account information</h2>
+            <p class="panel-description">Details associated with your signed-in account.</p>
+          </div>
+          <div class="panel-body">
+            <dl class="account-details">
+              <div class="detail-row">
+                <dt>Email</dt>
+                <dd id="account-email">Loading…</dd>
+              </div>
+              <div class="detail-row">
+                <dt>Username</dt>
+                <dd id="account-username">Loading…</dd>
+              </div>
+              <div class="detail-row">
+                <dt>Member since</dt>
+                <dd id="account-created">Loading…</dd>
+              </div>
+            </dl>
+            <p class="account-note">
+              <i data-lucide="lock-keyhole" aria-hidden="true"></i>
+              Account details are loaded from your profile and cannot be changed here.
+            </p>
+          </div>
+        </section>
+      </div>
+
+      <div class="load-error" id="profile-error" role="alert" hidden>
+        <p id="profile-error-message"></p>
+        <button class="button" id="retry-button" type="button">Try again</button>
+      </div>
+    </main>
+  </div>
+
+  <script>
+    const $ = (id) => document.getElementById(id);
+    let activeClient = null;
+    let activeUser = null;
+    let currentProfile = null;
+
+    const refreshIcons = () => window.lucide && window.lucide.createIcons();
+    const makeIcon = (name) => {
+      const node = document.createElement("i");
+      node.setAttribute("data-lucide", name);
+      node.setAttribute("aria-hidden", "true");
+      return node;
+    };
+    const profileName = (profile, user) =>
+      profile?.display_name || profile?.username || user.email || "Roadmap learner";
+    const formatDate = (value) => {
+      if (!value || Number.isNaN(Date.parse(value))) return "Not available";
+      return new Date(value).toLocaleDateString(undefined, { month: "short", day: "numeric", year: "numeric" });
+    };
+
+    const showStatus = (message, state) => {
+      const status = $("profile-status");
+      status.textContent = message;
+      status.dataset.state = state;
+    };
+
+    const renderProfile = (profile, user) => {
+      currentProfile = profile || {};
+      const email = user.email || "Not available";
+      const name = profileName(currentProfile, user);
+      const initial = name.trim().charAt(0) || "·";
+
+      $("user-email").textContent = email;
+      $("user-initial").textContent = initial;
+      $("profile-name").textContent = name;
+      $("profile-email").textContent = email;
+      $("profile-initial").textContent = initial;
+      $("display-name").value = currentProfile.display_name || "";
+      $("account-email").textContent = email;
+      $("account-username").textContent = currentProfile.username ? `@${currentProfile.username}` : "Not set";
+      $("account-created").textContent = formatDate(currentProfile.created_at);
+      $("profile-fields").disabled = false;
+    };
+
+    const showLoadError = (error) => {
+      if ($("user-email").textContent === "Loading account…") {
+        $("user-email").textContent = "Account details unavailable";
+      }
+      $("profile-name").textContent = "Profile details unavailable";
+      $("account-username").textContent = "Not available";
+      $("account-created").textContent = "Not available";
+      $("profile-error-message").textContent =
+        error?.message || "Your profile could not be loaded. Please try again.";
+      $("profile-error").hidden = false;
+      $("profile-content").setAttribute("aria-busy", "false");
+    };
+
+    const loadProfile = async () => {
+      const content = $("profile-content");
+      const retryButton = $("retry-button");
+      content.setAttribute("aria-busy", "true");
+      $("profile-error").hidden = true;
+      $("profile-fields").disabled = true;
+      retryButton.disabled = true;
+      retryButton.textContent = "Loading…";
+
+      activeClient = window.ROADMAP_HUB_SUPABASE?.getClient?.();
+      if (!activeClient) {
+        window.location.href = "./auth/index.html";
+        return;
+      }
+
+      try {
+        const sessionResult = await activeClient.auth.getSession();
+        if (sessionResult.error) throw sessionResult.error;
+        activeUser = sessionResult.data?.session?.user;
+        if (!activeUser) {
+          window.location.href = "./auth/index.html";
+          return;
+        }
+
+        const email = activeUser.email || "Signed-in learner";
+        $("user-email").textContent = email;
+        $("user-initial").textContent = email.charAt(0) || "·";
+        $("profile-email").textContent = email;
+        $("account-email").textContent = email;
+
+        const { data, error } = await activeClient
+          .from("profiles")
+          .select("display_name, username, created_at")
+          .eq("id", activeUser.id)
+          .maybeSingle();
+        if (error) throw error;
+
+        renderProfile(data, activeUser);
+        $("profile-status").textContent = "";
+        $("profile-status").dataset.state = "";
+        content.setAttribute("aria-busy", "false");
+      } catch (error) {
+        showLoadError(error);
+      } finally {
+        retryButton.disabled = false;
+        retryButton.textContent = "Try again";
+      }
+    };
+
+    const saveProfile = async (event) => {
+      event.preventDefault();
+      const displayName = $("display-name").value.trim();
+      if (!displayName) {
+        showStatus("Enter a display name before saving.", "error");
+        $("display-name").focus();
+        return;
+      }
+      if (displayName.length > 80) {
+        showStatus("Display names must be 80 characters or fewer.", "error");
+        $("display-name").focus();
+        return;
+      }
+      if (!activeClient || !activeUser) {
+        showStatus("Your session is no longer available. Sign in again to save changes.", "error");
+        return;
+      }
+
+      const saveButton = $("save-button");
+      saveButton.disabled = true;
+      saveButton.textContent = "Saving…";
+      showStatus("", "");
+
+      try {
+        const { data, error } = await activeClient
+          .from("profiles")
+          .upsert(
+            { id: activeUser.id, display_name: displayName },
+            { onConflict: "id" }
+          )
+          .select("display_name, username, created_at")
+          .single();
+        if (error) throw error;
+
+        renderProfile(data, activeUser);
+        showStatus("Profile saved.", "success");
+      } catch (error) {
+        showStatus(error?.message || "Your profile could not be saved. Please try again.", "error");
+      } finally {
+        saveButton.disabled = false;
+        saveButton.replaceChildren();
+        saveButton.append(
+          makeIcon("check"),
+          document.createTextNode(" Save changes")
+        );
+        refreshIcons();
+      }
+    };
+
+    document.addEventListener("DOMContentLoaded", () => {
+      const sidebar = $("sidebar-navigation");
+      const toggle = $("sidebar-toggle");
+      const scrim = $("scrim");
+      const setMenu = (open, returnFocus = false) => {
+        sidebar.classList.toggle("is-open", open);
+        scrim.classList.toggle("is-open", open);
+        toggle.setAttribute("aria-expanded", String(open));
+        toggle.setAttribute("aria-label", open ? "Close navigation menu" : "Open navigation menu");
+        toggle.replaceChildren(makeIcon(open ? "x" : "menu"));
+        refreshIcons();
+        if (returnFocus) toggle.focus();
+      };
+
+      toggle.addEventListener("click", () => setMenu(!sidebar.classList.contains("is-open")));
+      scrim.addEventListener("click", () => setMenu(false));
+      document.addEventListener("keydown", (event) => {
+        if (event.key === "Escape" && sidebar.classList.contains("is-open")) setMenu(false, true);
+      });
+      $("profile-form").addEventListener("submit", saveProfile);
+      $("display-name").addEventListener("input", () => {
+        if ($("profile-status").dataset.state === "error") showStatus("", "");
+      });
+      $("retry-button").addEventListener("click", loadProfile);
+      refreshIcons();
+      loadProfile();
+    });
+  </script>
+</body>
+</html>

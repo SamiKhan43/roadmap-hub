@@ -8,6 +8,10 @@
 <script src="https://cdn.tailwindcss.com/3.4.17"></script>
 <script>tailwind.config={theme:{extend:{colors:{slate:{100:"#f4f4f5",200:"#e4e4e7",300:"#d4d4d8",400:"#a1a1aa",500:"#8a8a93",600:"#303036",700:"#232328",800:"#141417",900:"#0c0c0e",950:"#09090b"}}}}}</script>
 <script src="https://unpkg.com/lucide@0.468.0/dist/umd/lucide.min.js"></script>
+<script src="../assets/supabase-config.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="../assets/supabase-client.js"></script>
+<script src="../assets/supabase-app.js"></script>
 <style>
 :root{--c:#fbbf24;--rgb:251,191,36;--bg:rgba(var(--rgb),.08);--line:#232328;--ease:cubic-bezier(.2,.8,.2,1);--t:160ms}
 *{-webkit-font-smoothing:antialiased}
@@ -109,6 +113,7 @@ section[id^=level-]{scroll-margin-top:4.5rem}
    <li><a class="nav-link" href="../architecture/index.html">Architecture</a></li>
    <li><a class="nav-link" href="#how-it-works">How it works</a></li>
    <li><a class="nav-link" href="#progress">Progress</a></li>
+   <li><div data-auth-nav></div></li>
    <li><a class="nav-link inline-flex items-center gap-1" href="https://github.com/samikhan43/roadmap-hub" target="_blank" rel="noopener noreferrer">GitHub <i data-lucide="arrow-up-right" class="h-4 w-4"></i></a></li>
   </ul>
   <div class="ml-auto flex items-center gap-3 w-32 sm:w-48 md:ml-0">
@@ -126,6 +131,7 @@ section[id^=level-]{scroll-margin-top:4.5rem}
   <li><a class="nav-link py-3" href="../architecture/index.html">Architecture Library</a></li>
   <li><a class="nav-link py-3" href="#how-it-works">How it works</a></li>
   <li><a class="nav-link py-3" href="#progress">Progress</a></li>
+  <li><div class="px-2 py-2" data-auth-nav></div></li>
   <li><a class="nav-link py-3" href="https://github.com/samikhan43/roadmap-hub" target="_blank" rel="noopener noreferrer">GitHub</a></li>
  </ul>
 </header>

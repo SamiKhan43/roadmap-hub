@@ -16,6 +16,10 @@
 <script>tailwind.config={theme:{extend:{colors:{slate:{100:"#f4f4f5",200:"#e4e4e7",300:"#d4d4d8",400:"#a1a1aa",500:"#8a8a93",600:"#303036",700:"#232328",800:"#141417",900:"#0c0c0e",950:"#09090b"}}}}}</script>
 
 <script src="https://unpkg.com/lucide@0.468.0/dist/umd/lucide.min.js"></script>
+<script src="assets/supabase-config.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="assets/supabase-client.js"></script>
+<script src="assets/supabase-app.js"></script>
 
 <style>
 
@@ -342,6 +346,7 @@ header nav.site-nav {
   font-weight: 680;
 }
 .hero-title span { color: #a5b19f; }
+.hero-title > span { display: block; text-wrap: balance; }
 .hero-copy {
   max-width: 620px;
   margin: 0 0 2rem;
@@ -377,71 +382,6 @@ header nav.site-nav {
   color: var(--accent);
   border-color: #71834f;
   background: rgba(198,243,106,.05);
-}
-
-.architecture-feature {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 2rem;
-  padding: 1.15rem 0;
-  border-top: 1px solid var(--border);
-  margin: 0;
-}
-.architecture-feature--first { margin-top: -2rem; }
-.architecture-feature--last {
-  border-bottom: 1px solid var(--border);
-  margin-bottom: 3rem;
-}
-.architecture-feature__content { min-width: 0; }
-.architecture-feature__label {
-  margin: 0 0 .25rem;
-  color: var(--accent);
-  font-size: .66rem;
-  font-weight: 700;
-  letter-spacing: .12em;
-  line-height: 1.4;
-}
-.architecture-feature__title {
-  margin: 0 0 .2rem;
-  color: var(--text);
-  font-size: 1.2rem;
-  font-weight: 650;
-  letter-spacing: -.03em;
-  line-height: 1.35;
-}
-.architecture-feature__description {
-  max-width: 720px;
-  margin: 0;
-  color: #aab5aa;
-  font-size: .84rem;
-  line-height: 1.65;
-}
-.architecture-feature__link {
-  display: inline-flex;
-  min-height: 2.75rem;
-  flex: none;
-  align-items: center;
-  gap: .45rem;
-  color: var(--text);
-  font-size: .84rem;
-  font-weight: 600;
-  text-decoration: none;
-  transition: color 160ms var(--ease);
-}
-.architecture-feature__link:hover,
-.architecture-feature__link:focus-visible { color: var(--accent); }
-.architecture-feature__arrow {
-  color: var(--accent);
-  transition: transform 160ms var(--ease);
-}
-.architecture-feature__link:hover .architecture-feature__arrow,
-.architecture-feature__link:focus-visible .architecture-feature__arrow {
-  transform: translateX(3px);
-}
-.architecture-feature__link:focus-visible {
-  outline: 2px solid var(--accent);
-  outline-offset: 4px;
 }
 
 #resume { margin-bottom: 4.5rem; }
@@ -630,16 +570,6 @@ a.card:focus-visible { outline-offset: 4px; }
   .site-main > section:first-child { padding-top: 4rem; padding-bottom: 3.25rem; }
   .hero-title { font-size: clamp(3rem, 13vw, 4.5rem); }
   .hero-copy { font-size: 1rem; line-height: 1.7; }
-  .architecture-feature {
-    align-items: flex-start;
-    flex-direction: column;
-    gap: .45rem;
-    padding: 1rem 0;
-    margin: 0;
-  }
-  .architecture-feature__link { min-height: 2.5rem; }
-  .architecture-feature--first { margin-top: -1.25rem; }
-  .architecture-feature--last { margin-bottom: 2.5rem; }
   .roadmaps-heading { align-items: start; }
   #count { max-width: 105px; line-height: 1.5; }
   #filters { padding-bottom: .45rem; }
@@ -650,6 +580,324 @@ a.card:focus-visible { outline-offset: 4px; }
   *, *::before, *::after { scroll-behavior: auto !important; transition-duration: .01ms !important; }
 }
 
+header nav.site-nav { gap: 1rem; }
+#primary-nav { gap: 0; }
+.nav-link { white-space: nowrap; }
+.nav-utilities [data-auth-nav] { position: relative; }
+.account-menu { position: relative; }
+.nav-account {
+  display: inline-flex;
+  min-height: 36px;
+  align-items: center;
+  gap: .4rem;
+  border: 1px solid var(--border);
+  border-radius: 5px;
+  padding: .3rem .6rem;
+  color: #cbd4c9;
+  background: #121713;
+  font-size: .78rem;
+  font-weight: 600;
+  white-space: nowrap;
+}
+.nav-account:hover,
+.nav-account[aria-expanded="true"] { border-color: #53614c; color: var(--text); background: #171e17; }
+.account-menu__panel {
+  position: absolute;
+  z-index: 60;
+  top: calc(100% + .5rem);
+  right: 0;
+  min-width: 180px;
+  padding: .35rem;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  background: #131814;
+  box-shadow: 0 12px 30px rgba(0,0,0,.28);
+}
+.account-menu__panel[hidden] { display: none; }
+.account-menu__panel a,
+.account-menu__panel button {
+  display: flex;
+  width: 100%;
+  min-height: 40px;
+  align-items: center;
+  border: 0;
+  border-radius: 4px;
+  padding: .55rem .65rem;
+  color: #cbd4c9;
+  background: transparent;
+  font-size: .82rem;
+  text-align: left;
+  text-decoration: none;
+}
+.account-menu__panel a:hover,
+.account-menu__panel button:hover { color: var(--text); background: #1b231b; }
+.account-menu__status {
+  margin: .25rem .4rem .1rem;
+  border-top: 1px solid var(--border-soft);
+  padding: .55rem .25rem .15rem;
+  color: #f0a6a6;
+  font-size: .75rem;
+}
+.account-menu__status[hidden] { display: none; }
+.site-main > section:first-child {
+  padding-top: clamp(4rem, 8vw, 6.25rem);
+  padding-bottom: clamp(3rem, 6vw, 4.5rem);
+}
+.hero-title {
+  font-size: clamp(3.1rem, 6.4vw, 5.5rem);
+  line-height: 1.02;
+  letter-spacing: -.07em;
+}
+.hero-kicker { margin-bottom: 1.25rem; }
+.hero-copy { max-width: 590px; }
+#roadmaps { margin-bottom: 0; }
+#count { max-width: none; }
+#empty {
+  display: grid;
+  justify-items: center;
+  gap: .85rem;
+  padding: 3rem 1rem;
+  text-align: center;
+}
+#empty[hidden] { display: none; }
+#empty p { margin: 0; }
+#clear-search {
+  min-height: 40px;
+  border: 1px solid #3a443b;
+  border-radius: 5px;
+  padding: .45rem .8rem;
+  color: #dce3d9;
+  background: #121713;
+  font-size: .8rem;
+  font-weight: 600;
+}
+#clear-search:hover { border-color: #71834f; color: var(--accent); }
+#resume { margin: 0 0 3rem; }
+#resume-title { margin-bottom: .85rem; }
+#resume-list { grid-template-columns: repeat(auto-fit, minmax(min(100%, 340px), 1fr)); }
+.resume { min-height: 74px; }
+.card { min-height: 292px; }
+.site-footer {
+  max-width: none !important;
+  margin-top: 0;
+  border-top: 1px solid var(--border);
+  padding: 3rem 1rem 1.25rem;
+  color: var(--muted);
+  background: #0b0d0c;
+  font-size: .84rem;
+  text-align: left;
+}
+.site-footer__inner { width: 100%; max-width: var(--content-width); margin-inline: auto; }
+.site-footer__main {
+  display: grid;
+  grid-template-columns: minmax(240px, 1.6fr) repeat(3, minmax(120px, 1fr));
+  gap: 2rem;
+}
+.site-footer__brand { max-width: 290px; }
+.site-footer__brand-link {
+  display: inline-flex;
+  min-height: 44px;
+  align-items: center;
+  gap: .7rem;
+  color: var(--text);
+  font-size: 1rem;
+  font-weight: 650;
+  text-decoration: none;
+}
+.site-footer__brand-link img { width: 34px; height: 34px; }
+.site-footer__brand p { margin: .75rem 0 0; color: #929d92; line-height: 1.7; }
+.site-footer__group { display: grid; align-content: start; justify-items: start; gap: .3rem; }
+.site-footer__label {
+  margin: .3rem 0 .45rem;
+  color: #859085;
+  font-size: .68rem;
+  font-weight: 700;
+  letter-spacing: .1em;
+  text-transform: uppercase;
+}
+.site-footer__link {
+  display: inline-flex;
+  min-height: 36px;
+  align-items: center;
+  gap: .35rem;
+  color: #b8c2b7;
+  text-decoration: none;
+  transition: color .15s ease;
+}
+.site-footer__link:hover { color: var(--accent); }
+.site-footer__link svg { width: 14px; height: 14px; color: var(--accent); }
+.site-footer__bottom {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1rem;
+  flex-wrap: wrap;
+  margin-top: 2.5rem;
+  border-top: 1px solid var(--border-soft);
+  padding-top: 1rem;
+  color: #818c81;
+  font-size: .75rem;
+}
+.site-footer__bottom-links { display: inline-flex; align-items: center; gap: 1.25rem; }
+@media (max-width: 767px) {
+  .site-footer { padding-top: 2.5rem; }
+  .site-footer__main { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 1.75rem 1rem; }
+  .site-footer__brand { grid-column: 1 / -1; max-width: 36rem; }
+}
+@media (max-width: 420px) {
+  .site-footer__main { grid-template-columns: 1fr; gap: 1.25rem; }
+  .site-footer__brand { grid-column: auto; }
+  .site-footer__bottom { align-items: flex-start; flex-direction: column; }
+}
+
+@media (max-width: 1100px) {
+  header nav.site-nav { grid-template-columns: minmax(0, 1fr) auto; gap: .5rem; min-height: 60px; }
+  #nav-content {
+    position: absolute;
+    z-index: 50;
+    top: 100%;
+    left: 0;
+    right: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    gap: .75rem;
+    padding: .9rem 1rem 1rem;
+    border: 1px solid var(--border);
+    border-top: 1px solid var(--border-soft);
+    border-radius: 0 0 7px 7px;
+    background: rgba(13,15,14,.97);
+    box-shadow: 0 18px 35px rgba(0,0,0,.24);
+    backdrop-filter: blur(14px);
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
+    transform: translateY(-.35rem);
+  }
+  #nav-content.is-open { opacity: 1; visibility: visible; pointer-events: auto; transform: translateY(0); }
+  #primary-nav { flex: none; flex-direction: column; align-items: stretch; gap: .1rem; }
+  #primary-nav .nav-link { padding: .72rem .75rem; }
+  .nav-actions { flex-direction: column; align-items: stretch; gap: .7rem; }
+  .nav-search { width: 100%; }
+  .nav-utilities { justify-content: space-between; padding-top: .75rem; border-top: 1px solid var(--border-soft); }
+  #nav-toggle {
+    display: inline-flex;
+    width: 40px;
+    height: 40px;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid transparent;
+    border-radius: 5px;
+    color: #d3dbd1;
+    background: transparent;
+  }
+  #nav-toggle:hover { border-color: var(--border); background: rgba(255,255,255,.045); }
+}
+@media (min-width: 1101px) {
+  #nav-content { position: static; opacity: 1; visibility: visible; pointer-events: auto; transform: none; }
+}
+@media (max-width: 767px) {
+  .hero-title { font-size: clamp(2rem, 10.8vw, 3.35rem); }
+  .roadmaps-heading { align-items: start; }
+  #count { max-width: 120px; line-height: 1.5; }
+  #filters { padding-bottom: .45rem; scroll-snap-type: x proximity; }
+  #filters .chip { scroll-snap-align: start; }
+}
+.btr {
+  --btr-surface: #121513;
+  --btr-surface-2: #171b18;
+  --btr-border: #232a25;
+  --btr-border-strong: #333d35;
+  --btr-text: #eef1ea;
+  --btr-text-2: #b4bdb3;
+  --btr-text-3: #8b968b;
+  --btr-accent: #c6f36a;
+  display: block;
+  margin-inline: -16px;
+  border-top: 1px solid var(--btr-border);
+  padding-block: clamp(2.5rem, 6vw, 4.5rem);
+  color: var(--btr-text);
+  background: #0b0d0c;
+  line-height: 1.6;
+}
+.btr * { box-sizing: border-box; }
+.btr-container {
+  width: 100%;
+  max-width: 1200px;
+  margin-inline: auto;
+  padding-inline: 20px;
+}
+.btr-head { margin-bottom: 1.75rem; }
+.btr-eyebrow {
+  display: flex;
+  align-items: center;
+  gap: .6rem;
+  margin: 0 0 .75rem;
+  color: var(--btr-text-3);
+  font-family: var(--btr-mono, ui-monospace, "SF Mono", Menlo, Consolas, monospace);
+  font-size: .72rem;
+  font-weight: 500;
+  letter-spacing: .06em;
+  text-transform: uppercase;
+}
+.btr-eyebrow b { color: var(--btr-accent); font-weight: 500; }
+.btr-title {
+  margin: 0;
+  color: var(--btr-text);
+  font-size: clamp(1.5rem, 2.6vw, 2rem);
+  font-weight: 600;
+  line-height: 1.15;
+  letter-spacing: -.035em;
+}
+.btr-lede { max-width: 56ch; margin: .6rem 0 0; color: var(--btr-text-2); font-size: .95rem; }
+.btr-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 260px), 1fr)); gap: 12px; }
+.btr-card {
+  display: flex;
+  min-height: 250px;
+  flex-direction: column;
+  padding: 1.4rem;
+  border: 1px solid var(--btr-border);
+  border-radius: 8px;
+  color: inherit;
+  background: var(--btr-surface);
+  text-decoration: none;
+  transition: border-color .15s, background .15s;
+}
+.btr-card:hover { border-color: var(--btr-border-strong); background: var(--btr-surface-2); }
+.btr-card:focus-visible { outline: 2px solid var(--btr-accent); outline-offset: 2px; border-radius: 5px; }
+.btr-ico {
+  display: flex;
+  width: 36px;
+  height: 36px;
+  flex: none;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 1.25rem;
+  border: 1px solid rgba(198,243,106,.28);
+  border-radius: 5px;
+  color: var(--btr-accent);
+  background: rgba(198,243,106,.1);
+}
+.btr-ico svg { width: 18px; height: 18px; }
+.btr-label {
+  margin: 0 0 .3rem;
+  color: var(--btr-text-3);
+  font-family: var(--btr-mono, ui-monospace, "SF Mono", Menlo, Consolas, monospace);
+  font-size: .7rem;
+  letter-spacing: .05em;
+  text-transform: uppercase;
+}
+.btr-card h3 { margin: 0; color: var(--btr-text); font-size: 1.0625rem; font-weight: 600; letter-spacing: -.025em; }
+.btr-desc { margin: .5rem 0 1.25rem; color: var(--btr-text-2); font-size: .875rem; line-height: 1.6; }
+.btr-arrow { display: inline-flex; align-items: center; gap: .35rem; margin-top: auto; color: var(--btr-text); font-size: .875rem; font-weight: 600; }
+.btr-arrow svg { width: 15px; height: 15px; color: var(--btr-accent); transition: transform .15s; }
+.btr-card:hover .btr-arrow svg { transform: translateX(3px); }
+@media (min-width: 768px) { .btr-container { padding-inline: 32px; } }
+@media (prefers-reduced-motion: reduce) {
+  .btr-card, .btr-arrow svg { transition: none; }
+  .btr-card:hover .btr-arrow svg { transform: none; }
+}
+
 </style>
 
 </head>
@@ -658,7 +906,7 @@ a.card:focus-visible { outline-offset: 4px; }
 
 <a href="#roadmaps" class="sr-only focus:not-sr-only focus:fixed focus:left-3 focus:top-3 focus:z-[60] focus:rounded-lg focus:bg-white focus:px-3 focus:py-2 focus:text-sm focus:font-semibold focus:text-zinc-950">Skip to roadmaps</a>
 
-<header class="sticky top-0 z-50 border-b border-white/10 bg-zinc-950/80 backdrop-blur">
+<header id="top" class="sticky top-0 z-50 border-b border-white/10 bg-zinc-950/80 backdrop-blur">
 
  <nav class="site-nav max-w-6xl mx-auto px-4" aria-label="Main">
 
@@ -668,10 +916,9 @@ a.card:focus-visible { outline-offset: 4px; }
 
    <ul id="primary-nav" aria-label="Primary">
     <li><a class="nav-link" href="#roadmaps">Roadmaps</a></li>
-    <li><a class="nav-link" href="architecture/index.html">Architecture Library</a></li>
+    <li><a class="nav-link" href="architecture/index.html">Architecture</a></li>
     <li><a class="nav-link" href="backend-engineer-journey/">Backend Journey</a></li>
     <li><a class="nav-link" href="setup-guides/index.html">Setup Guides</a></li>
-    <li><a class="nav-link" href="#how-it-works">How It Works</a></li>
    </ul>
 
    <div class="nav-actions">
@@ -682,6 +929,7 @@ a.card:focus-visible { outline-offset: 4px; }
     </button>
     <div class="nav-utilities">
      <a class="nav-progress" href="#progress"><i data-lucide="chart-no-axes-column-increasing" class="h-4 w-4" aria-hidden="true"></i>Progress</a>
+     <div data-auth-nav></div>
      <a class="nav-icon-button" href="https://github.com/samikhan43/roadmap-hub" target="_blank" rel="noopener noreferrer" aria-label="Roadmap Hub on GitHub (opens in a new tab)" title="GitHub">
       <i data-lucide="github" class="h-[18px] w-[18px]" aria-hidden="true"></i>
      </a>
@@ -723,47 +971,11 @@ a.card:focus-visible { outline-offset: 4px; }
 
  </section>
 
- <section class="architecture-feature architecture-feature--first" aria-labelledby="architecture-feature-title">
-  <div class="architecture-feature__content">
-   <p class="architecture-feature__label">SYSTEMS &amp; INTERNALS</p>
-   <h2 id="architecture-feature-title" class="architecture-feature__title">Architecture Library</h2>
-   <p class="architecture-feature__description">Understand how software systems work internally, how their components interact, how data moves through them, and why they are designed that way.</p>
-  </div>
-  <a class="architecture-feature__link" href="architecture/index.html">
-   Explore architectures <span class="architecture-feature__arrow" aria-hidden="true">→</span>
-  </a>
- </section>
-
-
- <!-- Explore the library -->
-
- <section class="architecture-feature" aria-labelledby="backend-journey-title">
-  <div class="architecture-feature__content">
-   <p class="architecture-feature__label">A GUIDED CAREER PATH</p>
-   <h2 id="backend-journey-title" class="architecture-feature__title">Want to become a backend engineer?</h2>
-   <p class="architecture-feature__description">From programming fundamentals to databases, APIs, system design and deployment, understand what goes into building backend systems.</p>
-  </div>
-  <a href="backend-engineer-journey/" class="architecture-feature__link">
-   Explore the journey <span class="architecture-feature__arrow" aria-hidden="true">→</span>
-  </a>
- </section>
-
- <section class="architecture-feature architecture-feature--last" aria-labelledby="setup-guides-title">
-  <div class="architecture-feature__content">
-   <p class="architecture-feature__label">PRACTICAL DEVELOPMENT SETUP</p>
-   <h2 id="setup-guides-title" class="architecture-feature__title">Setup guides for your tools</h2>
-   <p class="architecture-feature__description">Follow straightforward guides to install and configure the tools you'll use in your projects.</p>
-  </div>
-  <a href="setup-guides/index.html" class="architecture-feature__link">
-   Browse setup guides <span class="architecture-feature__arrow" aria-hidden="true">→</span>
-  </a>
- </section>
-
-
-
  <!-- Continue where you left off (filled by resume()) -->
 
  <section id="resume" class="hidden mb-12" aria-labelledby="resume-title">
+
+  <p class="section-index">YOUR LEARNING ACTIVITY</p>
 
   <h2 id="resume-title" class="text-lg font-semibold text-white mb-3">Continue where you left off</h2>
 
@@ -804,16 +1016,51 @@ a.card:focus-visible { outline-offset: 4px; }
 
   </div>
 
-  <div id="progress">
+  <div id="progress" role="region" aria-label="Roadmap results">
 
    <div id="grid" class="grid gap-4 sm:grid-cols-2 lg:grid-cols-3"></div>
 
   </div>
 
-  <p id="empty" class="hidden text-center text-slate-300 py-16">No roadmaps match your search. Try a different word or clear the filter.</p>
+  <div id="empty" hidden role="status">
+   <p>No roadmaps match your search and filters.</p>
+   <button id="clear-search" type="button">Clear search and filters</button>
+  </div>
 
  </section>
 
+ <section class="btr" aria-labelledby="btr-title">
+  <div class="btr-container">
+   <div class="btr-head">
+    <p class="btr-eyebrow"><b>02</b> Go deeper</p>
+    <h2 class="btr-title" id="btr-title">Beyond the roadmaps</h2>
+    <p class="btr-lede">Explainers, a guided career path and setup walkthroughs that sit alongside the learning paths.</p>
+   </div>
+   <div class="btr-grid">
+    <a class="btr-card" href="architecture/index.html">
+     <span class="btr-ico" aria-hidden="true"><i data-lucide="cpu"></i></span>
+     <p class="btr-label">Systems &amp; internals</p>
+     <h3>Architecture Library</h3>
+     <p class="btr-desc">How software systems work internally: how components interact, how data moves through them, and why they're designed that way.</p>
+     <span class="btr-arrow">Explore architectures <i data-lucide="arrow-right" aria-hidden="true"></i></span>
+    </a>
+    <a class="btr-card" href="backend-engineer-journey/">
+     <span class="btr-ico" aria-hidden="true"><i data-lucide="route"></i></span>
+     <p class="btr-label">A guided career path</p>
+     <h3>Backend Engineer Journey</h3>
+     <p class="btr-desc">From programming fundamentals to databases, APIs, system design and deployment: what goes into building backend systems.</p>
+     <span class="btr-arrow">Explore the journey <i data-lucide="arrow-right" aria-hidden="true"></i></span>
+    </a>
+    <a class="btr-card" href="setup-guides/index.html">
+     <span class="btr-ico" aria-hidden="true"><i data-lucide="terminal"></i></span>
+     <p class="btr-label">Practical development setup</p>
+     <h3>Setup Guides</h3>
+     <p class="btr-desc">Straightforward walkthroughs to install and configure the tools you'll use in your projects.</p>
+     <span class="btr-arrow">Browse setup guides <i data-lucide="arrow-right" aria-hidden="true"></i></span>
+    </a>
+   </div>
+  </div>
+ </section>
 
 
  <!-- How it works -->
@@ -884,7 +1131,49 @@ a.card:focus-visible { outline-offset: 4px; }
 
 </main>
 
-<footer class="max-w-6xl mx-auto px-4 pb-12 text-center text-sm text-slate-400">Built with plain HTML, Tailwind CSS and Lucide. Hosted on GitHub Pages.</footer>
+<footer class="site-footer">
+ <div class="site-footer__inner">
+  <div class="site-footer__main">
+   <div class="site-footer__brand">
+    <a class="site-footer__brand-link" href="./" aria-label="Roadmap Hub home">
+     <img src="logos/logo-mark.svg" alt="">
+     <span>Roadmap Hub</span>
+    </a>
+    <p>Independent roadmaps, systems explainers, and practical setup guides for software developers.</p>
+   </div>
+
+   <nav class="site-footer__group" aria-label="Explore">
+    <p class="site-footer__label">Explore</p>
+    <a class="site-footer__link" href="#roadmaps">Roadmaps</a>
+    <a class="site-footer__link" href="architecture/index.html">Architecture</a>
+    <a class="site-footer__link" href="backend-engineer-journey/">Backend journey</a>
+    <a class="site-footer__link" href="setup-guides/index.html">Setup guides</a>
+    <a class="site-footer__link" href="#how-it-works">How it works</a>
+   </nav>
+
+   <nav class="site-footer__group" aria-label="Contribute">
+    <p class="site-footer__label">Contribute</p>
+    <a class="site-footer__link" href="https://github.com/samikhan43/roadmap-hub/issues/new?template=topic-request.yml" target="_blank" rel="noopener noreferrer">Suggest a topic <i data-lucide="arrow-up-right" aria-hidden="true"></i><span class="sr-only">(opens in a new tab)</span></a>
+    <a class="site-footer__link" href="https://github.com/samikhan43/roadmap-hub/blob/main/CONTRIBUTING.md" target="_blank" rel="noopener noreferrer">Contribution guide <i data-lucide="arrow-up-right" aria-hidden="true"></i><span class="sr-only">(opens in a new tab)</span></a>
+    <a class="site-footer__link" href="https://github.com/samikhan43/roadmap-hub" target="_blank" rel="noopener noreferrer">GitHub repository <i data-lucide="arrow-up-right" aria-hidden="true"></i><span class="sr-only">(opens in a new tab)</span></a>
+   </nav>
+
+   <nav class="site-footer__group" aria-label="Project information">
+    <p class="site-footer__label">Project</p>
+    <a class="site-footer__link" href="CODE_OF_CONDUCT.md">Code of Conduct</a>
+    <a class="site-footer__link" href="LICENSE">MIT License</a>
+   </nav>
+  </div>
+
+  <div class="site-footer__bottom">
+   <span>© <span id="copyright-year">2026</span> Samiullah · Built for developers.</span>
+   <div class="site-footer__bottom-links">
+    <a class="site-footer__link" href="LICENSE">Open source under MIT</a>
+    <a class="site-footer__link" href="#top">Back to top <i data-lucide="arrow-up" aria-hidden="true"></i></a>
+   </div>
+  </div>
+ </div>
+</footer>
 
 
 
@@ -933,6 +1222,8 @@ const ROADMAPS=[
 
 
 const $=id=>document.getElementById(id);
+
+if($("copyright-year"))$("copyright-year").textContent=String(new Date().getFullYear());
 
 let filter="All",term="";
 
@@ -1000,11 +1291,9 @@ function render(){
 
  $("grid").innerHTML=list.map(card).join("");
 
- $("empty").classList.toggle("hidden",list.length>0);
+ $("empty").hidden=list.length>0;
 
- const live=ROADMAPS.filter(r=>r.status==="live").length;
-
- $("count").textContent=list.length+" shown · "+live+" live overall";
+ $("count").textContent=list.length+" "+(list.length===1?"match":"matches")+" · "+ROADMAPS.length+" available";
 
  $("filters").innerHTML=tagsAll.map((t,i)=>`${i===3?'<span class="sep" aria-hidden="true"></span>':""}<button type="button" class="chip ${t===filter?"on":""}" data-t="${t}" aria-pressed="${t===filter}">${t}</button>`).join("");
 
@@ -1028,7 +1317,7 @@ function resume(){
 
   <span class="flex-1 min-w-0"><span class="flex items-baseline justify-between gap-3"><span class="font-semibold text-white truncate">${r.title}</span><span class="mono text-xs text-slate-300">${p}%</span></span>
 
-  <span class="bar mt-2 block"><i style="width:${p}%"></i></span></span>
+  <span class="bar mt-2 block" role="progressbar" aria-label="${r.title} progress" aria-valuemin="0" aria-valuemax="100" aria-valuenow="${p}"><i style="width:${p}%"></i></span></span>
 
   <span class="text-sm font-semibold text-white inline-flex items-center gap-1">${p>=100?"Review":"Continue"}<i data-lucide="arrow-right" class="go w-4 h-4" aria-hidden="true"></i></span></a>`).join("");
 
@@ -1036,11 +1325,13 @@ function resume(){
 
 }
 
-$("filters").addEventListener("click",e=>{const b=e.target.closest("button");if(b){filter=b.dataset.t;render()}});
+$("filters").addEventListener("click",e=>{const b=e.target.closest("button");if(b){filter=b.dataset.t;render();[...$("filters").querySelectorAll("button")].find(button=>button.dataset.t===filter)?.focus()}});
 
 $("q").addEventListener("input",e=>{term=e.target.value.trim().toLowerCase();render()});
 
-document.addEventListener("keydown",e=>{if(((e.metaKey||e.ctrlKey)&&e.key.toLowerCase()==="k")||(e.key==="/"&&document.activeElement.tagName!=="INPUT")){e.preventDefault();$("q").focus()}});
+$("clear-search").addEventListener("click",()=>{filter="All";term="";$("q").value="";render();$("q").focus()});
+
+document.addEventListener("keydown",e=>{const target=e.target;const isEditing=target instanceof HTMLElement&&(target.isContentEditable||["INPUT","TEXTAREA","SELECT"].includes(target.tagName));if(((e.metaKey||e.ctrlKey)&&e.key.toLowerCase()==="k")||(e.key==="/"&&!isEditing)){e.preventDefault();$("q").focus()}});
 
 window.addEventListener("pageshow",()=>{render();resume()});
 
@@ -1092,7 +1383,7 @@ resume();
 
  menu.addEventListener("click",e=>{if(e.target.closest("a"))setOpen(false)});
 
- document.addEventListener("keydown",e=>{if(e.key==="Escape")setOpen(false)});
+ document.addEventListener("keydown",e=>{if(e.key==="Escape"&&menu.classList.contains("is-open")){if(document.querySelector(".account-menu__panel:not([hidden])"))return;setOpen(false);btn.focus()}});
 
  mobileQuery.addEventListener("change",()=>setOpen(false));
 
