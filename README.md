@@ -26,6 +26,7 @@
 - [Project Structure](#project-structure)
 - [Adding a New Roadmap](#adding-a-new-roadmap)
 - [Deployment Guide](#deployment-guide)
+- [Security & Privacy](#-security--privacy)
 - [Tech Stack](#tech-stack)
 - [Contributing](#contributing)
 - [Technical Notes](#technical-notes)
@@ -239,6 +240,22 @@ Deploying to production takes less than two minutes using **GitHub Pages**:
 - **Iconography:** [Lucide](https://lucide.dev) (distributed via CDN)
 - **State Lifecycle:** Native Web `localStorage` API for progress caching (client-side only, no cookies)
 - **Content Tooling:** A small Python 3 build script and GitHub Actions validation for contributors
+
+---
+
+## 🔐 Security & Privacy
+
+Roadmap Hub supports optional account authentication through **Supabase Auth**, with email/password sign-in and GitHub OAuth. GitHub OAuth client secrets are kept in Supabase's provider configuration, not in this static frontend. The browser uses only the Supabase project URL and publishable key.
+
+- GitHub OAuth requests a redirect through Supabase and returns the user to the site's OAuth callback page. Callback redirects are limited to the project's known Pages URL and fixed dashboard/login paths.
+- Supabase manages authentication sessions and refreshes. The frontend verifies sessions with Supabase's `getUser()` API before loading private dashboard/profile data.
+- GitHub Pages serves Roadmap Hub over HTTPS in production.
+- Learning progress is stored in browser localStorage when no account is used. Signed-in progress can also be stored in Supabase in rows associated with the authenticated user.
+- Exposed database tables use PostgreSQL Row Level Security (RLS). Policies require `auth.uid()` to match the profile or progress row's user ID, and the repository SQL also revokes broad table access and restores only authenticated role grants.
+- Sign-out requests a local Supabase sign-out and removes the app's local Supabase authentication storage entries.
+- Profile and roadmap values rendered by JavaScript are handled with DOM text APIs or escaped where HTML rendering is used. Redirect destinations are not accepted from arbitrary query parameters.
+
+This describes the controls implemented in the repository. Live Supabase configuration, provider settings, RLS behavior, and OAuth login should be manually verified in the Supabase and GitHub dashboards before production use. See [SECURITY.md](SECURITY.md) for details and limitations.
 
 ---
 
