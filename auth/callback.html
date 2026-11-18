@@ -35,11 +35,18 @@
       }
 
       try {
-        const { data, error } = await client.auth.getSession();
-        if (error) {
-          throw error;
+        const sessionResult = await client.auth.getSession();
+        if (sessionResult.error) {
+          throw sessionResult.error;
         }
-        if (data?.session) {
+        if (!sessionResult.data?.session) {
+          throw new Error("No authentication session was created.");
+        }
+        const userResult = await client.auth.getUser();
+        if (userResult.error || !userResult.data?.user) {
+          throw userResult.error || new Error("The authentication session could not be verified.");
+        }
+        if (userResult.data.user) {
           window.location.href = `${base}/dashboard.html` || "/dashboard.html";
           return;
         }
