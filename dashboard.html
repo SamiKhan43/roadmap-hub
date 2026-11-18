@@ -538,16 +538,22 @@
         if (sessionResult.error) throw sessionResult.error;
         const session = sessionResult.data?.session;
         if (!session) { window.location.href = "./auth/index.html"; return; }
+        const userResult = await client.auth.getUser();
+        if (userResult.error || !userResult.data?.user) {
+          window.location.href = "./auth/index.html";
+          return;
+        }
+        const authenticatedUser = userResult.data.user;
 
-        const email = session.user.email || "Signed-in learner";
+        const email = authenticatedUser.email || "Signed-in learner";
         $("user-email").textContent = email;
         $("user-initial").textContent = email.charAt(0) || "·";
-        const name = session.user.user_metadata?.full_name || session.user.user_metadata?.name || email.split("@")[0];
+        const name = authenticatedUser.user_metadata?.full_name || authenticatedUser.user_metadata?.name || email.split("@")[0];
         $("greeting").textContent = `Welcome back, ${String(name).split(" ")[0]}`;
 
         const result = await client.from("progress")
           .select("roadmap_id, topic_id, completed, completed_at, updated_at")
-          .eq("user_id", session.user.id);
+          .eq("user_id", authenticatedUser.id);
         if (result.error) throw result.error;
 
         const rows = result.data || [];

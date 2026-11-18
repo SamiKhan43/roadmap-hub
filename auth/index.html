@@ -39,20 +39,16 @@
   </script>
   <script src="https://unpkg.com/lucide@0.468.0/dist/umd/lucide.min.js"></script>
   <style>
+    html { background: #0d0f0e; }
     body {
-      background-color: #0d0f0e;
-      background-image:
-        radial-gradient(60% 420px at 50% -120px, rgba(198, 243, 106, .07), transparent 70%),
-        linear-gradient(to right, rgba(255, 255, 255, .028) 1px, transparent 1px),
-        linear-gradient(to bottom, rgba(255, 255, 255, .028) 1px, transparent 1px);
-      background-size: 100% 100%, 48px 48px, 48px 48px;
-      background-position: 0 0, -1px -1px, -1px -1px;
+      background:
+        linear-gradient(rgba(255,255,255,.018) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255,255,255,.018) 1px, transparent 1px),
+        #0d0f0e;
+      background-size: 48px 48px;
+      background-position: center 0;
       -webkit-font-smoothing: antialiased;
       letter-spacing: -0.011em;
-    }
-    .grid-fade::before {
-      content: ""; position: fixed; inset: 0; pointer-events: none; z-index: 0;
-      background: radial-gradient(ellipse at center, transparent 35%, #0d0f0e 85%);
     }
     .kicker-mark { width: 5px; height: 5px; display: inline-block; background: #c6f36a; transform: rotate(45deg); }
     .field:-webkit-autofill, .field:-webkit-autofill:hover, .field:-webkit-autofill:focus {
@@ -88,7 +84,7 @@
     @media (prefers-reduced-motion: reduce) { .fade-up { animation: none; } }
   </style>
 </head>
-<body class="grid-fade min-h-full font-sans text-ink selection:bg-accent selection:text-accent-ink">
+<body class="min-h-full font-sans text-ink selection:bg-accent selection:text-accent-ink">
   <div class="relative z-10 flex min-h-screen flex-col">
 
     <!-- Top bar -->

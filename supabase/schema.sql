@@ -22,6 +22,50 @@ create index if not exists idx_progress_user_id on public.progress (user_id);
 create index if not exists idx_progress_user_roadmap on public.progress (user_id, roadmap_id);
 create index if not exists idx_progress_completed on public.progress (user_id, completed);
 
+do $$
+begin
+  if not exists (
+    select 1 from pg_constraint
+    where conname = 'profiles_display_name_length'
+      and conrelid = 'public.profiles'::regclass
+  ) then
+    alter table public.profiles
+      add constraint profiles_display_name_length
+      check (display_name is null or char_length(display_name) <= 80);
+  end if;
+
+  if not exists (
+    select 1 from pg_constraint
+    where conname = 'profiles_username_length'
+      and conrelid = 'public.profiles'::regclass
+  ) then
+    alter table public.profiles
+      add constraint profiles_username_length
+      check (username is null or char_length(username) <= 64);
+  end if;
+
+  if not exists (
+    select 1 from pg_constraint
+    where conname = 'progress_roadmap_id_length'
+      and conrelid = 'public.progress'::regclass
+  ) then
+    alter table public.progress
+      add constraint progress_roadmap_id_length
+      check (char_length(roadmap_id) between 1 and 64);
+  end if;
+
+  if not exists (
+    select 1 from pg_constraint
+    where conname = 'progress_topic_id_length'
+      and conrelid = 'public.progress'::regclass
+  ) then
+    alter table public.progress
+      add constraint progress_topic_id_length
+      check (char_length(topic_id) between 1 and 128);
+  end if;
+end;
+$$;
+
 create or replace function public.set_updated_at()
 returns trigger
 language plpgsql

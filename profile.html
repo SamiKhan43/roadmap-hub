@@ -547,7 +547,16 @@
       try {
         const sessionResult = await activeClient.auth.getSession();
         if (sessionResult.error) throw sessionResult.error;
-        activeUser = sessionResult.data?.session?.user;
+        if (!sessionResult.data?.session) {
+          window.location.href = "./auth/index.html";
+          return;
+        }
+        const userResult = await activeClient.auth.getUser();
+        if (userResult.error || !userResult.data?.user) {
+          window.location.href = "./auth/index.html";
+          return;
+        }
+        activeUser = userResult.data.user;
         if (!activeUser) {
           window.location.href = "./auth/index.html";
           return;
@@ -602,6 +611,13 @@
       showStatus("", "");
 
       try {
+        const userResult = await activeClient.auth.getUser();
+        if (userResult.error || !userResult.data?.user) {
+          throw userResult.error || new Error("Your session is no longer available.");
+        }
+        if (userResult.data.user.id !== activeUser.id) {
+          throw new Error("The authenticated user changed. Sign in again.");
+        }
         const { data, error } = await activeClient
           .from("profiles")
           .upsert(

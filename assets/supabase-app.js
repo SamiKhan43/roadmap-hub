@@ -82,8 +82,32 @@
       return { session: null, error: new Error("Supabase is not configured.") };
     }
 
-    const result = await client.auth.getSession();
-    return { session: result.data?.session || null, error: result.error || null };
+    const sessionResult = await client.auth.getSession();
+    if (sessionResult.error) return { session: null, error: sessionResult.error };
+    const session = sessionResult.data?.session || null;
+    if (!session) return { session: null, error: null };
+
+    const userResult = await client.auth.getUser();
+    if (userResult.error || !userResult.data?.user) {
+      return { session: null, error: userResult.error || new Error("The authenticated user could not be verified.") };
+    }
+    return { session: { ...session, user: userResult.data.user }, error: null };
+  };
+
+  const clearSupabaseAuthStorage = () => {
+    try {
+      const projectHostname = new URL(cfg.url).hostname;
+      const projectRef = projectHostname.split(".")[0];
+      const prefix = `sb-${projectRef}-auth-token`;
+      Object.keys(localStorage).forEach((key) => {
+        if (key === prefix || key.startsWith(`${prefix}-`)) {
+          localStorage.removeItem(key);
+        }
+      });
+      sessionStorage.removeItem(migrationKey);
+    } catch (error) {
+      console.warn("Unable to clear local authentication storage", error);
+    }
   };
 
   const renderAuthNavigation = async () => {
@@ -101,8 +125,8 @@
       return;
     }
 
-    const authState = await client.auth.getSession();
-    const session = authState.data?.session || null;
+    const authState = await getAuthenticatedUser();
+    const session = authState.session;
     const dashboardHref = `${basePath}/dashboard.html` || "/dashboard.html";
     const profileHref = `${basePath}/profile.html` || "/profile.html";
     const loginHref = `${basePath}/auth/index.html` || "/auth/index.html";
@@ -188,16 +212,14 @@
             status.textContent = "";
           }
           try {
-            const { error } = await client.auth.signOut();
-            if (error) {
-              throw error;
-            }
+            await client.auth.signOut({ scope: "local" });
+            clearSupabaseAuthStorage();
             window.location.href = APP_PATHS.home;
           } catch (error) {
-            if (status) {
-              status.textContent = error?.message || "Sign out failed. Please try again.";
-              status.hidden = false;
-            }
+            clearSupabaseAuthStorage();
+            window.location.href = APP_PATHS.home;
+            return;
+          } finally {
             logoutButton.disabled = false;
           }
         });
@@ -209,9 +231,15 @@
       button.addEventListener("click", async () => {
         const logoutClient = getSupabaseClient();
         if (!logoutClient) {
+          clearSupabaseAuthStorage();
+          window.location.href = `${basePath}/` || "/";
           return;
         }
-        await logoutClient.auth.signOut();
+        try {
+          await logoutClient.auth.signOut({ scope: "local" });
+        } finally {
+          clearSupabaseAuthStorage();
+        }
         window.location.href = `${basePath}/` || "/";
       });
     });
@@ -230,8 +258,8 @@
       return { moved: 0, skipped: true };
     }
 
-    const currentSession = await client.auth.getSession();
-    const user = currentSession.data?.session?.user;
+    const currentSession = await getAuthenticatedUser();
+    const user = currentSession.session?.user;
     if (!user) {
       return { moved: 0, skipped: true };
     }
@@ -265,8 +293,8 @@
       return { status: "local-only" };
     }
 
-    const currentSession = await client.auth.getSession();
-    const user = currentSession.data?.session?.user;
+    const currentSession = await getAuthenticatedUser();
+    const user = currentSession.session?.user;
     if (!user) {
       return { status: "local-only" };
     }
@@ -301,8 +329,8 @@
       return null;
     }
 
-    const sessionResult = await client.auth.getSession();
-    const user = sessionResult.data?.session?.user;
+    const sessionResult = await getAuthenticatedUser();
+    const user = sessionResult.session?.user;
     if (!user) {
       return null;
     }
@@ -336,8 +364,8 @@
       return;
     }
 
-    const session = await client.auth.getSession();
-    if (session.data?.session) {
+    const authState = await getAuthenticatedUser();
+    if (authState.session) {
       window.location.href = `${basePath}/dashboard.html` || "/dashboard.html";
       return;
     }
@@ -430,7 +458,8 @@
         githubButton.disabled = true;
         githubButton.textContent = "Redirecting to GitHub...";
         try {
-          const redirectTo = cfg.redirectUrl || `${window.location.origin}${basePath}/auth/callback.html`;
+          const fallbackRedirect = `${window.location.origin}${basePath}/auth/callback.html`;
+          const redirectTo = cfg.redirectUrl || fallbackRedirect;
           const { error } = await client.auth.signInWithOAuth({
             provider: "github",
             options: {
