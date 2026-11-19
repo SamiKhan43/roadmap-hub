@@ -1359,6 +1359,7 @@ function loadProgress() {
 }
 
 let done = loadProgress();
+let savedDone = new Set(done);
 
 function saveProgress() {
   try {
@@ -1368,7 +1369,12 @@ function saveProgress() {
     setStorageMessage(
       "Progress is updated for this visit, but this browser could not save it."
     );
+    return;
   }
+  const current = [...done];
+  const sync = window.ROADMAP_HUB_PROGRESS?.syncProgressChanges;
+  if (sync) sync("protocols",[...savedDone],current).catch(error=>console.warn("Progress sync failed",error));
+  savedDone = new Set(current);
 }
 
 function normalizeSearch(value) {

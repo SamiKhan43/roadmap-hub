@@ -110,19 +110,36 @@
     }
   };
 
-  const getProfileImageUrl = (user) => {
-    const candidate = user?.user_metadata?.avatar_url || user?.user_metadata?.picture;
-    if (typeof candidate !== "string") {
-      return "";
+  const getProfileImageUrl = (user, profile) => {
+    const candidates = [profile?.avatar_url, user?.user_metadata?.avatar_url, user?.user_metadata?.picture];
+    for (const candidate of candidates) {
+      if (typeof candidate !== "string") continue;
+      try {
+        const url = new URL(candidate);
+        if (url.protocol === "https:") return url.href;
+      } catch {
+        continue;
+      }
     }
-
-    try {
-      const url = new URL(candidate);
-      return url.protocol === "https:" ? url.href : "";
-    } catch {
-      return "";
-    }
+    return "";
   };
+
+  const setAvatarImage = (avatar, imageUrl, className) => {
+    if (!avatar) return;
+    avatar.querySelector(`.${className}`)?.remove();
+    if (!imageUrl) return;
+
+    const image = document.createElement("img");
+    image.className = className;
+    image.alt = "";
+    image.setAttribute("aria-hidden", "true");
+    image.referrerPolicy = "no-referrer";
+    image.addEventListener("error", () => image.remove(), { once: true });
+    image.src = imageUrl;
+    avatar.prepend(image);
+  };
+
+  const setProfileImage = (avatar, imageUrl) => setAvatarImage(avatar, imageUrl, "profile-avatar-image");
 
   const addProfileImages = (slots, imageUrl) => {
     if (!imageUrl) {
@@ -131,14 +148,7 @@
 
     slots.forEach((slot) => {
       slot.querySelectorAll(".account-avatar").forEach((avatar) => {
-        const image = document.createElement("img");
-        image.className = "account-avatar__image";
-        image.alt = "";
-        image.setAttribute("aria-hidden", "true");
-        image.referrerPolicy = "no-referrer";
-        image.src = imageUrl;
-        image.addEventListener("error", () => image.remove(), { once: true });
-        avatar.prepend(image);
+        setAvatarImage(avatar, imageUrl, "account-avatar__image");
       });
     });
   };
@@ -377,6 +387,22 @@
     return result;
   };
 
+  const syncProgressChanges = (roadmapKey, previousTopics, nextTopics) => {
+    const previous = new Set((Array.isArray(previousTopics) ? previousTopics : []).filter(Boolean).map(String));
+    const next = new Set((Array.isArray(nextTopics) ? nextTopics : []).filter(Boolean).map(String));
+    const changed = [...new Set([...previous, ...next])]
+      .filter((topicId) => previous.has(topicId) !== next.has(topicId));
+    return Promise.all(changed.map((topicId) => syncRoadmapProgress(roadmapKey, topicId, next.has(topicId))));
+  };
+
+  const syncProgressStatuses = (roadmapKey, previousStatuses, nextStatuses) => {
+    const previous = previousStatuses || {};
+    const next = nextStatuses || {};
+    const changed = [...new Set([...Object.keys(previous), ...Object.keys(next)])]
+      .filter((topicId) => previous[topicId] !== next[topicId]);
+    return Promise.all(changed.map((topicId) => syncRoadmapProgress(roadmapKey, topicId, next[topicId] === "done")));
+  };
+
   const getProfileFromSupabase = async () => {
     const client = getSupabaseClient();
     if (!client) {
@@ -543,6 +569,10 @@
     readAllLocalProgress,
     migrateLocalProgressToCloud,
     syncRoadmapProgress,
+    syncProgressChanges,
+    syncProgressStatuses,
+    getProfileImageUrl,
+    setProfileImage,
     getAuthenticatedUser,
     getProfileFromSupabase,
     configureAuthPage,
