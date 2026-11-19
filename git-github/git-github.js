@@ -13,6 +13,7 @@
   const searchResults = $("#search-results");
   let activeLessonIndex = 0;
   let completed = loadProgress();
+  let savedProgress = new Set(completed);
   let graph = createInitialGraph();
 
   function element(tag, className, text) {
@@ -40,7 +41,11 @@
       $("#storage-warning").hidden = true;
     } catch (error) {
       showStorageError("Progress could not be saved. It will be available only until you leave this page.");
+      return;
     }
+    const sync = window.ROADMAP_HUB_PROGRESS?.syncProgressChanges;
+    if (sync) sync("git-github",[...savedProgress],completed).catch(error=>console.warn("Progress sync failed",error));
+    savedProgress = new Set(completed);
   }
 
   function showStorageError(message) {

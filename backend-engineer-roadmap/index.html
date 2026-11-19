@@ -57,6 +57,7 @@ body {
     linear-gradient(90deg, var(--bg-grid) 1px, transparent 1px);
   background-size: 48px 48px; background-position: center 0; background-attachment: fixed;
 }
+body.topic-open { overflow: hidden; }
 button, input, select { font: inherit; color: inherit; }
 button { cursor: pointer; }
 a { color: var(--accent); }
@@ -67,6 +68,9 @@ code {
 :focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
 .sr-only { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
 .mono { font-family: var(--font-mono); }
+::-webkit-scrollbar { height: 8px; width: 8px; }
+::-webkit-scrollbar-thumb { background: #2a2a30; border-radius: 8px; }
+::-webkit-scrollbar-thumb:hover { background: #3f3f46; }
 
 /* ===== Top bar ===== */
 .topbar {
@@ -1924,7 +1928,13 @@ window.RM.content = Object.assign(window.RM.content || {}, {
     return { status: {}, checks: {} };
   }
   var store = load();
-  function save() { try { localStorage.setItem(STORE_KEY, JSON.stringify(store)); } catch (e) { /* ignore */ } }
+  var savedStatuses = Object.assign({}, store.status);
+  function save() {
+    try { localStorage.setItem(STORE_KEY, JSON.stringify(store)); } catch (e) { return; }
+    var sync = window.ROADMAP_HUB_PROGRESS && window.ROADMAP_HUB_PROGRESS.syncProgressStatuses;
+    if (sync) sync("backend-engineer-roadmap", savedStatuses, store.status).catch(function (e) { console.warn("Progress sync failed", e); });
+    savedStatuses = Object.assign({}, store.status);
+  }
   function statusOf(id) { return store.status[id] || "todo"; }
   function setStatus(id, v) {
     if (v === "todo") delete store.status[id]; else store.status[id] = v;
@@ -2135,6 +2145,7 @@ window.RM.content = Object.assign(window.RM.content || {}, {
     ui.selected = id;
     renderPanel(t);
     $("#panel").classList.add("open");
+    document.body.classList.add("topic-open");
     $("#scrim").classList.toggle("open", window.innerWidth <= 760);
     $("#panel-body").scrollTop = 0;
     applyFocus();
@@ -2147,6 +2158,7 @@ window.RM.content = Object.assign(window.RM.content || {}, {
     if (!ui.selected) return;
     ui.selected = null;
     $("#panel").classList.remove("open");
+    document.body.classList.remove("topic-open");
     $("#scrim").classList.remove("open");
     applyFocus();
     try { history.replaceState(null, "", location.pathname + location.search); } catch (e) { /* ignore */ }
@@ -2387,6 +2399,7 @@ window.RM.content = Object.assign(window.RM.content || {}, {
     $("#reset-confirm").addEventListener("click", function () { doReset(); dlg.close(); });
     function doReset() {
       store = { status: {}, checks: {} };
+      save();
       try { localStorage.removeItem(STORE_KEY); } catch (e) { /* ignore */ }
       refreshStatus();
       if (ui.selected) renderPanel(byId[ui.selected]);

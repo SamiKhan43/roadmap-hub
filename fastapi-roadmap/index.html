@@ -184,7 +184,8 @@ const resTable=o=>o.text!=null?`<pre class="code mono">${esc(o.text)}</pre>`:`<d
 
 let done=new Set(),ms=new Set(),pj=new Set(),cur=-1;
 try{done=new Set(JSON.parse(localStorage.getItem(K+"t")||"[]"));ms=new Set(JSON.parse(localStorage.getItem(K+"m")||"[]"));pj=new Set(JSON.parse(localStorage.getItem(K+"p")||"[]"))}catch(e){}
-const save=()=>{try{localStorage.setItem(K+"t",JSON.stringify([...done]));localStorage.setItem(K+"m",JSON.stringify([...ms]));localStorage.setItem(K+"p",JSON.stringify([...pj]))}catch(e){}};
+let savedDone=new Set(done);
+const save=()=>{try{localStorage.setItem(K+"t",JSON.stringify([...done]));localStorage.setItem(K+"m",JSON.stringify([...ms]));localStorage.setItem(K+"p",JSON.stringify([...pj]))}catch(e){return}const current=[...done],sync=window.ROADMAP_HUB_PROGRESS?.syncProgressChanges;if(sync)sync(R.slug,[...savedDone],current).catch(e=>console.warn("Progress sync failed",e));savedDone=new Set(current)};
 
 function renderRoad(){
  let h="",n=0;
