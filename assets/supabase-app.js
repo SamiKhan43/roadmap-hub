@@ -110,12 +110,52 @@
     }
   };
 
+  const getProfileImageUrl = (user) => {
+    const candidate = user?.user_metadata?.avatar_url || user?.user_metadata?.picture;
+    if (typeof candidate !== "string") {
+      return "";
+    }
+
+    try {
+      const url = new URL(candidate);
+      return url.protocol === "https:" ? url.href : "";
+    } catch {
+      return "";
+    }
+  };
+
+  const addProfileImages = (slots, imageUrl) => {
+    if (!imageUrl) {
+      return;
+    }
+
+    slots.forEach((slot) => {
+      slot.querySelectorAll(".account-avatar").forEach((avatar) => {
+        const image = document.createElement("img");
+        image.className = "account-avatar__image";
+        image.alt = "";
+        image.setAttribute("aria-hidden", "true");
+        image.referrerPolicy = "no-referrer";
+        image.src = imageUrl;
+        image.addEventListener("error", () => image.remove(), { once: true });
+        avatar.prepend(image);
+      });
+    });
+  };
+
   const renderAuthNavigation = async () => {
     const client = getSupabaseClient();
     const slots = document.querySelectorAll("[data-auth-nav]");
     const isHomePage = Boolean(document.getElementById("nav-content"));
+    const isTopicRoadmapPage = Boolean(document.querySelector(".topic-nav, #phase-nav-top"));
     if (!slots.length) {
       return;
+    }
+
+    if (isTopicRoadmapPage) {
+      slots.forEach((slot) => {
+        slot.closest("li")?.classList.add("nav-account-item");
+      });
     }
 
     if (!client) {
@@ -130,12 +170,13 @@
     const dashboardHref = `${basePath}/dashboard.html` || "/dashboard.html";
     const profileHref = `${basePath}/profile.html` || "/profile.html";
     const loginHref = `${basePath}/auth/index.html` || "/auth/index.html";
+    const profileImageUrl = getProfileImageUrl(session?.user);
 
     const html = session && isHomePage
       ? `
         <div class="account-menu">
           <button type="button" class="nav-account" data-account-toggle aria-expanded="false" aria-controls="account-menu-panel">
-            <i data-lucide="user-round" class="h-4 w-4" aria-hidden="true"></i>
+            <span class="account-avatar" aria-hidden="true"><i data-lucide="user-round" class="h-4 w-4"></i></span>
             <span>Account</span>
             <i data-lucide="chevron-down" class="h-3.5 w-3.5" aria-hidden="true"></i>
           </button>
@@ -147,17 +188,30 @@
           </div>
         </div>
       `
+      : session && isTopicRoadmapPage
+      ? `
+        <a class="nav-link nav-profile-link" href="${profileHref}" aria-label="Profile" title="Profile">
+          <span class="account-avatar" aria-hidden="true"><i data-lucide="user-round" class="h-4 w-4"></i></span>
+        </a>
+      `
       : session
       ? `
-        <a class="nav-link" href="${dashboardHref}">Dashboard</a>
-        <a class="nav-link" href="${profileHref}">Profile</a>
-        <button type="button" class="nav-link" data-auth-logout>Log Out</button>
+        <div class="nav-account-links">
+          <a class="nav-link" href="${dashboardHref}">Dashboard</a>
+          <a class="nav-link nav-profile-link" href="${profileHref}">
+            <span class="account-avatar" aria-hidden="true"><i data-lucide="user-round" class="h-4 w-4"></i></span>
+            <span>Profile</span>
+          </a>
+          <button type="button" class="nav-link" data-auth-logout>Log Out</button>
+        </div>
       `
       : `<a class="nav-link" href="${loginHref}">Sign In</a>`;
 
     slots.forEach((slot) => {
       slot.innerHTML = html;
     });
+
+    addProfileImages(slots, profileImageUrl);
 
     if (window.lucide) {
       window.lucide.createIcons();

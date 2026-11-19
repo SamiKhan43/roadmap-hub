@@ -104,7 +104,7 @@ section[id^=level-]{scroll-margin-top:4.5rem}
 <body class="min-h-screen">
 <a href="#roadmaps" class="sr-only focus:not-sr-only focus:fixed focus:left-3 focus:top-3 focus:z-50 focus:rounded-lg focus:bg-white focus:px-3 focus:py-2 focus:text-sm focus:font-semibold focus:text-zinc-950">Skip to roadmap</a>
 <header class="sticky top-0 z-30 backdrop-blur bg-slate-900/85 border-b border-slate-700">
- <nav class="max-w-6xl mx-auto px-4 py-3 flex items-center justify-between gap-3" aria-label="Main">
+ <nav class="topic-nav max-w-6xl mx-auto px-4 py-3 flex items-center justify-between gap-3" aria-label="Main">
   <div class="flex items-center gap-3">
    <a href="../" class="flex items-center" aria-label="Roadmap Hub home"><img src="../logos/logo-horizontal-dark.svg" alt="Roadmap Hub" class="h-7 w-auto"></a>
    <a id="back" href="#" class="hidden items-center gap-1 text-sm text-slate-400 hover:text-white" style="transition:color 160ms" aria-label="All roadmaps"><i data-lucide="arrow-left" class="w-4 h-4"></i><span class="hidden sm:inline">All roadmaps</span></a>
@@ -127,7 +127,7 @@ section[id^=level-]{scroll-margin-top:4.5rem}
    <i data-lucide="x" class="hidden h-6 w-6" id="icon-close"></i>
   </button>
  </nav>
- <ul id="nav-menu" class="hidden space-y-1 border-t border-white/10 px-2 py-2 md:hidden">
+ <ul id="nav-menu" class="topic-nav-menu hidden space-y-1 border-t border-white/10 px-2 py-2 md:hidden">
   <li><a class="nav-link py-3" href="#roadmaps">Roadmaps</a></li>
   <li><a class="nav-link py-3" href="../architecture/index.html">Architecture Library</a></li>
   <li><a class="nav-link py-3" href="#how-it-works">How it works</a></li>
@@ -260,7 +260,7 @@ renderRoad();
  btn.addEventListener("click",()=>setOpen(menu.classList.contains("hidden")));
  menu.addEventListener("click",e=>{if(e.target.closest("a"))setOpen(false)});
  document.addEventListener("keydown",e=>{if(e.key==="Escape")setOpen(false)});
- window.matchMedia("(min-width: 768px)").addEventListener("change",e=>{if(e.matches)setOpen(false)});
+ window.matchMedia("(min-width: 1100px)").addEventListener("change",e=>{if(e.matches)setOpen(false)});
 
  const links=document.querySelectorAll('.nav-link[href^="#"]');
  const sections=[...links].map(link=>document.querySelector(link.getAttribute("href"))).filter(Boolean);
