@@ -73,6 +73,7 @@ Roadmap Hub currently includes a mix of full learning tracks and practical refer
 | [PostgreSQL](https://samikhan43.github.io/roadmap-hub/postgres-roadmap/) | 5 | 39 | **Production Live** |
 | [FastAPI](https://samikhan43.github.io/roadmap-hub/fastapi-roadmap/) | 6 | 39 | **Production Live** |
 | [Authentication & Authorization](https://samikhan43.github.io/roadmap-hub/Auth-roadmap/) | 6 | 26 | **Production Live** |
+| [Backend Engineer](https://samikhan43.github.io/roadmap-hub/backend-engineer-roadmap/) | 12 | 56 | **Production Live** |
 | [HTTP](https://samikhan43.github.io/roadmap-hub/http-roadmap/) | 7 | 32 | **Production Live** |
 | [Protocols](https://samikhan43.github.io/roadmap-hub/protocols/) | 7 | 35 | **Production Live** |
 | [Git & GitHub](https://samikhan43.github.io/roadmap-hub/git-github/) | — | — | **Reference Guide** |
@@ -117,64 +118,42 @@ Once initialized, navigate to `http://localhost:8000`.
 
 ## Project Structure
 
-The codebase is structured to maximize simplicity and modularity:
+Published routes stay at the repository root so their GitHub Pages URLs remain stable. Supporting source, documentation and tooling are grouped by purpose:
 
 ```text
 roadmap-hub/
-├── index.html                   # Main dashboard and roadmap picker
-├── README.md                    # Repository documentation
-├── logos/                       # Project logo assets
-│   ├── logo-horizontal.svg
-│   ├── logo-horizontal-dark.svg
-│   ├── logo-mark.svg
-│   └── logo-mark-512.png
-├── CONTRIBUTING.md              # How to add or fix a topic
-├── CODE_OF_CONDUCT.md           # Community standards
-├── LICENSE                      # Open-source license terms
-├── sql-roadmap/                 # SQL fundamentals roadmap
+├── index.html                   # Hub homepage and roadmap catalog
+├── dashboard.html               # Signed-in dashboard route
+├── profile.html                 # Profile route
+├── backend-engineer-roadmap.html # Compatibility redirect
+├── auth/                        # Sign-in and callback routes
+├── sql-roadmap/                 # Published roadmap routes
+├── postgres-roadmap/
+├── fastapi-roadmap/
+├── Auth-roadmap/
+├── backend-engineer-roadmap/
 │   └── index.html
-├── postgres-roadmap/            # PostgreSQL roadmap
-│   └── index.html
-├── fastapi-roadmap/             # FastAPI roadmap
-│   └── index.html
-├── Auth-roadmap/                # Authentication and authorization roadmap
-│   └── index.html
-├── http-roadmap/                # HTTP roadmap
-│   └── index.html
-├── protocols/                   # Networking and protocol roadmap
-│   └── index.html
-├── git-github/                  # Git and GitHub resource guide
-│   └── index.html
+├── http-roadmap/
+├── protocols/
+├── git-github/
+├── architecture/                # Architecture library and lessons
 ├── setup-guides/                # Setup guide catalog and readers
-│   ├── guides.js
-│   ├── index.html
-│   ├── guide.html
-│   └── postgresql/
-│       └── POSTGRESQL_GUIDE.md
-├── architecture/                # Architecture library pages
-│   ├── index.html
-│   ├── architecture.css
-│   └── postgresql/
-│       └── index.html
-├── content/                     # Source files for roadmap content
-│   ├── roadmap.json             # Global roadmap registry metadata
-│   └── topics/
-│       └── *.json               # One JSON file per topic
-├── scripts/                     # Build tooling
-│   ├── build.py
-│   └── build_roadmap.py
-├── assets/
-│   └── template.html            # Shared page layout
-├── docs/
-│   └── example-roadmap.json     # Example roadmap schema
-├── backend-engineer-journey/    # Additional roadmap or project content
-├── archi.md                     # Architecture notes
-├── patch-roadmap.py             # Utility script for roadmap maintenance
-├── .github/                     # Issue templates and validation workflow
-└── .gitignore                   # Repository ignore rules
+├── assets/                      # Shared CSS, JavaScript and templates
+├── logos/                       # Shared brand assets
+├── content/                     # Source JSON for generated roadmaps
+├── docs/                        # Project and architecture documentation
+├── scripts/                     # Build and maintenance tools
+├── supabase/                    # Database schema
+├── .github/                     # Repository templates and checks
+├── .gitignore
+├── CONTRIBUTING.md
+├── CODE_OF_CONDUCT.md
+├── SECURITY.md
+├── LICENSE
+└── README.md
 ```
 
-Each published roadmap page is self-contained in its own directory, with its content embedded in a single HTML file.
+Each published roadmap has a directory containing its `index.html`. The previous backend roadmap URLs redirect to the current route to preserve existing links.
 
 The dashboard uses `logos/logo-horizontal-dark.svg`, while roadmap pages and the browser favicon use `logos/logo-mark.svg`. Use `logos/logo-horizontal.svg` on light backgrounds, such as this README.
 

@@ -599,6 +599,21 @@ header nav.site-nav { gap: 1rem; }
   font-weight: 600;
   white-space: nowrap;
 }
+.account-avatar {
+  position: relative;
+  display: inline-grid;
+  width: 1.75rem;
+  height: 1.75rem;
+  flex: none;
+  place-items: center;
+  overflow: hidden;
+  border: 1px solid rgba(198,243,106,.28);
+  border-radius: 50%;
+  color: var(--accent);
+  background: rgba(198,243,106,.08);
+}
+.account-avatar svg { width: 1rem; height: 1rem; }
+.account-avatar__image { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
 .nav-account:hover,
 .nav-account[aria-expanded="true"] { border-color: #53614c; color: var(--text); background: #171e17; }
 .account-menu__panel {
@@ -917,7 +932,7 @@ header nav.site-nav { gap: 1rem; }
    <ul id="primary-nav" aria-label="Primary">
     <li><a class="nav-link" href="#roadmaps">Roadmaps</a></li>
     <li><a class="nav-link" href="architecture/index.html">Architecture</a></li>
-    <li><a class="nav-link" href="backend-engineer-journey/">Backend Journey</a></li>
+    <li><a class="nav-link" href="backend-engineer-roadmap/">Backend Roadmap</a></li>
     <li><a class="nav-link" href="setup-guides/index.html">Setup Guides</a></li>
    </ul>
 
@@ -1034,7 +1049,7 @@ header nav.site-nav { gap: 1rem; }
    <div class="btr-head">
     <p class="btr-eyebrow"><b>02</b> Go deeper</p>
     <h2 class="btr-title" id="btr-title">Beyond the roadmaps</h2>
-    <p class="btr-lede">Explainers, a guided career path and setup walkthroughs that sit alongside the learning paths.</p>
+    <p class="btr-lede">Explore systems explainers, guided career paths and practical development setup.</p>
    </div>
    <div class="btr-grid">
     <a class="btr-card" href="architecture/index.html">
@@ -1044,12 +1059,12 @@ header nav.site-nav { gap: 1rem; }
      <p class="btr-desc">How software systems work internally: how components interact, how data moves through them, and why they're designed that way.</p>
      <span class="btr-arrow">Explore architectures <i data-lucide="arrow-right" aria-hidden="true"></i></span>
     </a>
-    <a class="btr-card" href="backend-engineer-journey/">
-     <span class="btr-ico" aria-hidden="true"><i data-lucide="route"></i></span>
-     <p class="btr-label">A guided career path</p>
-     <h3>Backend Engineer Journey</h3>
-     <p class="btr-desc">From programming fundamentals to databases, APIs, system design and deployment: what goes into building backend systems.</p>
-     <span class="btr-arrow">Explore the journey <i data-lucide="arrow-right" aria-hidden="true"></i></span>
+    <a class="btr-card" href="backend-engineer-roadmap/">
+     <span class="btr-ico" aria-hidden="true"><i data-lucide="server"></i></span>
+     <p class="btr-label">Guided career path</p>
+     <h3>Backend Engineer Roadmap</h3>
+     <p class="btr-desc">Follow 12 stages from programming and networking foundations through APIs, databases, production systems and senior engineering.</p>
+     <span class="btr-arrow">Explore the roadmap <i data-lucide="arrow-right" aria-hidden="true"></i></span>
     </a>
     <a class="btr-card" href="setup-guides/index.html">
      <span class="btr-ico" aria-hidden="true"><i data-lucide="terminal"></i></span>
@@ -1146,7 +1161,7 @@ header nav.site-nav { gap: 1rem; }
     <p class="site-footer__label">Explore</p>
     <a class="site-footer__link" href="#roadmaps">Roadmaps</a>
     <a class="site-footer__link" href="architecture/index.html">Architecture</a>
-    <a class="site-footer__link" href="backend-engineer-journey/">Backend journey</a>
+    <a class="site-footer__link" href="backend-engineer-roadmap/">Backend roadmap</a>
     <a class="site-footer__link" href="setup-guides/index.html">Setup guides</a>
     <a class="site-footer__link" href="#how-it-works">How it works</a>
    </nav>
@@ -1182,6 +1197,7 @@ header nav.site-nav { gap: 1rem; }
 /* ===== ADD NEW ROADMAPS HERE =====
 
    slug    = folder name (must match the folder containing that roadmap's index.html)
+   href    = optional path override for a standalone roadmap page
 
    key     = (optional) the roadmap's own slug, used to read saved progress; defaults to slug
 
@@ -1204,6 +1220,10 @@ const ROADMAPS=[
  {slug:"fastapi-roadmap",key:"fastapi",title:"FastAPI",icon:"zap",rgb:"34,211,238",status:"live",levels:6,topics:39,
 
   desc:"Build Python APIs with FastAPI, validate your data, add security, and get your app ready to deploy.",tags:["Backend","Python"]},
+
+ {slug:"backend-engineer-roadmap",key:"backend-engineer-roadmap",title:"Backend Engineer Roadmap",icon:"server",rgb:"198,243,106",status:"live",levels:12,topics:56,
+
+  desc:"Trace a connected path from programming and networking fundamentals through APIs, databases, security, cloud, system design, and senior engineering.",tags:["Backend","Beginner to Senior"]},
 
  {slug:"Auth-roadmap",key:"auth",title:"Authentication & Authorization",icon:"lock-keyhole",rgb:"251,191,36",status:"live",levels:6,topics:26,
   desc:"Learn how login, permissions, sessions, and identity systems work so you can build apps that keep accounts safe.",tags:["Backend","Security","Beginner to Senior"]},
@@ -1229,7 +1249,9 @@ let filter="All",term="";
 
 const tagsAll=["All","Live","Coming soon",...[...new Set(ROADMAPS.flatMap(r=>r.tags))]];
 
-function progress(r){try{const key=r.key||r.slug;const d=JSON.parse(localStorage.getItem(key==="protocols"?"rm:protocols:done":"rm:"+key+":t")||"[]");return r.topics?Math.min(100,Math.round(d.length/r.topics*100)):0}catch(e){return 0}}
+function roadmapHref(r){return r.href||r.slug+"/"}
+
+function progress(r){try{const key=r.key||r.slug;const saved=key==="backend-engineer-roadmap"?JSON.parse(localStorage.getItem("backend-roadmap:v1")||"{}"):null;const d=key==="backend-engineer-roadmap"?Object.values(saved&&saved.status||{}).filter(status=>status==="done"):JSON.parse(localStorage.getItem(key==="protocols"?"rm:protocols:done":"rm:"+key+":t")||"[]");return r.topics?Math.min(100,Math.round(d.length/r.topics*100)):0}catch(e){return 0}}
 
 const match=r=>{
 
@@ -1261,7 +1283,7 @@ function card(r){
 
   <span class="cta self-start mt-auto"><span>Explore</span><i data-lucide="arrow-right" class="go w-4 h-4" aria-hidden="true"></i></span>`;
 
-  return `<a href="${r.slug}/" class="card" style="--rgb:${r.rgb}">${inner}</a>`;
+  return `<a href="${roadmapHref(r)}" class="card" style="--rgb:${r.rgb}">${inner}</a>`;
 
  }
 
@@ -1283,7 +1305,7 @@ function card(r){
 
   </div>`;
 
- return live?`<a href="${r.slug}/" class="card" style="--rgb:${r.rgb}">${inner}</a>`:`<div class="card soon" style="--rgb:${r.rgb}">${inner}</div>`}
+ return live?`<a href="${roadmapHref(r)}" class="card" style="--rgb:${r.rgb}">${inner}</a>`:`<div class="card soon" style="--rgb:${r.rgb}">${inner}</div>`}
 
 function render(){
 
@@ -1311,7 +1333,7 @@ function resume(){
 
  $("resume").classList.toggle("hidden",!items.length);
 
- $("resume-list").innerHTML=items.map(({r,p})=>`<a href="${r.slug}/" class="resume" style="--rgb:${r.rgb}">
+ $("resume-list").innerHTML=items.map(({r,p})=>`<a href="${roadmapHref(r)}" class="resume" style="--rgb:${r.rgb}">
 
   <span class="ico"><i data-lucide="${r.icon}" class="w-5 h-5" aria-hidden="true"></i></span>
 
