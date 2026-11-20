@@ -1,0 +1,438 @@
+<!doctype html>
+<html lang="en" data-explanation-mode="plain">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="A system-level guide to web servers, TCP, HTTP, ASGI, Uvicorn, and FastAPI request handling.">
+  <link rel="icon" type="image/svg+xml" href="../../logos/logo-mark.svg">
+  <link rel="stylesheet" href="../architecture.css">
+  <link rel="stylesheet" href="web-server.css">
+  <title>Web Server &amp; Python Framework Architecture | Roadmap Hub</title>
+</head>
+<body>
+  <a class="skip-link" href="#main-content">Skip to content</a>
+  <header class="docs-header">
+    <div class="docs-header-inner">
+      <a class="docs-brand" href="../../index.html" aria-label="Roadmap Hub home">
+        <img src="../../logos/logo-horizontal-dark.svg" alt="Roadmap Hub">
+      </a>
+      <div class="docs-breadcrumb" aria-label="Breadcrumb">
+        <a href="../index.html">Architecture</a><span aria-hidden="true">/</span>
+        <span aria-current="page">Web Server &amp; Python Framework</span>
+      </div>
+    </div>
+  </header>
+
+  <div class="docs-layout">
+    <aside class="docs-sidebar" aria-label="Guide navigation">
+      <details class="toc-details" open>
+        <summary>On this page</summary>
+        <p class="toc-label">System map</p>
+        <ol class="docs-toc">
+          <li><a href="#overview">The complete picture</a></li>
+          <li><a href="#internet">1. Browser to server</a></li>
+          <li><a href="#sockets">2. Sockets and TCP</a></li>
+          <li><a href="#http">3. HTTP request and response</a></li>
+          <li><a href="#web-server">4. What a web server does</a></li>
+          <li><a href="#concurrency">5. Concurrency and async I/O</a></li>
+          <li><a href="#uvicorn">6. Uvicorn</a></li>
+          <li><a href="#asgi">7. WSGI and ASGI</a></li>
+          <li><a href="#fastapi">8. FastAPI internals</a></li>
+          <li><a href="#lifecycle">9. One request, end to end</a></li>
+          <li><a href="#deployment">10. Production architecture</a></li>
+          <li><a href="#glossary">Glossary and references</a></li>
+        </ol>
+      </details>
+    </aside>
+
+    <main id="main-content" class="docs-main">
+      <div class="docs-title-block">
+        <p class="eyebrow">Architecture Library · Web systems</p>
+        <h1>Web Server &amp; Python Framework Architecture</h1>
+        <p>Follow an HTTP request from the browser to a Python endpoint and back. The goal is to understand the responsibilities and boundaries of each component—not just memorize framework terminology.</p>
+      </div>
+
+      <div class="explanation-toolbar" role="group" aria-label="Explanation style">
+        <span>Explanation style</span>
+        <button type="button" data-explanation-choice="plain" aria-pressed="true">Plain English</button>
+        <button type="button" data-explanation-choice="technical" aria-pressed="false">Technical</button>
+        <button type="button" data-explanation-choice="both" aria-pressed="false">Show both</button>
+      </div>
+      <p class="view-hint">Use the diagram controls to inspect components. The guide starts with general networking concepts, then connects them to Python.</p>
+
+      <section id="overview" class="docs-section" aria-labelledby="overview-title">
+        <p class="section-kicker">Start here · The whole system</p>
+        <h2 id="overview-title">The complete request path</h2>
+        <p>When you open a website or call an API, your browser does not directly call a Python function. Several layers cooperate. The browser creates an HTTP request, the operating system moves bytes over a network connection, a server-side program accepts those bytes, and a Python application eventually receives structured request information.</p>
+        <figure class="diagram-frame">
+          <div class="diagram-scroll" tabindex="0" aria-label="Scrollable end-to-end web request architecture diagram">
+            <svg class="architecture-diagram web-diagram" viewBox="0 0 1120 340" role="group" aria-labelledby="overview-svg-title overview-svg-desc">
+              <title id="overview-svg-title">End-to-end web request architecture</title>
+              <desc id="overview-svg-desc">Browser, DNS, TCP connection, HTTP, reverse proxy, Uvicorn ASGI server, FastAPI application, and response path.</desc>
+              <defs><marker id="web-arrow" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto"><path d="M0 0 8 4 0 8Z" fill="#a1b394"/></marker></defs>
+              <rect class="zone" x="12" y="22" width="210" height="286" rx="8"/><text class="zone-label" x="28" y="47">CLIENT DEVICE</text>
+              <rect class="zone" x="245" y="22" width="175" height="286" rx="8"/><text class="zone-label" x="260" y="47">NETWORK</text>
+              <rect class="zone" x="443" y="22" width="660" height="286" rx="8"/><text class="zone-label" x="460" y="47">SERVER MACHINE / HOSTING</text>
+              <g class="node" role="button" tabindex="0" data-component="Browser" data-target="#internet"><rect x="38" y="91" width="155" height="62" rx="6"/><text x="115" y="117">Browser / client</text><text class="subtext" x="115" y="137">creates HTTP request</text></g>
+              <g class="node" role="button" tabindex="0" data-component="DNS" data-target="#internet"><rect x="38" y="196" width="155" height="62" rx="6"/><text x="115" y="222">DNS lookup</text><text class="subtext" x="115" y="242">name → IP address</text></g>
+              <g class="node" role="button" tabindex="0" data-component="TCP connection" data-target="#sockets"><rect x="267" y="91" width="130" height="62" rx="6"/><text x="332" y="117">TCP connection</text><text class="subtext" x="332" y="137">reliable byte stream</text></g>
+              <g class="node" role="button" tabindex="0" data-component="HTTP" data-target="#http"><rect x="267" y="196" width="130" height="62" rx="6"/><text x="332" y="222">HTTP messages</text><text class="subtext" x="332" y="242">method · headers · body</text></g>
+              <g class="node" role="button" tabindex="0" data-component="Reverse proxy" data-target="#web-server"><rect x="473" y="91" width="150" height="62" rx="6"/><text x="548" y="117">Reverse proxy</text><text class="subtext" x="548" y="137">TLS · routing (optional)</text></g>
+              <g class="node" role="button" tabindex="0" data-component="Uvicorn" data-target="#uvicorn"><rect x="671" y="91" width="150" height="62" rx="6"/><text x="746" y="117">Uvicorn</text><text class="subtext" x="746" y="137">ASGI server</text></g>
+              <g class="node" role="button" tabindex="0" data-component="ASGI interface" data-target="#asgi"><rect x="671" y="196" width="150" height="62" rx="6"/><text x="746" y="222">ASGI interface</text><text class="subtext" x="746" y="242">scope · receive · send</text></g>
+              <g class="node" role="button" tabindex="0" data-component="FastAPI" data-target="#fastapi"><rect x="875" y="196" width="190" height="62" rx="6"/><text x="970" y="222">FastAPI application</text><text class="subtext" x="970" y="242">routing · validation · endpoint</text></g>
+              <path class="flow" marker-end="url(#web-arrow)" d="M193 122H259"/><path class="flow" marker-end="url(#web-arrow)" d="M332 153V188"/>
+              <path class="flow" marker-end="url(#web-arrow)" d="M397 122H465"/><path class="flow" marker-end="url(#web-arrow)" d="M623 122H663"/>
+              <path class="flow" marker-end="url(#web-arrow)" d="M746 153V188"/><path class="flow" marker-end="url(#web-arrow)" d="M821 227H867"/>
+              <path class="flow" marker-end="url(#web-arrow)" d="M970 196V169H746V161"/>
+              <text class="flow-label" x="430" y="111">request bytes</text><text class="flow-label" x="845" y="184">application call</text>
+              <text class="flow-label" x="755" y="286">response travels back through the server and connection</text>
+            </svg>
+          </div>
+          <figcaption class="diagram-caption">A simplified deployment. A reverse proxy is common in production but is not required for a local Uvicorn development server.</figcaption>
+        </figure>
+        <p class="diagram-help">Select a component to read its role and jump to the relevant section.</p>
+        <div id="diagram-detail" class="diagram-detail" aria-live="polite">Choose a component in the diagram to inspect it.</div>
+        <div class="explanation-grid">
+          <div class="explanation" data-kind="plain"><h4>Plain English</h4><p>Think of a request as a parcel. The browser writes the address and contents; networking delivers the parcel; the web server receives it; the framework decides which part of your application should handle it.</p></div>
+          <div class="explanation" data-kind="technical"><h4>Technical</h4><p>HTTP defines application-level semantics. TCP provides an ordered byte stream. The server parses protocol data and invokes an application through an interface such as ASGI. The framework handles routing, dependency resolution, validation, endpoint execution, and response serialization.</p></div>
+        </div>
+      </section>
+
+      <section id="internet" class="docs-section" aria-labelledby="internet-title">
+        <p class="section-kicker">01 · The route to a machine</p>
+        <h2 id="internet-title">From browser to server: DNS, IP, and ports</h2>
+        <p>A browser starts with a URL such as <code>https://api.example.com/items/42</code>. The hostname is useful to humans, but network packets need an IP address. DNS (Domain Name System) lets the client discover an address associated with the hostname. DNS does not send the HTTP request itself; it helps the client find where to connect.</p>
+        <h3>What the URL contributes</h3>
+        <ul>
+          <li><strong>Scheme:</strong> <code>https</code> indicates HTTP protected by TLS.</li>
+          <li><strong>Host:</strong> <code>api.example.com</code> identifies the destination name.</li>
+          <li><strong>Port:</strong> HTTPS normally uses 443; HTTP normally uses 80. A URL can specify a different port.</li>
+          <li><strong>Path and query:</strong> <code>/items/42?include=owner</code> identify the resource and optional query parameters.</li>
+        </ul>
+        <p>After resolving the hostname, the client establishes a transport connection to an IP address and port. With HTTPS, a TLS handshake also establishes encryption and authenticates the server certificate before HTTP application data is exchanged.</p>
+        <h3>What does the server bind to?</h3>
+        <p>A server process usually asks the operating system to listen on a local address and port. <code>127.0.0.1</code> means this machine only; <code>0.0.0.0</code> means listen on all IPv4 interfaces. A process listening on port <code>8000</code> is not automatically public—the machine's network, firewall, routing, and hosting configuration still matter.</p>
+        <div class="explanation-grid">
+          <div class="explanation" data-kind="plain"><h4>Plain English</h4><p>DNS is like looking up a business address. The IP tells the network which machine to reach; the port tells that machine which listening service should receive the connection.</p></div>
+          <div class="explanation" data-kind="technical"><h4>Technical</h4><p>Name resolution returns address records. The client then connects to an address/port tuple. A TCP listener is associated with a local socket address; routing and firewall rules determine whether remote clients can reach it.</p></div>
+        </div>
+      </section>
+
+      <section id="sockets" class="docs-section" aria-labelledby="sockets-title">
+        <p class="section-kicker">02 · Operating-system boundary</p>
+        <h2 id="sockets-title">Sockets and TCP: how programs exchange bytes</h2>
+        <p>A <strong>socket</strong> is an operating-system communication endpoint that an application can use through a programming interface. For a typical TCP server, Python asks the OS to create a socket, bind it to an address, mark it as listening, and accept incoming connections.</p>
+        <figure class="diagram-frame">
+          <div class="diagram-scroll" tabindex="0" aria-label="Scrollable TCP socket lifecycle diagram">
+            <svg class="architecture-diagram web-diagram" viewBox="0 0 900 220" role="group" aria-labelledby="socket-title socket-desc">
+              <title id="socket-title">TCP server socket lifecycle</title><desc id="socket-desc">Create socket, bind address, listen, accept connection, then exchange bytes on a connected socket.</desc>
+              <defs><marker id="sock-arrow" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto"><path d="M0 0 8 4 0 8Z" fill="#a1b394"/></marker></defs>
+              <g class="node" role="button" tabindex="0" data-component="socket()" data-target="#sockets"><rect x="18" y="70" width="125" height="70" rx="6"/><text x="80" y="99">socket()</text><text class="subtext" x="80" y="119">create endpoint</text></g>
+              <g class="node" role="button" tabindex="0" data-component="bind()" data-target="#sockets"><rect x="190" y="70" width="125" height="70" rx="6"/><text x="252" y="99">bind()</text><text class="subtext" x="252" y="119">local IP + port</text></g>
+              <g class="node" role="button" tabindex="0" data-component="listen()" data-target="#sockets"><rect x="362" y="70" width="125" height="70" rx="6"/><text x="424" y="99">listen()</text><text class="subtext" x="424" y="119">passive listener</text></g>
+              <g class="node" role="button" tabindex="0" data-component="accept()" data-target="#sockets"><rect x="534" y="70" width="125" height="70" rx="6"/><text x="596" y="99">accept()</text><text class="subtext" x="596" y="119">wait for client</text></g>
+              <g class="node" role="button" tabindex="0" data-component="Connected socket" data-target="#sockets"><rect x="706" y="70" width="175" height="70" rx="6"/><text x="793" y="99">client socket</text><text class="subtext" x="793" y="119">recv() · sendall()</text></g>
+              <path class="flow" marker-end="url(#sock-arrow)" d="M143 105H182M315 105H354M487 105H526M659 105H698"/>
+              <text class="flow-label" x="450" y="177">Listening socket accepts; connected socket carries this client's data.</text>
+            </svg>
+          </div>
+          <figcaption class="diagram-caption">The listening socket and each accepted connected socket have different jobs.</figcaption>
+        </figure>
+        <h3>Server-side socket operations</h3>
+        <pre><code>import socket
+
+server = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+server.bind(("127.0.0.1", 8000))
+server.listen()
+
+client_socket, client_address = server.accept()
+data = client_socket.recv(4096)
+client_socket.sendall(b"received")
+client_socket.close()</code></pre>
+        <p><code>AF_INET</code> selects IPv4 addressing. <code>SOCK_STREAM</code> requests a stream socket, commonly TCP. <code>bind()</code> claims a local address/port, <code>listen()</code> makes the socket a passive listener, and <code>accept()</code> returns a new connected socket when a client connects. The original listening socket remains available to accept more connections.</p>
+        <h3>TCP is a byte stream—not a message system</h3>
+        <p>TCP provides reliable, ordered bytes. It does not preserve the boundaries of your application's writes. If a sender calls <code>sendall()</code> three times, the receiver may read those bytes in one call, several calls, or partial chunks. The receiver must know the application protocol's framing rules—for example, a delimiter, a fixed-size header, or a length prefix.</p>
+        <p>TCP also handles retransmission, ordering, flow control, and congestion control. Your application should not attempt to rebuild those mechanisms. It should correctly read the bytes it needs and interpret them according to its protocol.</p>
+        <div class="explanation-grid">
+          <div class="explanation" data-kind="plain"><h4>Plain English</h4><p>The listening socket is the front entrance. <code>accept()</code> gives you a separate conversation line for one visitor. TCP delivers a stream of bytes, not ready-made sentences.</p></div>
+          <div class="explanation" data-kind="technical"><h4>Technical</h4><p>A TCP connection is identified by endpoint tuples. The listening socket remains in the listen state while accepted sockets represent established connections. Stream reads can return fewer bytes than requested; applications implement framing above TCP.</p></div>
+        </div>
+      </section>
+
+      <section id="http" class="docs-section" aria-labelledby="http-title">
+        <p class="section-kicker">03 · Application protocol</p>
+        <h2 id="http-title">HTTP: the language of web requests</h2>
+        <p>HTTP defines how clients and servers describe requests and responses. It is an application-layer protocol carried over a transport connection. HTTP/1.1 commonly uses a textual message format; HTTP/2 and HTTP/3 use different framing mechanisms, but preserve HTTP's core request/response semantics.</p>
+        <h3>An illustrative HTTP/1.1 request</h3>
+        <pre><code>GET /items/42?include=owner HTTP/1.1
+Host: api.example.com
+Accept: application/json
+Authorization: Bearer &lt;token&gt;</code></pre>
+        <p>The request line contains a method, target, and protocol version. Headers carry metadata such as host, accepted media types, credentials, and content information. A request with a body—such as a JSON <code>POST</code>—also carries content after the header section.</p>
+        <h3>An illustrative response</h3>
+        <pre><code>HTTP/1.1 200 OK
+Content-Type: application/json
+Content-Length: 27
+
+{"id":42,"name":"Keyboard"}</code></pre>
+        <p>The status code communicates the outcome category. The headers describe the response, and the body carries the representation. Common examples include <code>200</code> success, <code>201</code> created, <code>204</code> no content, <code>400</code> bad request, <code>401</code> unauthenticated, <code>403</code> forbidden, <code>404</code> not found, and <code>500</code> server error.</p>
+        <h3>HTTP does not decide how Python functions run</h3>
+        <p>HTTP describes the message exchanged between client and server. It does not define FastAPI routing, Python coroutines, database sessions, or how many worker processes should run. Those responsibilities belong to the server, interface, framework, and application layers.</p>
+        <div class="explanation-grid">
+          <div class="explanation" data-kind="plain"><h4>Plain English</h4><p>HTTP is the agreed format of the conversation: what the client wants, extra details, what happened, and any data returned.</p></div>
+          <div class="explanation" data-kind="technical"><h4>Technical</h4><p>HTTP semantics define methods, status codes, fields, and message behavior. The wire framing depends on the HTTP version and its transport mapping. A framework receives parsed request information rather than raw Ethernet or TCP packets.</p></div>
+        </div>
+      </section>
+
+      <section id="web-server" class="docs-section" aria-labelledby="web-server-title">
+        <p class="section-kicker">04 · Server responsibilities</p>
+        <h2 id="web-server-title">What a web server actually does</h2>
+        <p>A web server is the program or server layer that accepts client connections and handles HTTP communication. Depending on the software and deployment, it may terminate TLS, parse HTTP, serve static files, enforce limits, route requests, proxy traffic to an application server, or invoke an application directly.</p>
+        <h3>Web server versus application framework</h3>
+        <ul>
+          <li><strong>Web server:</strong> manages network connections and HTTP protocol handling.</li>
+          <li><strong>Application server / interface server:</strong> hosts or invokes application code through an agreed interface.</li>
+          <li><strong>Framework:</strong> provides routing, request objects, validation, middleware, and response construction.</li>
+          <li><strong>Your application:</strong> implements domain behavior such as creating an order or reading a user profile.</li>
+        </ul>
+        <p>These are conceptual responsibilities, not always separate products. Uvicorn combines an HTTP server with an ASGI application runner. Nginx or Caddy may sit in front as a reverse proxy. FastAPI is the framework that defines the Python application.</p>
+        <h3>Reverse proxy: common, but optional</h3>
+        <p>A reverse proxy accepts traffic on behalf of an upstream application. It can handle public TLS certificates, request-size limits, compression, static assets, routing, and upstream health checks. It forwards requests to Uvicorn over a private network or local socket. It does not replace FastAPI; it sits in front of it.</p>
+        <div class="explanation-grid">
+          <div class="explanation" data-kind="plain"><h4>Plain English</h4><p>The web server is the reception desk for network traffic. The framework is the office that understands the business request and decides what work should happen.</p></div>
+          <div class="explanation" data-kind="technical"><h4>Technical</h4><p>Protocol parsing, connection management, TLS termination, proxying, application invocation, and endpoint logic are separable concerns. A deployment can combine or distribute them across processes and hosts.</p></div>
+        </div>
+      </section>
+
+      <section id="concurrency" class="docs-section" aria-labelledby="concurrency-title">
+        <p class="section-kicker">05 · Handling many clients</p>
+        <h2 id="concurrency-title">Concurrency, threads, processes, and async I/O</h2>
+        <p>A server needs a strategy for making progress when many clients are connected. A slow client should not necessarily prevent every other client from being served. Concurrency is about overlapping progress; parallelism is about work happening at the same instant on multiple execution units.</p>
+        <h3>Three common execution models</h3>
+        <ul>
+          <li><strong>Processes:</strong> separate operating-system processes have independent memory spaces. Multiple worker processes can use multiple CPU cores and provide process-level isolation.</li>
+          <li><strong>Threads:</strong> multiple threads share a process's memory. Threads can be useful for blocking I/O and libraries, but shared state requires care.</li>
+          <li><strong>Async tasks:</strong> one event loop can coordinate many tasks. When a task awaits non-blocking I/O, the event loop can run another ready task.</li>
+        </ul>
+        <h3>What <code>async</code> and <code>await</code> mean</h3>
+        <p>An <code>async def</code> function creates a coroutine function. Calling it produces a coroutine object; it does not automatically run the function to completion. An event loop schedules coroutine tasks. When a task reaches an <code>await</code> on an operation that can suspend, control can return to the event loop until the awaited operation is ready.</p>
+        <pre><code>async def get_item(item_id):
+    row = await database.fetch_one(
+        "SELECT * FROM items WHERE id = :id",
+        {"id": item_id}
+    )
+    return row</code></pre>
+        <p>This can free the event loop while the database operation waits for I/O—provided the database driver is genuinely asynchronous. Calling a blocking function directly inside an async endpoint can block the event loop and delay unrelated requests. CPU-heavy Python work also does not become parallel merely because a function is declared <code>async</code>.</p>
+        <h3>Why servers use more than one worker</h3>
+        <p>Multiple worker processes can use multiple CPU cores and provide resilience if one worker exits. Each worker may run its own event loop and handle many concurrent connections. More workers also consume more memory and may multiply database connections, so worker counts and connection pools must be sized together.</p>
+        <div class="explanation-grid">
+          <div class="explanation" data-kind="plain"><h4>Plain English</h4><p>Async is like pausing one task while it waits for a reply, then doing useful work elsewhere. It is not the same as making the waiting task run faster.</p></div>
+          <div class="explanation" data-kind="technical"><h4>Technical</h4><p>Async I/O uses cooperative scheduling. Tasks yield at suspension points; the event loop drives readiness and resumes them. Blocking calls monopolize the loop thread unless offloaded. Processes provide parallel execution across cores.</p></div>
+        </div>
+      </section>
+
+      <section id="uvicorn" class="docs-section" aria-labelledby="uvicorn-title">
+        <p class="section-kicker">06 · Python server</p>
+        <h2 id="uvicorn-title">Uvicorn: the server that runs an ASGI app</h2>
+        <p>Uvicorn is an ASGI server. It listens for client connections, handles HTTP and WebSocket protocol events, and invokes an ASGI application using the ASGI callable contract. It is not FastAPI, and it does not decide your application's business rules.</p>
+        <h3>Starting a FastAPI app</h3>
+        <pre><code>uvicorn main:app --host 127.0.0.1 --port 8000</code></pre>
+        <p><code>main:app</code> tells Uvicorn to import the Python module named <code>main</code> and use the object named <code>app</code>. The host and port determine the local listening address. For local development, loopback binding is useful; public deployments need an appropriate interface and network configuration.</p>
+        <h3>What happens inside the server?</h3>
+        <ol>
+          <li>Uvicorn creates and starts its listening server.</li>
+          <li>The operating system reports incoming connection activity.</li>
+          <li>Uvicorn reads and parses protocol data from the connection.</li>
+          <li>It builds an ASGI scope describing the connection/request.</li>
+          <li>It calls the ASGI application with <code>scope</code>, <code>receive</code>, and <code>send</code>.</li>
+          <li>It translates application response events back into HTTP protocol output.</li>
+        </ol>
+        <p>Uvicorn supports HTTP and WebSocket protocols and can use different event-loop and HTTP parsing implementations depending on installed extras and configuration. Those implementation details can change; the ASGI boundary is the stable conceptual contract.</p>
+        <div class="explanation-grid">
+          <div class="explanation" data-kind="plain"><h4>Plain English</h4><p>Uvicorn is the adapter between network traffic and your Python application. It understands the connection and HTTP conversation, then hands the request to the app in a standard shape.</p></div>
+          <div class="explanation" data-kind="technical"><h4>Technical</h4><p>Uvicorn implements the ASGI server side. It owns protocol connections and invokes the application callable per scope. The app communicates asynchronously through receive/send event channels.</p></div>
+        </div>
+      </section>
+
+      <section id="asgi" class="docs-section" aria-labelledby="asgi-title">
+        <p class="section-kicker">07 · The contract between server and app</p>
+        <h2 id="asgi-title">WSGI and ASGI: how servers talk to Python apps</h2>
+        <p>Web servers and Python frameworks need a shared interface. Without one, every server would need custom integration for every framework. WSGI and ASGI define standard calling conventions that let compatible servers and applications work together.</p>
+        <h3>WSGI: synchronous request/response</h3>
+        <p>WSGI is the traditional Python interface for synchronous web applications. A WSGI server calls an application with an environment dictionary and a <code>start_response</code> callable. The application returns an iterable of response body bytes. This model fits classic synchronous request/response applications.</p>
+        <pre><code>def application(environ, start_response):
+    body = b"Hello"
+    start_response(
+        "200 OK",
+        [("Content-Type", "text/plain"),
+         ("Content-Length", str(len(body)))]
+    )
+    return [body]</code></pre>
+        <h3>ASGI: asynchronous and event-based</h3>
+        <p>ASGI extends the model to asynchronous applications and connection types such as long-lived WebSockets. The application is an async callable receiving three values:</p>
+        <pre><code>async def app(scope, receive, send):
+    # scope describes this connection or request
+    # receive gets incoming events
+    # send emits outgoing events
+    ...</code></pre>
+        <ul>
+          <li><strong><code>scope</code>:</strong> metadata about the connection or request, such as type, method, path, headers, and server/client details.</li>
+          <li><strong><code>receive</code>:</strong> an awaitable callable that returns incoming event messages, including HTTP request body events.</li>
+          <li><strong><code>send</code>:</strong> an awaitable callable used to emit response-start and response-body events.</li>
+        </ul>
+        <p>ASGI is an interface, not a server and not a framework. Uvicorn is a server implementation. FastAPI is an ASGI application framework. Starlette provides much of the ASGI web toolkit underneath FastAPI.</p>
+        <div class="explanation-grid">
+          <div class="explanation" data-kind="plain"><h4>Plain English</h4><p>WSGI and ASGI are like standard plug shapes. A compatible server knows how to connect to a compatible app without knowing the app's internal code.</p></div>
+          <div class="explanation" data-kind="technical"><h4>Technical</h4><p>WSGI uses a synchronous callable and iterable response body. ASGI uses an async callable and message events over receive/send channels, enabling asynchronous HTTP and WebSocket handling.</p></div>
+        </div>
+      </section>
+
+      <section id="fastapi" class="docs-section" aria-labelledby="fastapi-title">
+        <p class="section-kicker">08 · Python framework</p>
+        <h2 id="fastapi-title">FastAPI: from ASGI events to your endpoint</h2>
+        <p>FastAPI is a web framework built on Starlette and Pydantic. It receives an ASGI scope and events, matches the request to a route, resolves parameters and dependencies, validates input, invokes your endpoint, and converts the result into an HTTP response.</p>
+        <h3>A small application</h3>
+        <pre><code>from fastapi import FastAPI
+
+app = FastAPI()
+
+@app.get("/items/{item_id}")
+async def read_item(item_id: int):
+    return {"item_id": item_id}</code></pre>
+        <p>The decorator registers route metadata. It does not mean Uvicorn directly calls <code>read_item</code> by looking up the Python function name. The framework's router matches the incoming method and path, then orchestrates the endpoint call.</p>
+        <h3>What the framework contributes</h3>
+        <ol>
+          <li><strong>Routing:</strong> matches the HTTP method and path to a route.</li>
+          <li><strong>Parameter extraction:</strong> obtains path, query, header, cookie, and body values.</li>
+          <li><strong>Validation:</strong> uses type information and Pydantic models to parse and validate data.</li>
+          <li><strong>Dependency injection:</strong> resolves declared dependencies such as authenticated users or database sessions.</li>
+          <li><strong>Endpoint execution:</strong> calls your synchronous or asynchronous Python function.</li>
+          <li><strong>Serialization:</strong> converts the returned value into a response, commonly JSON.</li>
+          <li><strong>Exception handling:</strong> turns handled exceptions and validation failures into appropriate HTTP responses.</li>
+        </ol>
+        <h3>Middleware and the request path</h3>
+        <p>Middleware wraps application handling. It can inspect or modify requests and responses, measure duration, add headers, or handle cross-cutting concerns. Middleware ordering matters: requests pass through the stack in one direction and responses unwind through it in the opposite direction.</p>
+        <p>FastAPI endpoints can be <code>async def</code> or ordinary <code>def</code>. Async endpoints run in the event-loop context. Ordinary synchronous endpoints are run in a thread pool by the framework so blocking synchronous code does not directly block the event loop. This does not make CPU-heavy work automatically scalable; heavy jobs often belong in a separate worker system.</p>
+        <div class="explanation-grid">
+          <div class="explanation" data-kind="plain"><h4>Plain English</h4><p>FastAPI is the coordinator. It reads the request details, checks them, finds the right function, supplies what that function needs, and packages the result as a response.</p></div>
+          <div class="explanation" data-kind="technical"><h4>Technical</h4><p>FastAPI builds on Starlette's ASGI application and routing primitives. It uses dependency graphs and Pydantic validation/serialization around endpoint invocation, then emits an ASGI response through the server interface.</p></div>
+        </div>
+      </section>
+
+      <section id="lifecycle" class="docs-section" aria-labelledby="lifecycle-title">
+        <p class="section-kicker">09 · Put the layers together</p>
+        <h2 id="lifecycle-title">One request, from socket to endpoint and back</h2>
+        <p>Imagine a client requests <code>GET /items/42</code>. This sequence connects the lower-level networking concepts to the framework behavior you see while building an API.</p>
+        <ol class="lifecycle-list">
+          <li><strong>Resolve the hostname.</strong> The client uses DNS to discover an IP address for the API hostname.</li>
+          <li><strong>Establish transport.</strong> The client connects to the destination IP and port using TCP. For HTTPS, TLS negotiates encryption and authenticates the server.</li>
+          <li><strong>Send HTTP.</strong> The client sends the method, path, headers, and any request body using the negotiated HTTP version.</li>
+          <li><strong>Accept and parse.</strong> The server-side listener accepts or reuses a connection; the HTTP implementation parses the incoming protocol data.</li>
+          <li><strong>Create ASGI context.</strong> Uvicorn creates the request scope and supplies receive/send callables.</li>
+          <li><strong>Enter the application.</strong> Uvicorn awaits the FastAPI ASGI application.</li>
+          <li><strong>Run framework handling.</strong> Middleware, routing, parameter extraction, validation, dependencies, and endpoint execution take place.</li>
+          <li><strong>Build the response.</strong> FastAPI serializes the endpoint result and emits ASGI response-start and response-body events.</li>
+          <li><strong>Write protocol output.</strong> Uvicorn turns those events into HTTP response bytes and writes them to the connection.</li>
+          <li><strong>Receive the response.</strong> TCP delivers ordered bytes to the client; the browser or API client interprets the HTTP status, headers, and body.</li>
+        </ol>
+        <p>The endpoint is only one step in a larger system. If a request is slow, the delay could be in DNS, connection setup, TLS, proxying, application middleware, dependency work, database I/O, CPU work, or response transfer. Observability should measure these boundaries rather than treating every delay as “FastAPI is slow.”</p>
+        <div class="explanation-grid">
+          <div class="explanation" data-kind="plain"><h4>Plain English</h4><p>Your endpoint is not the front door. It is the handler reached after the network and framework have delivered a properly understood request.</p></div>
+          <div class="explanation" data-kind="technical"><h4>Technical</h4><p>The request traverses name resolution, transport, HTTP parsing, ASGI invocation, framework middleware/routing/dependency resolution, endpoint execution, response serialization, and protocol transmission.</p></div>
+        </div>
+      </section>
+
+      <section id="deployment" class="docs-section" aria-labelledby="deployment-title">
+        <p class="section-kicker">10 · Beyond localhost</p>
+        <h2 id="deployment-title">Production architecture and supporting components</h2>
+        <p>A local command such as <code>uvicorn main:app --reload</code> is a development setup, not a complete production architecture. Production adds operational concerns: process supervision, TLS, secrets, health checks, logging, monitoring, resource limits, and controlled deployments.</p>
+        <h3>A common deployment shape</h3>
+        <figure class="diagram-frame">
+          <div class="diagram-scroll" tabindex="0" aria-label="Scrollable production deployment diagram">
+            <svg class="architecture-diagram web-diagram" viewBox="0 0 960 280" role="group" aria-labelledby="deploy-title deploy-desc">
+              <title id="deploy-title">Typical Python API deployment</title><desc id="deploy-desc">Clients connect to a reverse proxy which routes to multiple Uvicorn worker processes running the application and connecting to a database and cache.</desc>
+              <defs><marker id="deploy-arrow" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto"><path d="M0 0 8 4 0 8Z" fill="#a1b394"/></marker></defs>
+              <rect class="zone" x="12" y="20" width="150" height="225" rx="8"/><text class="zone-label" x="28" y="45">CLIENTS</text>
+              <rect class="zone" x="185" y="20" width="190" height="225" rx="8"/><text class="zone-label" x="201" y="45">EDGE</text>
+              <rect class="zone" x="398" y="20" width="330" height="225" rx="8"/><text class="zone-label" x="414" y="45">APPLICATION HOST</text>
+              <rect class="zone" x="751" y="20" width="197" height="225" rx="8"/><text class="zone-label" x="767" y="45">DATA SERVICES</text>
+              <g class="node" role="button" tabindex="0" data-component="API clients" data-target="#deployment"><rect x="32" y="93" width="110" height="70" rx="6"/><text x="87" y="121">Clients</text><text class="subtext" x="87" y="141">browser · mobile</text></g>
+              <g class="node" role="button" tabindex="0" data-component="Reverse proxy" data-target="#web-server"><rect x="207" y="93" width="146" height="70" rx="6"/><text x="280" y="121">Proxy / ingress</text><text class="subtext" x="280" y="141">TLS · limits · route</text></g>
+              <g class="node" role="button" tabindex="0" data-component="Uvicorn workers" data-target="#uvicorn"><rect x="423" y="72" width="132" height="62" rx="6"/><text x="489" y="98">Worker 1</text><text class="subtext" x="489" y="118">Uvicorn + app</text></g>
+              <g class="node" role="button" tabindex="0" data-component="Uvicorn workers" data-target="#uvicorn"><rect x="423" y="157" width="132" height="62" rx="6"/><text x="489" y="183">Worker 2</text><text class="subtext" x="489" y="203">Uvicorn + app</text></g>
+              <g class="node" role="button" tabindex="0" data-component="Database" data-target="#deployment"><rect x="778" y="72" width="142" height="62" rx="6"/><text x="849" y="98">Database</text><text class="subtext" x="849" y="118">persistent records</text></g>
+              <g class="node" role="button" tabindex="0" data-component="Cache" data-target="#deployment"><rect x="778" y="157" width="142" height="62" rx="6"/><text x="849" y="183">Cache / queue</text><text class="subtext" x="849" y="203">fast data · jobs</text></g>
+              <path class="flow" marker-end="url(#deploy-arrow)" d="M142 128H199M353 128H415M555 103H770M555 188H770"/>
+              <path class="flow" marker-end="url(#deploy-arrow)" d="M555 128H620V188H770"/>
+              <text class="flow-label" x="675" y="91">queries</text><text class="flow-label" x="674" y="177">cache / jobs</text>
+            </svg>
+          </div>
+          <figcaption class="diagram-caption">A conceptual deployment only. Real systems may use containers, load balancers, managed databases, separate job workers, and multiple hosts.</figcaption>
+        </figure>
+        <h3>Important supporting components</h3>
+        <div class="component-list">
+          <details class="component-details"><summary>Database connection pool</summary><div class="component-body"><p>A pool reuses a limited number of database connections. It avoids creating a new connection for every query, but its size must be considered across all application workers. Ten workers with a pool maximum of ten can potentially open around one hundred connections.</p></div></details>
+          <details class="component-details"><summary>Cache</summary><div class="component-body"><p>A cache stores data for faster reuse. It can reduce repeated database work, but introduces invalidation, expiration, consistency, and failure-handling questions. A cache should not silently become the only durable copy of important data.</p></div></details>
+          <details class="component-details"><summary>Background task worker</summary><div class="component-body"><p>Long-running work such as report generation, email delivery, or media processing may be placed on a queue and processed by separate worker processes. This keeps request/response handling from waiting for every task to finish. In-process background tasks are not a replacement for a durable job queue when reliability matters.</p></div></details>
+          <details class="component-details"><summary>Observability</summary><div class="component-body"><p>Logs record events, metrics show aggregate behavior, and traces connect work across services. Request IDs and trace context help connect a client request to proxy logs, application logs, database calls, and background work.</p></div></details>
+          <details class="component-details"><summary>Worker count and resource limits</summary><div class="component-body"><p>Workers consume memory and may each create database pools. Choose counts based on CPU, memory, blocking work, traffic, and database capacity—not a universal magic formula. Add timeouts and limits for uploads, requests, and concurrency.</p></div></details>
+        </div>
+        <h3>Development and production are different</h3>
+        <p><code>--reload</code> watches source files and restarts the development server when code changes. It is intended for development. Production should use a deliberate process manager or container platform, stable configuration, TLS at an appropriate layer, health checks, graceful shutdown, and a deployment strategy that can recover from process or host failure.</p>
+      </section>
+
+      <section id="glossary" class="docs-section" aria-labelledby="glossary-title">
+        <p class="section-kicker">Reference</p>
+        <h2 id="glossary-title">Glossary and official references</h2>
+        <div class="glossary-grid">
+          <div><strong>Socket</strong><p>An OS communication endpoint exposed to applications through a socket API.</p></div>
+          <div><strong>TCP</strong><p>A reliable, ordered byte-stream transport protocol.</p></div>
+          <div><strong>DNS</strong><p>A distributed naming system used to look up records such as IP addresses.</p></div>
+          <div><strong>HTTP</strong><p>An application protocol for requests, responses, and related semantics.</p></div>
+          <div><strong>Web server</strong><p>Software that accepts connections and handles HTTP protocol traffic.</p></div>
+          <div><strong>Reverse proxy</strong><p>A server that receives requests and forwards them to upstream services.</p></div>
+          <div><strong>Event loop</strong><p>A scheduler that coordinates asynchronous tasks and I/O readiness.</p></div>
+          <div><strong>ASGI</strong><p>An asynchronous interface between Python servers and applications.</p></div>
+          <div><strong>Uvicorn</strong><p>An ASGI server implementation.</p></div>
+          <div><strong>FastAPI</strong><p>A Python web framework built on Starlette and Pydantic.</p></div>
+        </div>
+        <h3>Read the specifications and project documentation</h3>
+        <ul class="reference-list">
+          <li><a href="https://docs.python.org/3/library/socket.html" target="_blank" rel="noopener noreferrer">Python socket documentation</a> — socket API, bind, listen, accept, send, and receive.</li>
+          <li><a href="https://www.rfc-editor.org/rfc/rfc9293" target="_blank" rel="noopener noreferrer">RFC 9293: Transmission Control Protocol</a> — TCP protocol specification.</li>
+          <li><a href="https://www.rfc-editor.org/rfc/rfc9110" target="_blank" rel="noopener noreferrer">RFC 9110: HTTP Semantics</a> — methods, status codes, fields, and semantics.</li>
+          <li><a href="https://www.rfc-editor.org/rfc/rfc9112" target="_blank" rel="noopener noreferrer">RFC 9112: HTTP/1.1</a> — HTTP/1.1 message syntax and connection handling.</li>
+          <li><a href="https://asgi.readthedocs.io/en/latest/" target="_blank" rel="noopener noreferrer">ASGI documentation</a> — application interface and protocol specifications.</li>
+          <li><a href="https://www.uvicorn.org/" target="_blank" rel="noopener noreferrer">Uvicorn documentation</a> — server configuration and deployment.</li>
+          <li><a href="https://fastapi.tiangolo.com/" target="_blank" rel="noopener noreferrer">FastAPI documentation</a> — routing, dependencies, middleware, and deployment.</li>
+          <li><a href="https://www.starlette.io/" target="_blank" rel="noopener noreferrer">Starlette documentation</a> — ASGI toolkit used by FastAPI.</li>
+          <li><a href="https://docs.pydantic.dev/latest/" target="_blank" rel="noopener noreferrer">Pydantic documentation</a> — parsing, validation, and serialization.</li>
+          <li><a href="https://peps.python.org/pep-3333/" target="_blank" rel="noopener noreferrer">PEP 3333: WSGI</a> — Python Web Server Gateway Interface.</li>
+        </ul>
+      </section>
+
+      <footer class="docs-footer">
+        <nav class="editorial-footer" aria-label="Related navigation">
+          <div class="editorial-footer__item"><span class="editorial-footer__label">Back to library</span><a class="editorial-footer__link" href="../index.html"><span class="editorial-footer__arrow" aria-hidden="true">←</span>Architecture Library</a></div>
+          <div class="editorial-footer__item"><span class="editorial-footer__label">Related guide</span><a class="editorial-footer__link" href="../postgresql/index.html">PostgreSQL Architecture <span class="editorial-footer__arrow" aria-hidden="true">↗</span></a></div>
+        </nav>
+      </footer>
+    </main>
+
+    <aside class="right-rail" aria-label="Guide information">
+      <p class="rail-heading">In this guide</p>
+      <p class="rail-copy">A connected explanation of networking, HTTP, Python servers, and framework internals.</p>
+      <div class="rail-rule"></div>
+      <p class="rail-heading">Core distinction</p>
+      <p class="rail-copy"><strong>Uvicorn</strong> speaks ASGI and handles protocols. <strong>FastAPI</strong> handles application routing and request logic.</p>
+      <div class="rail-rule"></div>
+      <p class="rail-heading">Suggested reading</p>
+      <a class="rail-link" href="#sockets">Sockets and TCP</a>
+      <a class="rail-link" href="#asgi">ASGI boundary</a>
+      <a class="rail-link" href="#lifecycle">Full request lifecycle</a>
+    </aside>
+  </div>
+  <script src="web-server.js" defer></script>
+</body>
+</html>
