@@ -1,0 +1,92 @@
+/* Additional styles for the Web Server & Python Framework guide.
+   Shared documentation layout and typography come from ../architecture.css. */
+
+.web-diagram { min-width: 900px; }
+.web-diagram .node:focus-visible rect {
+  stroke: var(--accent);
+  stroke-width: 2.4;
+}
+.web-diagram .flow { stroke-width: 1.8; }
+.lifecycle-list { counter-reset: lifecycle; list-style: none; padding: 0 !important; }
+.lifecycle-list li {
+  position: relative;
+  padding: .85rem .9rem .85rem 3.1rem;
+  border: 1px solid var(--border);
+  border-radius: 5px;
+  margin: .55rem 0 !important;
+  background: rgba(255,255,255,.018);
+}
+.lifecycle-list li::before {
+  counter-increment: lifecycle;
+  content: counter(lifecycle, decimal-leading-zero);
+  position: absolute;
+  left: .85rem;
+  top: .85rem;
+  color: var(--accent);
+  font-family: ui-monospace, monospace;
+  font-size: .76rem;
+  font-weight: 700;
+}
+.glossary-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: .6rem;
+  margin: 1rem 0 1.5rem;
+}
+.glossary-grid > div {
+  padding: .75rem .85rem;
+  border: 1px solid var(--border);
+  border-radius: 5px;
+  background: rgba(255,255,255,.018);
+}
+.glossary-grid strong { color: var(--accent); font-size: .82rem; }
+.glossary-grid p { margin: .25rem 0 0; font-size: .79rem; }
+.reference-list li { margin-bottom: .45rem; }
+.component-body { padding: .1rem .85rem .65rem; }
+.component-body p { margin-bottom: .35rem; }
+.right-rail { position: sticky; top: 5rem; padding: 2rem 0; }
+.rail-copy {
+  color: var(--muted);
+  font-size: .76rem;
+  line-height: 1.65;
+}
+.rail-rule { height: 1px; margin: 1rem 0; background: var(--border); }
+.rail-link {
+  display: block;
+  padding: .25rem 0;
+  color: var(--muted);
+  font-size: .76rem;
+  text-decoration: none;
+}
+.rail-link:hover { color: var(--accent); }
+@media (max-width: 1000px) {
+  .docs-layout { grid-template-columns: 180px minmax(0, 1fr); }
+  .right-rail { display: none; }
+}
+@media (max-width: 760px) {
+  .docs-layout { display: block; }
+  .docs-sidebar { position: static; max-height: none; padding: .75rem 0 0; }
+  .toc-details {
+    border: 1px solid var(--border);
+    border-radius: 5px;
+    background: var(--surface);
+  }
+  .toc-details > summary {
+    display: list-item;
+    padding: .65rem .8rem;
+    color: var(--text);
+    font-size: .82rem;
+    font-weight: 650;
+    cursor: pointer;
+  }
+  .toc-details[open] { padding-bottom: .6rem; }
+  .toc-label { padding: 0 .8rem; }
+  .docs-toc { padding: 0 .55rem; grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .docs-toc a { font-size: .72rem; }
+  .docs-main { padding-top: 1.25rem; }
+  .glossary-grid { grid-template-columns: 1fr; }
+}
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  *, *::before, *::after { transition-duration: .01ms !important; }
+}
