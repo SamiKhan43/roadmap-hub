@@ -63,7 +63,7 @@ If it prints `PONG`, a Redis server is reachable using the default local connect
 | macOS | Homebrew, following Redis's official macOS guide |
 | Windows | WSL 2 with Ubuntu, or Docker as described in Redis's current Windows installation documentation |
 
-**macOS:** use the official [Redis on macOS guide](https://redis.io/docs/latest/operate/oss_and_stack/install/install-redis/install-redis-on-mac-os/). It uses Homebrew and documents `brew install redis` and `brew services`.
+**macOS:** use the official [Redis on macOS guide](https://redis.io/docs/latest/operate/oss_and_stack/install/install-stack/homebrew/). It uses Homebrew and documents `brew install redis` and `brew services`.
 
 **Windows:** Redis's current installation overview documents Docker for Windows. Another practical development option is WSL 2 with an Ubuntu distribution: install Redis inside that Linux environment and follow the Linux instructions there. WSL service management depends on whether systemd is enabled in your distribution. See Redis's [current installation options](https://redis.io/docs/latest/install/install-stack/) and Microsoft's [WSL documentation](https://learn.microsoft.com/en-us/windows/wsl/) before choosing an approach.
 
@@ -216,11 +216,7 @@ PONG
 
 `PING` is a simple request used to check that the server responds. `PONG` means the server received the command and replied. It does not test every feature or prove that an application is configured correctly, but it is a useful first connection check.
 
-To leave the interactive client, run:
-
-```text
-127.0.0.1:6379> EXIT
-```
+To leave the interactive client, press **Ctrl-C**. This exits `redis-cli` and closes the client connection; it does not stop the Redis server.
 
 You return to your normal terminal. Exiting `redis-cli` closes the client connection; it does not stop the Redis server.
 
