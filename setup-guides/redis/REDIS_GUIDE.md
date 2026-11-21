@@ -61,11 +61,11 @@ If it prints `PONG`, a Redis server is reachable using the default local connect
 |---|---|
 | Ubuntu / Debian | Redis's official APT repository, as used in this guide |
 | macOS | Homebrew, following Redis's official macOS guide |
-| Windows | WSL 2 with Ubuntu, or the Windows-compatible option documented by Redis |
+| Windows | WSL 2 with Ubuntu, or Docker as described in Redis's current Windows installation documentation |
 
 **macOS:** use the official [Redis on macOS guide](https://redis.io/docs/latest/operate/oss_and_stack/install/install-redis/install-redis-on-mac-os/). It uses Homebrew and documents `brew install redis` and `brew services`.
 
-**Windows:** Redis documents Windows use through its official Windows compatibility partner, Memurai, and through WSL 2. If you choose WSL 2, install Ubuntu and follow the Linux instructions in this guide from inside that Ubuntu environment. Redis's WSL instructions use `redis-server --daemonize yes`; service management with `systemctl` depends on whether systemd is enabled in your WSL distribution. See the [official Windows guide](https://redis.io/docs/latest/operate/oss_and_stack/install/install-redis/install-redis-on-windows/) before choosing an approach.
+**Windows:** Redis's current installation overview documents Docker for Windows. Another practical development option is WSL 2 with an Ubuntu distribution: install Redis inside that Linux environment and follow the Linux instructions there. WSL service management depends on whether systemd is enabled in your distribution. See Redis's [current installation options](https://redis.io/docs/latest/install/install-stack/) and Microsoft's [WSL documentation](https://learn.microsoft.com/en-us/windows/wsl/) before choosing an approach.
 
 The rest of the guide assumes a normal Ubuntu installation using APT and the Redis-maintained package repository.
 
