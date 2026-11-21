@@ -21,7 +21,7 @@ window.SETUP_GUIDES=[
   id:"redis",
   title:"Redis Setup Guide",
   description:"Install Redis on Ubuntu, manage the server, practise essential Redis commands, and connect a Python application using redis-py.",
-  icon:"database-zap",
+  icon:"database",
   rgb:"248,113,113",
   difficulty:"Beginner",
   markdown:"./redis/REDIS_GUIDE.md"
