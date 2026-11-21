@@ -16,5 +16,14 @@ window.SETUP_GUIDES=[
   rgb:"52,211,153",
   difficulty:"Beginner",
   markdown:"./supabase.md"
+ },
+ {
+  id:"redis",
+  title:"Redis Setup Guide",
+  description:"Install Redis on Ubuntu, manage the server, practise essential Redis commands, and connect a Python application using redis-py.",
+  icon:"database-zap",
+  rgb:"248,113,113",
+  difficulty:"Beginner",
+  markdown:"./redis/REDIS_GUIDE.md"
  }
 ];
