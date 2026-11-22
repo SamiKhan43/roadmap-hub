@@ -1,0 +1,90 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Learn data structures and algorithms from zero: an interactive knowledge map, textbook-style lessons, Python implementations, visualizations and a problem-solving lab.">
+  <meta name="theme-color" content="#f7f7f2">
+  <meta property="og:title" content="Data Structures & Algorithms | Roadmap Hub">
+  <meta property="og:description" content="An interactive learning map for data structures and algorithms, from absolute beginner to advanced.">
+  <meta property="og:type" content="website">
+  <meta name="twitter:card" content="summary_large_image">
+  <title>Data Structures &amp; Algorithms | Roadmap Hub</title>
+  <link rel="stylesheet" href="dsa.css">
+  <!-- Content and logic. Order matters: helpers -> curriculum -> lessons -> problems -> visualizers -> progress -> app -->
+  <script src="js/helpers.js" defer></script>
+  <script src="js/curriculum.js" defer></script>
+  <script src="js/lessons-foundations.js" defer></script>
+  <script src="js/lessons-complexity.js" defer></script>
+  <script src="js/lessons-structures.js" defer></script>
+  <script src="js/lessons-algorithms.js" defer></script>
+  <script src="js/problems.js" defer></script>
+  <script src="js/visualizers.js" defer></script>
+  <script src="js/progress.js" defer></script>
+  <script src="js/app.js" defer></script>
+</head>
+<body class="dsa">
+  <a class="skip-link" href="#main">Skip to content</a>
+
+  <header class="topbar">
+    <a class="brand" href="../index.html" aria-label="Back to Roadmap Hub">
+      <span class="brand-home">Roadmap Hub</span>
+      <span class="brand-product">Data Structures &amp; Algorithms</span>
+    </a>
+    <nav class="dsa-nav" aria-label="DSA sections">
+      <a href="#/" data-nav="map">Knowledge map</a>
+      <a href="#/playground" data-nav="playground">Visual playground</a>
+      <a href="#/lab" data-nav="lab">Problem lab</a>
+      <a href="#/progress" data-nav="progress">Progress</a>
+    </nav>
+    <div class="topbar-tools">
+      <label class="search-wrap">
+        <span class="sr-only">Search topics and problems</span>
+        <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="10.8" cy="10.8" r="6.8"></circle><path d="m16 16 4.5 4.5"></path></svg>
+        <input id="global-search" type="search" placeholder="Search topics, problems" autocomplete="off" aria-controls="search-results" aria-expanded="false">
+        <kbd aria-hidden="true">/</kbd>
+      </label>
+      <button class="menu-button" id="menu-button" type="button" aria-expanded="false" aria-controls="mobile-nav">
+        <span class="sr-only">Open menu</span>
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 6h16M4 12h16M4 18h16"></path></svg>
+      </button>
+    </div>
+    <div id="search-results" class="search-results" role="listbox" aria-label="Search results" hidden></div>
+    <nav id="mobile-nav" class="mobile-nav" aria-label="DSA sections (mobile)" hidden>
+      <a href="#/">Knowledge map</a>
+      <a href="#/playground">Visual playground</a>
+      <a href="#/lab">Problem lab</a>
+      <a href="#/progress">Progress</a>
+      <a href="../index.html">← Roadmap Hub</a>
+    </nav>
+  </header>
+
+  <main id="main" tabindex="-1">
+    <noscript><p class="noscript">This learning map needs JavaScript to show lessons and visualizations.</p></noscript>
+    <div id="view" aria-live="polite"></div>
+  </main>
+
+  <footer class="dsa-footer">
+    <div><span class="eyebrow">Roadmap Hub</span><a href="../index.html">← All roadmaps</a></div>
+    <div><span class="eyebrow">Progress</span><p>Saved in this browser. Synced to your account when you are signed in on Roadmap Hub.</p></div>
+    <div><span class="eyebrow">Contribute</span><a href="https://github.com/samikhan43/roadmap-hub" target="_blank" rel="noopener noreferrer">GitHub repository ↗</a></div>
+  </footer>
+
+  <!-- Optional Roadmap Hub account sync. These are the same files the homepage loads; if they are missing, progress stays local. -->
+  <script>
+    (function () {
+      var base = "../assets/";
+      var chain = [base + "supabase-config.js", "https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2", base + "supabase-client.js", base + "supabase-app.js"];
+      function next(i) {
+        if (i >= chain.length) return;
+        var s = document.createElement("script");
+        s.src = chain[i];
+        s.onload = function () { next(i + 1); };
+        s.onerror = function () { /* account sync unavailable; local progress still works */ };
+        document.body.appendChild(s);
+      }
+      if (location.protocol !== "file:") next(0);
+    })();
+  </script>
+</body>
+</html>
