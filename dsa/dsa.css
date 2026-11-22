@@ -92,8 +92,8 @@ body.is-map-view main { padding-top: 1.2rem; }
 /* Controls and shared status language */
 .btn { display: inline-flex; min-height: 38px; align-items: center; justify-content: center; gap: .4rem; padding: .45rem .8rem; border: 1px solid var(--border-strong); background: transparent; color: var(--body); font-size: .82rem; font-weight: 600; text-decoration: none; cursor: pointer; transition: background .15s, border-color .15s, color .15s; }
 .btn:hover { border-color: var(--accent); color: var(--accent-strong); background: var(--accent-wash); }
-.btn-primary { border-color: var(--accent); background: var(--accent); color: #17200b; }
-.btn-primary:hover { border-color: var(--accent-strong); background: var(--accent-strong); color: #17200b; }
+.dsa .btn-primary { border-color: var(--accent); background: var(--accent); color: #17200b; }
+.dsa .btn-primary:hover { border-color: var(--accent-strong); background: var(--accent-strong); color: #17200b; }
 .btn-small { min-height: 31px; padding: .3rem .6rem; font-size: .74rem; }
 .btn[disabled] { opacity: .48; cursor: not-allowed; }
 .text-link { color: var(--accent); text-decoration: underline; text-decoration-color: var(--accent-line); text-underline-offset: .15em; }
