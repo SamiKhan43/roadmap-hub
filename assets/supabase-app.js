@@ -17,7 +17,9 @@
     "auth",
     "http",
     "protocols",
-    "git-github"
+    "git-github",
+    "dsa",
+    "backend-engineer-roadmap"
   ];
 
   const roadmapKeyMap = {
@@ -27,10 +29,18 @@
     auth: "auth",
     http: "http",
     protocols: "protocols",
-    "git-github": "git-github"
+    "git-github": "git-github",
+    dsa: "dsa",
+    "backend-engineer-roadmap": "backend-engineer-roadmap"
   };
 
-  const getLocalStorageKey = (key) => (key === "protocols" ? "rm:protocols:done" : `rm:${key}:t`);
+  const getLocalStorageKey = (key) => {
+    if (key === "protocols") return "rm:protocols:done";
+    if (key === "git-github") return "roadmap-hub-git-github-progress";
+    if (key === "dsa") return "rm:dsa:t";
+    if (key === "backend-engineer-roadmap") return "backend-roadmap:v1";
+    return `rm:${key}:t`;
+  };
 
   const readLocalProgress = (key) => {
     try {
@@ -40,6 +50,11 @@
         return [];
       }
       const parsed = JSON.parse(value);
+      if (key === "backend-engineer-roadmap" && parsed && typeof parsed === "object") {
+        return Object.entries(parsed.status || {})
+          .filter(([, status]) => status === "done")
+          .map(([topicId]) => String(topicId));
+      }
       return Array.isArray(parsed) ? parsed.filter(Boolean).map(String) : [];
     } catch (error) {
       console.warn("Unable to read local progress", error);
@@ -49,6 +64,22 @@
 
   const writeLocalProgress = (key, topics) => {
     const values = Array.from(new Set((topics || []).filter(Boolean).map(String))).sort();
+    if (key === "backend-engineer-roadmap") {
+      try {
+        const store = JSON.parse(localStorage.getItem("backend-roadmap:v1") || "{}");
+        store.status = store.status && typeof store.status === "object" ? store.status : {};
+        Object.keys(store.status).forEach((topicId) => {
+          if (!values.includes(topicId)) {
+            delete store.status[topicId];
+          }
+        });
+        values.forEach((topicId) => { store.status[topicId] = "done"; });
+        localStorage.setItem("backend-roadmap:v1", JSON.stringify(store));
+      } catch (error) {
+        console.warn("Unable to write local backend roadmap progress", error);
+      }
+      return;
+    }
     localStorage.setItem(getLocalStorageKey(key), JSON.stringify(values));
   };
 
