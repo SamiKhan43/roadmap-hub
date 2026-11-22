@@ -76,6 +76,7 @@ Roadmap Hub currently includes a mix of full learning tracks and practical refer
 | [Backend Engineer](https://samikhan43.github.io/roadmap-hub/backend-engineer-roadmap/) | 12 | 56 | **Production Live** |
 | [HTTP](https://samikhan43.github.io/roadmap-hub/http-roadmap/) | 7 | 32 | **Production Live** |
 | [Protocols](https://samikhan43.github.io/roadmap-hub/protocols/) | 7 | 35 | **Production Live** |
+| [Data Structures & Algorithms](https://samikhan43.github.io/roadmap-hub/dsa/) | 6 | 139 | **Production Live** |
 | [Git & GitHub](https://samikhan43.github.io/roadmap-hub/git-github/) | — | — | **Reference Guide** |
 
 > The **SQL** and **PostgreSQL** tracks cover database fundamentals, query design, indexing, transactions, and production operations. **FastAPI** and **Authentication & Authorization** focus on API and security architecture, while **HTTP**, **Protocols**, and **Git & GitHub** provide deeper operational and systems-level foundations.
@@ -135,6 +136,7 @@ roadmap-hub/
 │   └── index.html
 ├── http-roadmap/
 ├── protocols/
+├── dsa/                         # Data Structures & Algorithms
 ├── git-github/
 ├── architecture/                # Architecture library and lessons
 ├── setup-guides/                # Setup guide catalog and readers
