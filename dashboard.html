@@ -184,12 +184,13 @@
 
     .recent-list { position: relative; display: grid; gap: 18px; margin-top: 20px; }
     .recent-list.timeline::before { content: ""; position: absolute; left: 11px; top: 8px; bottom: 8px; width: 1px; background: var(--border-soft); }
-    .recent-item { position: relative; display: flex; gap: 14px; }
+    .recent-item { position: relative; display: flex; min-width: 0; gap: 14px; }
+    .recent-copy { flex: 1; min-width: 0; }
     .dot { position: relative; z-index: 1; display: grid; place-items: center; width: 24px; height: 24px; flex: none; border: 1px solid rgba(198,243,106,.3); border-radius: 50%; background: var(--card); color: var(--accent); }
     .dot svg { width: 14px; height: 14px; }
-    .recent-title { display: block; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-size: 14px; font-weight: 500; }
+    .recent-title { display: block; max-width: 100%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-size: 14px; font-weight: 500; }
     .recent-title:hover { color: var(--accent); }
-    .recent-meta { margin-top: 2px; font-size: 12px; color: var(--quiet); }
+    .recent-meta { margin-top: 2px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-size: 12px; color: var(--quiet); }
     .empty-state { padding: 20px 24px; font-size: 13px; color: var(--muted); }
     .recent-list .empty-state { padding: 0; }
     .empty-state a { color: var(--accent); }
@@ -570,7 +571,7 @@
         const roadmap = ROADMAPS.find((c) => c.key === item.roadmap_id);
         const li = el("li", "recent-item");
         const dot = el("span", "dot"); dot.append(icon("check"));
-        const body = el("div"); body.style.minWidth = "0";
+        const body = el("div", "recent-copy");
         const link = el("a", "recent-title", `Topic ${item.topic_id}`);
         link.href = roadmap ? `${roadmap.slug}/` : "./";
         const date = completedAt(item) ? formatDate(item.completed_at || item.updated_at) : "Saved on this device · date not recorded";
