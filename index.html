@@ -9,7 +9,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <link rel="icon" type="image/svg+xml" href="logos/logo-mark.svg">
 
-<title>Roadmap Hub — Practical paths for developers</title>
+<title>Roadmap Hub</title>
 
 <script src="https://cdn.tailwindcss.com/3.4.17"></script>
 
@@ -127,12 +127,6 @@ input:hover{border-color:#71717a}
 
 html{scroll-behavior:smooth;scroll-padding-top:4.5rem}
 
-.nav-link{display:block;padding:.5rem .75rem;border-radius:.5rem;color:#b4b4bd;font-size:.875rem;transition:background .15s,color .15s}
-
-.nav-link:hover,.nav-link:focus-visible{background:rgba(255,255,255,.08);color:#fff}
-
-.nav-link[aria-current="true"]{background:rgba(255,255,255,.1);color:#fff}
-
 @media (prefers-reduced-motion:reduce){
 
  *,*:before{transition:none!important;animation:none!important}
@@ -176,97 +170,141 @@ body {
 ::selection { color: var(--accent-ink); background: var(--accent); }
 
 header {
-  background: rgba(13,15,14,.92) !important;
   border-color: var(--border) !important;
+  background: rgba(13,15,14,.94) !important;
   backdrop-filter: blur(14px);
 }
-header nav { max-width: var(--content-width); height: 68px !important; }
-header img { height: 26px !important; }
-.nav-link {
-  padding: .55rem .72rem;
-  color: #aeb7ad;
-  font-size: .82rem;
-  font-weight: 550;
-  border-radius: 5px;
-}
-.nav-link:hover, .nav-link:focus-visible {
-  color: var(--accent);
-  background: rgba(198,243,106,.07);
-}
-.nav-link[aria-current="true"] {
-  color: var(--accent);
-  background: rgba(198,243,106,.09);
-}
+header nav { max-width: var(--content-width); min-height: 68px; }
+header img { height: 28px !important; }
 header nav.site-nav {
+  position: relative;
   display: grid;
   grid-template-columns: auto minmax(0, 1fr);
   gap: 1.5rem;
-  height: auto !important;
   min-height: 68px;
-  position: relative;
 }
-#nav-content { display: flex; min-width: 0; align-items: center; justify-content: space-between; gap: 1rem; }
-#primary-nav { display: flex; flex: 1; align-items: center; justify-content: center; gap: .15rem; }
-.nav-actions, .nav-utilities { display: flex; align-items: center; gap: .5rem; }
-.nav-search {
+#nav-content { display: flex; min-width: 0; align-items: center; justify-content: space-between; gap: 1.25rem; }
+#primary-nav { display: flex; flex: 1; align-items: center; justify-content: center; gap: 1.25rem; margin: 0; padding: 0; list-style: none; }
+#primary-nav > li { position: relative; }
+.nav-link {
   display: inline-flex;
-  min-height: 38px;
-  min-width: 208px;
-  align-items: center;
-  gap: .6rem;
-  padding: .4rem .55rem .4rem .75rem;
-  border: 1px solid var(--border);
-  border-radius: 5px;
-  color: #9da69d;
-  background: rgba(255,255,255,.025);
-  font-size: .78rem;
-  text-align: left;
-  transition: border-color .16s ease, background .16s ease, color .16s ease;
-}
-.nav-search:hover { color: var(--text); border-color: #465345; background: rgba(255,255,255,.045); }
-.nav-search > span:nth-of-type(1) { flex: 1; }
-.nav-search kbd {
-  padding: .12rem .32rem;
-  border: 1px solid #343d35;
-  border-radius: 3px;
-  color: #818b81;
-  font: inherit;
-  font-size: .68rem;
-  white-space: nowrap;
-}
-.nav-progress {
-  display: inline-flex;
+  min-height: 36px;
   align-items: center;
   gap: .4rem;
-  min-height: 34px;
-  padding: .3rem .6rem;
-  border: 1px solid rgba(198,243,106,.25);
-  border-radius: 999px;
-  color: var(--accent);
-  background: rgba(198,243,106,.07);
-  font-size: .76rem;
-  font-weight: 600;
+  padding: .45rem .25rem;
+  color: #a5afa4;
+  font-size: .82rem;
+  font-weight: 500;
+  text-decoration: none;
   white-space: nowrap;
-  transition: border-color .16s ease, background .16s ease;
+  transition: color .15s ease, background .15s ease;
 }
-.nav-progress:hover { border-color: rgba(198,243,106,.5); background: rgba(198,243,106,.12); }
-.nav-progress[aria-current="true"] { border-color: rgba(198,243,106,.5); background: rgba(198,243,106,.12); }
+.nav-link:hover, .nav-link:focus-visible { color: var(--text); }
+.nav-link[aria-current="true"] { color: var(--accent); }
+.nav-dropdown { position: relative; }
+.nav-explore-trigger { cursor: pointer; list-style: none; }
+.nav-explore-trigger::-webkit-details-marker { display: none; }
+.nav-explore-trigger::marker { content: ""; }
+.nav-explore-trigger svg { width: 14px; height: 14px; color: var(--quiet); }
+.nav-dropdown[open] .nav-explore-trigger,
+.nav-dropdown[open] .nav-explore-trigger svg { color: var(--accent); }
+.nav-dropdown-panel {
+  position: absolute;
+  z-index: 80;
+  top: calc(100% + .55rem);
+  left: -.75rem;
+  width: min(340px, calc(100vw - 32px));
+  padding: .45rem;
+  border: 1px solid var(--border);
+  border-radius: 5px;
+  background: #131714;
+  box-shadow: 0 12px 28px rgba(0,0,0,.32);
+}
+.nav-dropdown-label {
+  margin: .15rem .65rem .35rem;
+  color: var(--quiet);
+  font-size: .64rem;
+  font-weight: 600;
+  letter-spacing: .09em;
+  text-transform: uppercase;
+}
+.nav-dropdown-list { display: grid; gap: 2px; margin: 0; padding: 0; list-style: none; }
+.nav-dropdown-link {
+  display: grid;
+  grid-template-columns: 16px minmax(0, 1fr);
+  align-items: start;
+  gap: .65rem;
+  border-radius: 3px;
+  padding: .6rem .65rem;
+  color: var(--text);
+  text-decoration: none;
+  transition: background .14s ease, color .14s ease;
+}
+.nav-dropdown-link:hover, .nav-dropdown-link:focus-visible,
+.nav-dropdown-link[aria-current="true"] { color: var(--text); background: #1a201c; }
+.nav-dropdown-link > svg { width: 15px; height: 15px; margin-top: .1rem; color: #99a599; }
+.nav-dropdown-link:hover > svg { color: var(--accent); }
+.nav-dropdown-copy { display: grid; gap: .12rem; }
+.nav-dropdown-copy strong { font-size: .78rem; font-weight: 550; }
+.nav-dropdown-copy small { color: #899489; font-size: .68rem; line-height: 1.4; }
+.nav-actions, .nav-utilities { display: flex; align-items: center; gap: .55rem; }
+.nav-search {
+  display: inline-flex;
+  width: 198px;
+  min-height: 36px;
+  align-items: center;
+  gap: .55rem;
+  border: 1px solid #29312b;
+  border-radius: 4px;
+  padding: .35rem .6rem;
+  color: #8e998e;
+  background: #111411;
+  font-family: inherit;
+  font-size: .76rem;
+  font-weight: 400;
+  line-height: 1.2;
+  text-align: left;
+  cursor: pointer;
+  transition: border-color .15s ease, color .15s ease, background .15s ease;
+}
+.nav-search svg { width: 15px; height: 15px; flex: none; color: #899489; }
+.nav-search > span { flex: 1; }
+.nav-search:hover { border-color: #3b473c; color: #c4cec3; background: #141815; }
+.nav-progress {
+  display: inline-flex;
+  min-height: 36px;
+  align-items: center;
+  gap: .4rem;
+  border-radius: 4px;
+  padding: .35rem .45rem;
+  color: #a0aaa0;
+  font-size: .77rem;
+  font-weight: 500;
+  text-decoration: none;
+  white-space: nowrap;
+  transition: color .15s ease, background .15s ease;
+}
+.nav-progress svg { width: 15px; height: 15px; color: #899489; }
+.nav-progress:hover, .nav-progress[aria-current="true"] { color: var(--accent); background: rgba(198,243,106,.06); }
+.nav-progress:hover svg, .nav-progress[aria-current="true"] svg { color: var(--accent); }
 .nav-icon-button {
   display: inline-flex;
-  width: 36px;
-  height: 36px;
+  width: 34px;
+  height: 34px;
+  flex: none;
   align-items: center;
   justify-content: center;
   border: 1px solid transparent;
-  border-radius: 5px;
-  color: #aeb7ad;
-  transition: border-color .16s ease, background .16s ease, color .16s ease;
+  border-radius: 4px;
+  color: #98a398;
+  transition: color .15s ease, background .15s ease, border-color .15s ease;
 }
-.nav-icon-button:hover { color: var(--text); border-color: var(--border); background: rgba(255,255,255,.045); }
+.nav-icon-button:hover { border-color: var(--border); color: var(--text); background: #141815; }
 #nav-toggle { display: none; }
 
-@media (max-width: 1023px) {
+@media (max-width: 1000px) {
   header nav.site-nav { grid-template-columns: minmax(0, 1fr) auto; gap: .5rem; min-height: 60px; }
+  header img { height: 24px !important; }
   #nav-content {
     position: absolute;
     z-index: 50;
@@ -274,43 +312,60 @@ header nav.site-nav {
     left: 0;
     right: 0;
     display: flex;
+    max-height: calc(100dvh - 60px);
     flex-direction: column;
     align-items: stretch;
-    gap: .75rem;
-    padding: .9rem 1rem 1rem;
+    gap: .5rem;
+    overflow-y: auto;
     border: 1px solid var(--border);
-    border-top: 1px solid var(--border-soft);
-    border-radius: 0 0 7px 7px;
-    background: rgba(13,15,14,.97);
-    box-shadow: 0 18px 35px rgba(0,0,0,.24);
-    backdrop-filter: blur(14px);
+    border-top-color: var(--border-soft);
+    padding: .55rem;
+    background: rgba(13,15,14,.98);
+    box-shadow: 0 14px 28px rgba(0,0,0,.26);
     opacity: 0;
     visibility: hidden;
     pointer-events: none;
-    transform: translateY(-.35rem);
-    transition: opacity .18s ease, transform .18s ease, visibility .18s ease;
+    transform: translateY(-4px);
+    transition: opacity .15s ease, transform .15s ease, visibility .15s ease;
   }
-  #nav-content.is-open { opacity: 1; visibility: visible; pointer-events: auto; transform: translateY(0); }
-  #primary-nav { flex: none; flex-direction: column; align-items: stretch; gap: .1rem; }
-  #primary-nav .nav-link { padding: .72rem .75rem; }
-  .nav-actions { flex-direction: column; align-items: stretch; gap: .7rem; }
+  #nav-content.is-open { opacity: 1; visibility: visible; pointer-events: auto; transform: none; }
+  #primary-nav { flex: none; flex-direction: column; align-items: stretch; gap: 2px; }
+  #primary-nav > li { width: 100%; }
+  #primary-nav .nav-link { width: 100%; min-height: 42px; padding: .55rem .65rem; }
+  .nav-explore-trigger { justify-content: space-between; }
+  .nav-dropdown-panel {
+    position: static;
+    width: 100%;
+    margin: .1rem 0 .25rem;
+    border: 0;
+    border-left: 1px solid var(--border);
+    border-radius: 0;
+    padding: .25rem 0 .25rem .4rem;
+    background: transparent;
+    box-shadow: none;
+  }
+  .nav-dropdown-label { margin-left: .65rem; }
+  .nav-actions { flex-direction: column; align-items: stretch; gap: .5rem; }
   .nav-search { width: 100%; }
-  .nav-utilities { justify-content: space-between; padding-top: .75rem; border-top: 1px solid var(--border-soft); }
+  .nav-utilities { justify-content: space-between; border-top: 1px solid var(--border-soft); padding-top: .55rem; }
   #nav-toggle {
     display: inline-flex;
-    width: 44px;
-    height: 44px;
+    width: 40px;
+    height: 40px;
     align-items: center;
     justify-content: center;
-    border: 1px solid transparent;
-    border-radius: 5px;
-    color: #d3dbd1;
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    color: #b2bcb1;
     background: transparent;
   }
-  #nav-toggle:hover { border-color: var(--border); background: rgba(255,255,255,.045); }
+  #nav-toggle:hover { border-color: #465345; color: var(--text); background: #141815; }
 }
-@media (min-width: 1024px) {
+@media (min-width: 1001px) {
   #nav-content { position: static; opacity: 1; visibility: visible; pointer-events: auto; transform: none; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .nav-link, .nav-search, .nav-progress, .nav-icon-button, #nav-content { transition: none; }
 }
 
 .site-main { max-width: var(--content-width); }
@@ -580,9 +635,6 @@ a.card:focus-visible { outline-offset: 4px; }
   *, *::before, *::after { scroll-behavior: auto !important; transition-duration: .01ms !important; }
 }
 
-header nav.site-nav { gap: 1rem; }
-#primary-nav { gap: 0; }
-.nav-link { white-space: nowrap; }
 .nav-utilities [data-auth-nav] { position: relative; }
 .account-menu { position: relative; }
 .nav-account {
@@ -765,52 +817,6 @@ header nav.site-nav { gap: 1rem; }
   .site-footer__bottom { align-items: flex-start; flex-direction: column; }
 }
 
-@media (max-width: 1100px) {
-  header nav.site-nav { grid-template-columns: minmax(0, 1fr) auto; gap: .5rem; min-height: 60px; }
-  #nav-content {
-    position: absolute;
-    z-index: 50;
-    top: 100%;
-    left: 0;
-    right: 0;
-    display: flex;
-    flex-direction: column;
-    align-items: stretch;
-    gap: .75rem;
-    padding: .9rem 1rem 1rem;
-    border: 1px solid var(--border);
-    border-top: 1px solid var(--border-soft);
-    border-radius: 0 0 7px 7px;
-    background: rgba(13,15,14,.97);
-    box-shadow: 0 18px 35px rgba(0,0,0,.24);
-    backdrop-filter: blur(14px);
-    opacity: 0;
-    visibility: hidden;
-    pointer-events: none;
-    transform: translateY(-.35rem);
-  }
-  #nav-content.is-open { opacity: 1; visibility: visible; pointer-events: auto; transform: translateY(0); }
-  #primary-nav { flex: none; flex-direction: column; align-items: stretch; gap: .1rem; }
-  #primary-nav .nav-link { padding: .72rem .75rem; }
-  .nav-actions { flex-direction: column; align-items: stretch; gap: .7rem; }
-  .nav-search { width: 100%; }
-  .nav-utilities { justify-content: space-between; padding-top: .75rem; border-top: 1px solid var(--border-soft); }
-  #nav-toggle {
-    display: inline-flex;
-    width: 44px;
-    height: 44px;
-    align-items: center;
-    justify-content: center;
-    border: 1px solid transparent;
-    border-radius: 5px;
-    color: #d3dbd1;
-    background: transparent;
-  }
-  #nav-toggle:hover { border-color: var(--border); background: rgba(255,255,255,.045); }
-}
-@media (min-width: 1101px) {
-  #nav-content { position: static; opacity: 1; visibility: visible; pointer-events: auto; transform: none; }
-}
 @media (max-width: 767px) {
   .hero-title { font-size: clamp(2rem, 10.8vw, 3.35rem); }
   .roadmaps-heading { align-items: start; }
@@ -930,20 +936,33 @@ header nav.site-nav { gap: 1rem; }
   <div id="nav-content" aria-hidden="true">
 
    <ul id="primary-nav" aria-label="Primary">
-    <li><a class="nav-link" href="#roadmaps">Roadmaps</a></li>
-    <li><a class="nav-link" href="architecture/index.html">Architecture</a></li>
-    <li><a class="nav-link" href="backend-engineer-roadmap/">Backend Roadmap</a></li>
-    <li><a class="nav-link" href="setup-guides/index.html">Setup Guides</a></li>
+    <li class="nav-dropdown">
+     <details id="explore-dropdown">
+      <summary class="nav-link nav-explore-trigger" aria-controls="explore-links" aria-expanded="false">
+       Explore
+       <i data-lucide="chevron-down" aria-hidden="true"></i>
+      </summary>
+      <div class="nav-dropdown-panel">
+       <p class="nav-dropdown-label">Explore the library</p>
+       <ul class="nav-dropdown-list" id="explore-links">
+        <li><a class="nav-dropdown-link" href="#roadmaps"><i data-lucide="map" aria-hidden="true"></i><span class="nav-dropdown-copy"><strong>Roadmaps</strong><small>Browse practical learning paths.</small></span></a></li>
+        <li><a class="nav-dropdown-link" href="architecture/index.html"><i data-lucide="boxes" aria-hidden="true"></i><span class="nav-dropdown-copy"><strong>Architecture Library</strong><small>Understand how software systems work internally.</small></span></a></li>
+        <li><a class="nav-dropdown-link" href="backend-engineer-roadmap/"><i data-lucide="workflow" aria-hidden="true"></i><span class="nav-dropdown-copy"><strong>Backend Engineer Roadmap</strong><small>Follow the backend engineering learning path.</small></span></a></li>
+        <li><a class="nav-dropdown-link" href="setup-guides/index.html"><i data-lucide="wrench" aria-hidden="true"></i><span class="nav-dropdown-copy"><strong>Setup Guides</strong><small>Configure development tools and environments.</small></span></a></li>
+       </ul>
+      </div>
+     </details>
+    </li>
+    <li><a class="nav-link" href="#how-it-works">How it works</a></li>
    </ul>
 
    <div class="nav-actions">
-    <button id="nav-search" class="nav-search" type="button" aria-label="Search roadmaps (Command or Control plus K)">
+    <button id="nav-search" class="nav-search" type="button" aria-label="Search roadmaps" aria-keyshortcuts="Control+K Meta+K /">
      <i data-lucide="search" class="h-4 w-4" aria-hidden="true"></i>
      <span>Search roadmaps...</span>
-     <kbd aria-hidden="true">⌘K</kbd>
     </button>
     <div class="nav-utilities">
-     <a class="nav-progress" href="#progress"><i data-lucide="chart-no-axes-column-increasing" class="h-4 w-4" aria-hidden="true"></i>Progress</a>
+     <a class="nav-progress" href="#progress"><i data-lucide="chart-no-axes-column-increasing" aria-hidden="true"></i><span>Progress</span></a>
      <div data-auth-nav></div>
      <a class="nav-icon-button" href="https://github.com/samikhan43/roadmap-hub" target="_blank" rel="noopener noreferrer" aria-label="Roadmap Hub on GitHub (opens in a new tab)" title="GitHub">
       <i data-lucide="github" class="h-[18px] w-[18px]" aria-hidden="true"></i>
@@ -1380,7 +1399,15 @@ resume();
 
  const searchButton=document.getElementById("nav-search");
 
- const mobileQuery=window.matchMedia("(max-width: 1023px)");
+ const exploreDropdown=document.getElementById("explore-dropdown");
+
+ const exploreSummary=exploreDropdown.querySelector("summary");
+
+ const siteNav=menu.closest(".site-nav");
+
+ const mobileQuery=window.matchMedia("(max-width: 1000px)");
+
+ exploreDropdown.addEventListener("toggle",()=>exploreSummary.setAttribute("aria-expanded",String(exploreDropdown.open)));
 
  const setOpen=open=>{
 
@@ -1406,15 +1433,28 @@ resume();
 
  btn.addEventListener("click",()=>setOpen(!menu.classList.contains("is-open")));
 
- menu.addEventListener("click",e=>{if(e.target.closest("a"))setOpen(false)});
+ menu.addEventListener("click",e=>{if(e.target.closest("a")){exploreDropdown.open=false;setOpen(false)}});
 
- document.addEventListener("keydown",e=>{if(e.key==="Escape"&&menu.classList.contains("is-open")){if(document.querySelector(".account-menu__panel:not([hidden])"))return;setOpen(false);btn.focus()}});
+ document.addEventListener("click",e=>{
+  if(exploreDropdown.open&&!exploreDropdown.contains(e.target))exploreDropdown.open=false;
+  if(mobileQuery.matches&&menu.classList.contains("is-open")&&!siteNav.contains(e.target))setOpen(false);
+ });
 
- mobileQuery.addEventListener("change",()=>setOpen(false));
+ document.addEventListener("keydown",e=>{
+  if(e.key!=="Escape")return;
+  if(exploreDropdown.open){exploreDropdown.open=false;exploreSummary.focus();return}
+  if(menu.classList.contains("is-open")){
+   if(document.querySelector(".account-menu__panel:not([hidden])"))return;
+   setOpen(false);
+   btn.focus();
+  }
+ });
+
+ mobileQuery.addEventListener("change",()=>{exploreDropdown.open=false;setOpen(false)});
 
 
 
- const links=document.querySelectorAll('.nav-link[href^="#"], .nav-progress[href^="#"]');
+ const links=document.querySelectorAll('.nav-link[href^="#"], .nav-dropdown-link[href^="#"], .nav-progress[href^="#"]');
 
  const sections=[...links].map(link=>document.querySelector(link.getAttribute("href"))).filter(Boolean);
 
