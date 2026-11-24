@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="theme-color" content="#0f1210">
   <title>Profile · Roadmap Hub</title>
-  <link rel="icon" type="image/svg+xml" href="logos/logo-mark.svg">
+  <link rel="icon" type="image/svg+xml" href="logos/favicon.svg">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
@@ -140,11 +140,13 @@
     }
     .identity { display: flex; min-width: 0; align-items: center; gap: 10px; }
     .avatar {
+      position: relative;
       display: grid;
       width: 34px;
       height: 34px;
       flex: none;
       place-items: center;
+      overflow: hidden;
       border: 1px solid var(--border);
       border-radius: 7px;
       color: var(--accent);
@@ -153,6 +155,7 @@
       font-weight: 600;
       text-transform: uppercase;
     }
+    .profile-avatar-image { position: absolute; inset: 0; width: 100%; height: 100%; border-radius: inherit; object-fit: cover; }
     .user-email {
       min-width: 0;
       overflow: hidden;
@@ -181,6 +184,7 @@
     [data-auth-nav] a:hover,
     [data-auth-nav] button:hover { color: var(--text); background: #1a221b; }
     [data-auth-nav] a[href$="/dashboard.html"],
+    [data-auth-nav] a[href$="/skill-map.html"],
     [data-auth-nav] a[href$="/profile.html"] { display: none; }
 
     .scrim { display: none; }
@@ -230,28 +234,95 @@
     h1 { margin: 9px 0 0; font-size: clamp(26px, 3.2vw, 34px); font-weight: 600; letter-spacing: -.04em; line-height: 1.15; }
     .lead { max-width: 520px; margin: 8px 0 0; color: var(--muted); font-size: 13px; line-height: 1.65; }
 
-    .profile-layout { display: grid; grid-template-columns: minmax(0, 1.3fr) minmax(250px, .7fr); gap: 18px; }
+    .profile-layout { display: grid; grid-template-columns: minmax(0, 1.3fr) minmax(250px, .7fr); gap: 18px; align-items: start; }
     .panel {
       overflow: hidden;
       border: 1px solid var(--border-soft);
       border-radius: var(--radius);
       background: linear-gradient(180deg, rgba(255,255,255,.025), transparent 42%), var(--card);
     }
-    .panel-heading { border-bottom: 1px solid var(--border-soft); padding: 20px 22px 17px; }
+    .profile-cover {
+      display: flex;
+      min-height: 160px;
+      flex-direction: column;
+      justify-content: center;
+      border-bottom: 1px solid var(--border-soft);
+      padding: 22px;
+      background-color: #101411;
+      background-image: linear-gradient(90deg, rgba(15,18,16,.99) 0%, rgba(15,18,16,.94) 36%, rgba(15,18,16,.5) 68%, rgba(15,18,16,.08) 100%), url("assets/profile-cover-circuit.png");
+      background-position: center, right center;
+      background-size: cover;
+    }
+    .profile-cover .eyebrow,
+    .profile-cover h2,
+    .profile-cover .panel-description { position: relative; z-index: 1; }
+    .profile-cover h2 { font-size: 20px; }
+    .profile-cover .panel-description { max-width: 440px; font-size: 13px; }
     h2 { margin: 5px 0 0; font-size: 15px; font-weight: 600; letter-spacing: -.02em; }
     .panel-description { margin: 6px 0 0; color: var(--quiet); font-size: 12px; line-height: 1.55; }
     .panel-body { padding: 22px; }
+    .profile-panel .panel-body { padding: 0 22px 22px; }
 
     .profile-preview {
       display: flex;
       min-width: 0;
-      align-items: center;
-      gap: 13px;
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 11px;
       margin-bottom: 22px;
     }
-    .profile-preview .avatar { width: 42px; height: 42px; border-radius: 9px; font-size: 15px; }
+    .profile-preview .avatar {
+      width: 64px;
+      height: 64px;
+      margin-top: -32px;
+      border-radius: 12px;
+      box-shadow: 0 0 0 4px var(--card);
+      font-size: 22px;
+    }
     .preview-name { overflow: hidden; font-size: 14px; font-weight: 550; text-overflow: ellipsis; white-space: nowrap; }
     .preview-email { overflow: hidden; margin-top: 3px; color: var(--quiet); font-size: 11px; text-overflow: ellipsis; white-space: nowrap; }
+
+    .account-cover {
+      display: flex;
+      min-height: 140px;
+      align-items: center;
+      justify-content: flex-end;
+      border-bottom: 1px solid var(--border-soft);
+      padding: 20px;
+      background-color: #101411;
+      background-image: linear-gradient(90deg, rgba(15,18,16,.25), rgba(15,18,16,.08)), url("assets/profile-cover-code.png");
+      background-position: center, right center;
+      background-size: cover;
+    }
+    .account-cover-lock {
+      display: grid;
+      width: 46px;
+      height: 46px;
+      place-items: center;
+      margin-right: 28px;
+      border: 1px solid rgba(198,243,106,.7);
+      border-radius: 50%;
+      color: var(--accent);
+      background: rgba(15,18,16,.72);
+      box-shadow: 0 0 22px rgba(198,243,106,.15);
+    }
+    .account-cover-lock svg { width: 21px; height: 21px; }
+    .account-panel .panel-body { padding-top: 0; }
+    .account-badge {
+      display: grid;
+      width: 54px;
+      height: 54px;
+      place-items: center;
+      margin-top: -26px;
+      margin-bottom: 15px;
+      border: 1px solid var(--border);
+      border-radius: 11px;
+      color: var(--accent);
+      background: var(--raised);
+      box-shadow: 0 0 0 4px var(--card);
+    }
+    .account-badge svg { width: 23px; height: 23px; }
+    .account-panel h2 { margin-top: 5px; }
 
     fieldset { min-width: 0; margin: 0; border: 0; padding: 0; }
     fieldset:disabled { opacity: .65; }
@@ -322,6 +393,75 @@
     .load-error[hidden] { display: none; }
     .load-error p { margin: 0; color: var(--danger); font-size: 12px; line-height: 1.5; }
 
+    .logout-screen {
+      display: none;
+      width: 100vw;
+      max-width: none;
+      height: 100vh;
+      max-height: none;
+      align-items: center;
+      justify-items: center;
+      border: 0;
+      padding: 24px;
+      color: var(--text);
+      background:
+        linear-gradient(rgba(255,255,255,.022) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255,255,255,.022) 1px, transparent 1px),
+        var(--bg);
+      background-size: 44px 44px;
+    }
+    .logout-screen[open] { display: grid; }
+    .logout-screen::backdrop { background: transparent; }
+    .logout-card {
+      width: min(100%, 520px);
+      overflow: hidden;
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      background: var(--card);
+      text-align: center;
+    }
+    .logout-cover {
+      display: grid;
+      min-height: 168px;
+      place-items: center;
+      border-bottom: 1px solid var(--border);
+      background:
+        linear-gradient(90deg, rgba(15,18,16,.22), rgba(15,18,16,.04)),
+        url("assets/profile-cover-circuit.png") center 48% / cover,
+        #101411;
+    }
+    .logout-steps { display: flex; align-items: center; gap: 18px; color: var(--accent); }
+    .logout-steps span {
+      display: grid;
+      width: 30px;
+      height: 30px;
+      place-items: center;
+      border: 1px solid rgba(198,243,106,.72);
+      border-radius: 50%;
+      background: rgba(15,18,16,.78);
+      box-shadow: 0 0 16px rgba(198,243,106,.12);
+    }
+    .logout-steps span:last-child { width: 44px; height: 44px; }
+    .logout-steps svg { width: 15px; height: 15px; }
+    .logout-steps span:last-child svg { width: 20px; height: 20px; }
+    .logout-content { padding: 0 26px 26px; }
+    .logout-avatar {
+      width: 58px;
+      height: 58px;
+      margin: -29px auto 16px;
+      border-radius: 12px;
+      box-shadow: 0 0 0 4px var(--card);
+      font-size: 20px;
+    }
+    .logout-content .eyebrow { margin-bottom: 8px; }
+    .logout-content h2 { margin: 0; font-size: clamp(20px, 4vw, 26px); }
+    .logout-description { max-width: 430px; margin: 10px auto 0; color: var(--muted); font-size: 14px; line-height: 1.65; }
+    .logout-description span { color: var(--text); overflow-wrap: anywhere; }
+    .logout-actions { display: flex; justify-content: center; gap: 10px; margin-top: 22px; }
+    .logout-actions .button { min-height: 42px; padding: 0 15px; font-size: 13px; }
+    .logout-status { min-height: 0; margin: 0; color: var(--danger); font-size: 12px; line-height: 1.5; }
+    .logout-status:not(:empty) { margin-top: 14px; }
+
     @media (max-width: 900px) {
       .sidebar { transform: translateX(-100%); }
       .sidebar.is-open { transform: none; }
@@ -334,8 +474,10 @@
     @media (max-width: 700px) {
       .profile-layout { grid-template-columns: minmax(0, 1fr); }
       .page-head { padding-top: 30px; }
-      .panel-heading { padding: 18px 18px 15px; }
+      .profile-cover { min-height: 145px; padding: 18px; }
       .panel-body { padding: 18px; }
+      .profile-panel .panel-body { padding: 0 18px 18px; }
+      .account-panel .panel-body { padding-top: 0; }
     }
 
     @media (max-width: 420px) {
@@ -343,6 +485,9 @@
       .topbar-inner, .content { padding-right: 16px; padding-left: 16px; }
       .page-head { padding-top: 25px; }
       .detail-row { grid-template-columns: 90px minmax(0, 1fr); gap: 8px; }
+      .logout-screen { padding: 16px; }
+      .logout-content { padding: 0 18px 20px; }
+      .logout-actions { flex-direction: column; }
     }
 
     @media (prefers-reduced-motion: reduce) {
@@ -353,7 +498,7 @@
 <body>
   <aside class="sidebar" id="sidebar-navigation" aria-label="Profile sidebar">
     <a class="brand" href="./" aria-label="Roadmap Hub home">
-      <span class="brand-mark"><img src="logos/logo-mark.svg" alt=""></span>
+      <span class="brand-mark"><img src="logos/mascot-dark.svg" alt=""></span>
       <span>Roadmap <b>Hub</b></span>
     </a>
 
@@ -361,6 +506,7 @@
       <p class="eyebrow">Learning</p>
       <a class="side-link" href="./"><i data-lucide="library-big" aria-hidden="true"></i>All roadmaps</a>
       <a class="side-link" href="./dashboard.html"><i data-lucide="chart-no-axes-column-increasing" aria-hidden="true"></i>Overview</a>
+      <a class="side-link" href="./skill-map.html"><i data-lucide="map" aria-hidden="true"></i>Skill map</a>
     </nav>
 
     <nav class="nav-group" aria-label="Account">
@@ -377,6 +523,34 @@
     </div>
   </aside>
   <div class="scrim" id="scrim"></div>
+
+  <dialog class="logout-screen" id="logout-confirmation" aria-labelledby="logout-heading">
+    <section class="logout-card">
+      <div class="logout-cover" aria-hidden="true">
+        <div class="logout-steps">
+          <span><i data-lucide="check"></i></span>
+          <span><i data-lucide="code-xml"></i></span>
+          <span><i data-lucide="terminal"></i></span>
+          <span><i data-lucide="log-out" aria-hidden="true"></i></span>
+        </div>
+      </div>
+      <div class="logout-content">
+        <span class="avatar logout-avatar" id="logout-avatar" aria-hidden="true">·</span>
+        <p class="eyebrow">End session</p>
+        <h2 id="logout-heading">Log out of Roadmap Hub?</h2>
+        <p class="logout-description">
+          You're signed in as <span id="logout-email">your account</span>. Your roadmap progress is saved and will be here when you come back.
+        </p>
+        <p class="logout-status" id="logout-status" role="status" aria-live="polite"></p>
+        <div class="logout-actions">
+          <button class="button" id="stay-signed-in" type="button">Stay signed in</button>
+          <button class="button button-primary" id="confirm-logout" type="button">
+            <i data-lucide="log-out" aria-hidden="true"></i> Log out
+          </button>
+        </div>
+      </div>
+    </section>
+  </dialog>
 
   <div class="main">
     <header class="topbar">
@@ -404,8 +578,8 @@
       </header>
 
       <div class="profile-layout">
-        <section class="panel" aria-labelledby="profile-details-heading">
-          <div class="panel-heading">
+        <section class="panel profile-panel" aria-labelledby="profile-details-heading">
+          <div class="profile-cover">
             <p class="eyebrow">Personal details</p>
             <h2 id="profile-details-heading">Profile information</h2>
             <p class="panel-description">Use a name that feels right. You can change it at any time.</p>
@@ -413,7 +587,7 @@
           <div class="panel-body">
             <div class="profile-preview">
               <span class="avatar" id="profile-initial" aria-hidden="true">·</span>
-              <div style="min-width:0">
+              <div class="profile-identity" style="min-width:0">
                 <div class="preview-name" id="profile-name">Loading profile…</div>
                 <div class="preview-email" id="profile-email"></div>
               </div>
@@ -436,13 +610,15 @@
           </div>
         </section>
 
-        <section class="panel" aria-labelledby="account-info-heading">
-          <div class="panel-heading">
+        <section class="panel account-panel" aria-labelledby="account-info-heading">
+          <div class="account-cover" aria-hidden="true">
+            <span class="account-cover-lock"><i data-lucide="lock-keyhole"></i></span>
+          </div>
+          <div class="panel-body">
+            <span class="account-badge" aria-hidden="true"><i data-lucide="lock-keyhole"></i></span>
             <p class="eyebrow">Account</p>
             <h2 id="account-info-heading">Account information</h2>
             <p class="panel-description">Details associated with your signed-in account.</p>
-          </div>
-          <div class="panel-body">
             <dl class="account-details">
               <div class="detail-row">
                 <dt>Email</dt>
@@ -503,12 +679,18 @@
       const email = user.email || "Not available";
       const name = profileName(currentProfile, user);
       const initial = name.trim().charAt(0) || "·";
+      const avatarUrl = window.ROADMAP_HUB_PROGRESS?.getProfileImageUrl?.(user, currentProfile) || "";
 
       $("user-email").textContent = email;
       $("user-initial").textContent = initial;
       $("profile-name").textContent = name;
       $("profile-email").textContent = email;
       $("profile-initial").textContent = initial;
+      window.ROADMAP_HUB_PROGRESS?.setProfileImage?.($("user-initial"), avatarUrl);
+      window.ROADMAP_HUB_PROGRESS?.setProfileImage?.($("profile-initial"), avatarUrl);
+      $("logout-avatar").textContent = initial;
+      window.ROADMAP_HUB_PROGRESS?.setProfileImage?.($("logout-avatar"), avatarUrl);
+      $("logout-email").textContent = email;
       $("display-name").value = currentProfile.display_name || "";
       $("account-email").textContent = email;
       $("account-username").textContent = currentProfile.username ? `@${currentProfile.username}` : "Not set";
@@ -570,7 +752,7 @@
 
         const { data, error } = await activeClient
           .from("profiles")
-          .select("display_name, username, created_at")
+          .select("display_name, username, avatar_url, created_at")
           .eq("id", activeUser.id)
           .maybeSingle();
         if (error) throw error;
@@ -624,7 +806,7 @@
             { id: activeUser.id, display_name: displayName },
             { onConflict: "id" }
           )
-          .select("display_name, username, created_at")
+          .select("display_name, username, avatar_url, created_at")
           .single();
         if (error) throw error;
 
@@ -667,6 +849,41 @@
         if ($("profile-status").dataset.state === "error") showStatus("", "");
       });
       $("retry-button").addEventListener("click", loadProfile);
+      const logoutDialog = $("logout-confirmation");
+      let logoutTrigger = null;
+      const openLogout = (event) => {
+        const target = event.target instanceof Element ? event.target.closest("[data-auth-logout]") : null;
+        if (!target) return;
+        event.preventDefault();
+        event.stopImmediatePropagation();
+        logoutTrigger = target;
+        $("logout-status").textContent = "";
+        logoutDialog.showModal();
+        $("stay-signed-in").focus();
+      };
+      document.addEventListener("click", openLogout, true);
+      $("stay-signed-in").addEventListener("click", () => logoutDialog.close());
+      logoutDialog.addEventListener("close", () => {
+        logoutTrigger?.focus();
+        logoutTrigger = null;
+      });
+      $("confirm-logout").addEventListener("click", async () => {
+        const confirmButton = $("confirm-logout");
+        const stayButton = $("stay-signed-in");
+        confirmButton.disabled = true;
+        stayButton.disabled = true;
+        $("logout-status").textContent = "";
+        try {
+          if (!activeClient) throw new Error("Your session is unavailable. Sign in again.");
+          const { error } = await activeClient.auth.signOut({ scope: "local" });
+          if (error) throw error;
+          window.location.href = "./auth/index.html";
+        } catch (error) {
+          $("logout-status").textContent = error?.message || "You could not be logged out. Please try again.";
+          confirmButton.disabled = false;
+          stayButton.disabled = false;
+        }
+      });
       refreshIcons();
       loadProfile();
     });

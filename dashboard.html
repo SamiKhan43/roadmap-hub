@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="theme-color" content="#0d0f0e">
   <title>Overview · Roadmap Hub</title>
-  <link rel="icon" type="image/svg+xml" href="logos/logo-mark.svg">
+  <link rel="icon" type="image/svg+xml" href="logos/favicon.svg">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
@@ -64,7 +64,7 @@
     [data-auth-nav]:empty { display: none; }
     [data-auth-nav] a, [data-auth-nav] button { display: flex; align-items: center; width: 100%; min-height: 34px; padding: 0 10px; border: 0; border-radius: 8px; background: transparent; color: var(--muted); font: 500 13px Geist, sans-serif; text-align: left; cursor: pointer; }
     [data-auth-nav] a:hover, [data-auth-nav] button:hover { background: #1a221b; color: var(--text); }
-    [data-auth-nav] a[href$="/dashboard.html"], [data-auth-nav] a[href$="/profile.html"] { display: none; }
+    [data-auth-nav] a[href$="/dashboard.html"], [data-auth-nav] a[href$="/skill-map.html"], [data-auth-nav] a[href$="/profile.html"] { display: none; }
     .scrim { display: none; }
 
     /* Main */
@@ -100,6 +100,26 @@
     .btn-subtle:hover { border-color: var(--border); background: #232b24; }
     .btn-glow { width: 100%; border: 1px solid var(--accent); background: var(--accent); color: var(--accent-ink); font-weight: 600; box-shadow: none; }
     .btn-glow:hover { background: #d3fb80; border-color: #d3fb80; }
+    .welcome-panel {
+      display: flex;
+      min-height: 150px;
+      align-items: center;
+      overflow: hidden;
+      margin: 40px 0 16px;
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 22px 24px;
+      background:
+        linear-gradient(90deg, rgba(20,24,21,.98) 0%, rgba(20,24,21,.9) 42%, rgba(20,24,21,.42) 75%, rgba(20,24,21,.12) 100%),
+        url("assets/profile-cover-circuit.png") right center / cover,
+        var(--card);
+      box-shadow: var(--shadow);
+    }
+    .welcome-copy { max-width: 620px; }
+    .welcome-panel h1 { margin-top: 8px; }
+    .welcome-panel .lead { max-width: 480px; }
+    .welcome-actions { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 16px; }
+    .welcome-actions .btn-glow { width: auto; }
 
     .stats { display: grid; grid-template-columns: 1.15fr repeat(3, minmax(0, 1fr)); gap: 0; overflow: hidden; border: 1px solid var(--border); border-radius: var(--radius); background: var(--card); box-shadow: var(--shadow); }
     .stats > * { min-height: 132px; border: 0; border-radius: 0; background: transparent; box-shadow: none; }
@@ -124,6 +144,11 @@
     .stat-value small { font-size: 18px; color: var(--quiet); font-weight: 500; }
     .hint { margin-top: 6px; font-size: 12px; color: var(--quiet); }
     .hint b { color: var(--success); font-weight: 500; }
+    .stat .stat-value.weekly-value { font-size: 24px; }
+    .streak-week { display: grid; grid-template-columns: repeat(7, minmax(0, 1fr)); gap: 5px; margin-top: 10px; }
+    .streak-day { display: grid; justify-items: center; gap: 4px; color: var(--quiet); font-size: 9px; }
+    .streak-day-dot { width: 12px; height: 12px; border: 1px solid var(--border); border-radius: 4px; background: var(--muted-bg); }
+    .streak-day-dot.active { border-color: var(--accent); background: var(--accent); box-shadow: 0 0 10px rgba(198,243,106,.25); }
 
     .row { display: grid; grid-template-columns: minmax(0, 1fr) 320px; gap: 16px; margin-top: 16px; }
     .pad { padding: 24px; }
@@ -131,14 +156,39 @@
     .chart-nums { display: flex; gap: 24px; text-align: right; }
     .chart-nums strong { display: block; font-size: 20px; font-weight: 600; }
     .chart-nums span { font-size: 12px; color: var(--quiet); }
-    .bars { display: flex; align-items: flex-end; gap: 10px; height: 200px; margin-top: 28px; padding-bottom: 24px; border-bottom: 1px solid var(--border-soft); position: relative; }
-    .bar { position: relative; flex: 1; height: 100%; display: flex; align-items: flex-end; }
-    .bar span { display: block; width: 100%; min-height: 3px; border-radius: 4px 4px 1px 1px; background: #91b94b; transition: height .4s ease; }
-    .bar.zero span { background: var(--muted-bg); }
-    .bar em { position: absolute; bottom: -22px; left: 50%; transform: translateX(-50%); font: normal 10px "JetBrains Mono", monospace; color: var(--quiet); white-space: nowrap; }
-    .bar b { position: absolute; left: 50%; transform: translateX(-50%); font-size: 11px; font-weight: 500; color: var(--muted); opacity: 0; transition: opacity .15s; }
-    .bar:hover b { opacity: 1; }
-    .chart-note { margin: 24px 0 0; color: var(--quiet); font-size: 11px; line-height: 1.5; }
+    .heatmap-scroll { overflow-x: auto; margin-top: 20px; padding-bottom: 5px; }
+    .heatmap-months {
+      display: grid;
+      grid-template-columns: repeat(20, 12px);
+      gap: 5px;
+      min-width: 335px;
+      height: 18px;
+      margin-left: 32px;
+      color: var(--quiet);
+      font: 10px "JetBrains Mono", monospace;
+    }
+    .heatmap-body { display: grid; grid-template-columns: 24px minmax(0, 1fr); align-items: start; gap: 8px; }
+    .heatmap-weekdays { display: grid; grid-template-rows: repeat(7, 12px); gap: 5px; color: var(--quiet); font: 9px/12px "JetBrains Mono", monospace; }
+    .heatmap-weekdays span:nth-child(even), .heatmap-weekdays span:last-child { visibility: hidden; }
+    .heatmap-days {
+      display: grid;
+      grid-auto-columns: 12px;
+      grid-auto-flow: column;
+      grid-template-rows: repeat(7, 12px);
+      gap: 5px;
+      min-width: 335px;
+    }
+    .heat-day { width: 12px; height: 12px; border: 1px solid transparent; border-radius: 3px; background: #1b211d; }
+    .heat-day.level-1 { background: #39552c; }
+    .heat-day.level-2 { background: #5e8a35; }
+    .heat-day.level-3 { background: #8fc94b; }
+    .heat-day.level-4 { background: var(--accent); box-shadow: 0 0 12px rgba(198,243,106,.28); }
+    .heat-day.future { border-color: var(--border-soft); background: transparent; }
+    .activity-footer { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 14px; margin-top: 18px; color: var(--quiet); font-size: 11px; }
+    .activity-footer strong { color: var(--text); font-weight: 500; }
+    .activity-legend { display: flex; align-items: center; gap: 5px; }
+    .activity-legend .heat-day { width: 11px; height: 11px; }
+    .chart-note { margin: 12px 0 0; color: var(--quiet); font-size: 11px; line-height: 1.5; }
     .search-empty { border-top: 1px solid var(--border-soft); }
 
     .next { display: flex; flex-direction: column; }
@@ -153,6 +203,13 @@
     .meter.thin { height: 6px; }
     .meter span { display: block; height: 100%; width: 0; border-radius: inherit; background: var(--accent); transition: width .4s ease; }
     .next-cta { margin-top: auto; padding-top: 24px; }
+    .next-list { display: grid; margin: 18px 0 0; padding: 0; list-style: none; }
+    .next-item { display: grid; grid-template-columns: 28px minmax(0, 1fr) auto; align-items: center; gap: 10px; border-top: 1px solid var(--border-soft); padding: 10px 0; }
+    .next-step { display: grid; width: 24px; height: 24px; place-items: center; border: 1px solid var(--border); border-radius: 50%; color: var(--quiet); font: 11px "JetBrains Mono", monospace; }
+    .next-item.current .next-step { border-color: var(--accent); color: var(--accent); }
+    .next-topic { overflow: hidden; color: var(--text); font-size: 12px; text-overflow: ellipsis; white-space: nowrap; }
+    .next-time { color: var(--quiet); font-size: 11px; white-space: nowrap; }
+    .next .meter-copy { margin-top: 18px; }
 
     .r-icon { display: grid; place-items: center; width: 38px; height: 38px; flex: none; border: 1px solid var(--border); border-radius: 9px; background: var(--raised); color: var(--accent); }
     .r-icon svg { width: 18px; height: 18px; }
@@ -193,7 +250,67 @@
     .recent-meta { margin-top: 2px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-size: 12px; color: var(--quiet); }
     .empty-state { padding: 20px 24px; font-size: 13px; color: var(--muted); }
     .recent-list .empty-state { padding: 0; }
+    .side-stack { display: grid; align-content: start; gap: 16px; }
+    .achievement-head { display: flex; align-items: flex-end; justify-content: space-between; gap: 12px; }
+    .achievement-count { border: 1px solid var(--border-soft); border-radius: 99px; padding: 4px 8px; color: var(--quiet); background: #101411; font-size: 11px; }
+    .achievement-list {
+      display: grid;
+      grid-auto-columns: calc((100% - 20px) / 3);
+      grid-auto-flow: column;
+      gap: 10px;
+      overflow-x: auto;
+      margin: 20px 0 0;
+      padding: 0 0 5px;
+      list-style: none;
+      scrollbar-color: var(--border) transparent;
+      scrollbar-width: thin;
+      scroll-snap-type: x mandatory;
+    }
+    .achievement-card {
+      position: relative;
+      display: flex;
+      min-width: 0;
+      min-height: 132px;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 9px;
+      border: 1px solid var(--border-soft);
+      border-radius: 13px;
+      background: linear-gradient(160deg, #151a16, #111512);
+      text-align: center;
+      scroll-snap-align: start;
+    }
+    .achievement-icon {
+      display: grid;
+      width: 56px;
+      height: 56px;
+      flex: none;
+      place-items: center;
+      border: 1px dashed var(--border);
+      border-radius: 50%;
+      color: #59635a;
+      background: #181d19;
+    }
+    .achievement-icon svg { width: 24px; height: 24px; }
+    .achievement-card.earned { border-color: rgba(198,243,106,.3); }
+    .achievement-card.earned::after { position: absolute; top: 7px; right: 8px; color: var(--accent); font-size: 10px; content: "✓"; }
+    .achievement-card.earned .achievement-icon {
+      border: 1px solid rgba(198,243,106,.35);
+      color: var(--accent);
+      background: rgba(198,243,106,.1);
+      box-shadow: 0 0 22px rgba(198,243,106,.12);
+    }
+    .achievement-name { max-width: 100%; color: var(--muted); font-size: 11px; line-height: 1.35; overflow-wrap: anywhere; }
+    .achievement-hint { margin-top: 3px; color: var(--quiet); font-size: 10px; line-height: 1.35; }
+    .achievement-card:not(.earned) .achievement-name { color: var(--quiet); }
     .empty-state a { color: var(--accent); }
+    .path-tabs { display: inline-flex; flex-wrap: wrap; gap: 4px; margin: 18px 24px 8px; border: 1px solid var(--border-soft); border-radius: 9px; padding: 4px; background: #101411; }
+    .path-tab { display: inline-flex; min-height: 32px; align-items: center; gap: 7px; border: 1px solid transparent; border-radius: 7px; padding: 0 10px; color: var(--quiet); background: transparent; font: 500 11px Geist, sans-serif; cursor: pointer; }
+    .path-tab span { color: var(--quiet); font: 10px "JetBrains Mono", monospace; }
+    .path-tab[aria-pressed="true"] { border-color: var(--border); color: var(--text); background: var(--raised); }
+    .path-tab[aria-pressed="true"] span { color: var(--muted); }
+    .suggested-heading { padding: 16px 24px 4px; }
     .skeleton { display: block; height: 12px; border-radius: 4px; background: var(--muted-bg); }
     @keyframes shimmer { to { background-position: -200% 0; } }
 
@@ -235,16 +352,19 @@
       .r-desktop, .badge { display: none; }
       .r-mobile-meter { display: block; }
       .pad, .list-head { padding: 20px; }
-      .bars { gap: 5px; }
-      .bar em { display: none; }
-      .bar:nth-child(odd) em { display: block; }
+      .welcome-panel { min-height: 170px; margin-top: 24px; padding: 20px; background-position: center, right center; }
+      .welcome-actions { align-items: flex-start; }
+      .chart-head { align-items: flex-start; }
+      .chart-nums { gap: 12px; }
+      .path-tabs { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); margin: 16px 16px 8px; }
+      .path-tab { justify-content: center; padding: 0 7px; }
+      .suggested-heading { padding-right: 16px; padding-left: 16px; }
       .crumbs { display: none; }
       .topbar-inner { gap: 8px; }
       .topbar-search { width: auto; min-width: 0; flex: 1; margin-left: 0; }
       .topbar-search kbd, .topbar-profile > span:not(.avatar), .topbar-profile > svg { display: none; }
       .topbar-profile { padding-left: 2px; }
       .topbar-profile .avatar { width: 32px; height: 32px; }
-      .page-head { padding-top: 30px; }
     }
     @media (prefers-reduced-motion: reduce) { * { animation: none !important; transition: none !important; } }
   </style>
@@ -252,7 +372,7 @@
 <body>
   <aside class="sidebar" id="sidebar-navigation" aria-label="Dashboard sidebar">
     <a class="brand" href="./" aria-label="Roadmap Hub home">
-      <span class="brand-mark"><img src="logos/logo-mark.svg" alt="" onerror="this.replaceWith(document.createTextNode('R'))"></span>
+      <span class="brand-mark"><img src="logos/mascot-dark.svg" alt="" onerror="this.replaceWith(document.createTextNode('R'))"></span>
       <span>Roadmap <b>Hub</b></span>
     </a>
 
@@ -260,6 +380,7 @@
       <p class="eyebrow">Learning</p>
       <a class="side-link" href="./"><i data-lucide="library-big"></i>All roadmaps</a>
       <a class="side-link" href="./dashboard.html" aria-current="page"><i data-lucide="chart-no-axes-column-increasing"></i>Overview</a>
+      <a class="side-link" href="./skill-map.html"><i data-lucide="map"></i>Skill map</a>
     </nav>
 
     <nav class="nav-group" aria-label="Account">
@@ -298,14 +419,18 @@
     </header>
 
     <main class="content" id="dashboard-content" aria-busy="true">
-      <header class="page-head rise">
-        <div>
+      <section class="welcome-panel rise" aria-label="Welcome">
+        <div class="welcome-copy">
           <p class="eyebrow">Overview</p>
           <h1 id="greeting">Welcome back</h1>
           <p class="lead">A clear view of your progress across the learning paths.</p>
+          <div class="welcome-actions">
+            <a class="btn btn-glow" id="hero-next-link" href="./"><span id="hero-next-label">Continue learning</span><i data-lucide="arrow-right"></i></a>
+            <a class="btn btn-subtle" href="./">Browse roadmaps <i data-lucide="arrow-up-right"></i></a>
+            <a class="btn btn-subtle" href="./skill-map.html">Explore skill map <i data-lucide="map"></i></a>
+          </div>
         </div>
-        <a class="btn btn-subtle" href="./">Browse roadmaps <i data-lucide="arrow-up-right"></i></a>
-      </header>
+      </section>
 
       <section class="stats rise d1" aria-label="Overall learning progress">
         <div class="panel spot overall">
@@ -323,25 +448,41 @@
           <div><div class="stat-value tabular" id="stat-completed">—</div><div class="hint" id="stat-week">&nbsp;</div></div>
         </div>
         <div class="panel stat">
-          <div class="stat-top">Active paths <span class="chip info"><i data-lucide="layers"></i></span></div>
-          <div><div class="stat-value tabular"><span id="stat-active">—</span><small id="stat-paths"></small></div><div class="hint" id="progress-path-count">Roadmaps you've started</div></div>
+          <div class="stat-top">Weekly goal <span class="chip info"><i data-lucide="target"></i></span></div>
+          <div><div class="stat-value tabular weekly-value"><span id="weekly-progress">— of 3</span><small> topics</small></div><div class="hint" id="weekly-hint">this week</div></div>
         </div>
         <div class="panel stat">
           <div class="stat-top">Current streak <span class="chip warning"><i data-lucide="flame"></i></span></div>
-          <div><div class="stat-value tabular"><span id="stat-streak">—</span><small id="streak-unit"> days</small></div><div class="hint" id="streak-hint">&nbsp;</div></div>
+          <div>
+            <div class="stat-value tabular"><span id="stat-streak">—</span><small id="streak-unit"> days</small></div>
+            <div class="hint" id="streak-hint">Longest: — days</div>
+            <div class="streak-week" id="streak-week" aria-label="Activity this week"></div>
+          </div>
         </div>
       </section>
 
       <div class="row rise d2">
         <section class="panel pad" aria-labelledby="activity-heading">
           <div class="chart-head">
-            <div><p class="eyebrow">Learning activity</p><h2 id="activity-heading">Topics completed per week</h2></div>
+            <div><p class="eyebrow">Learning activity</p><h2 id="activity-heading">Your coding streak map</h2></div>
             <div class="chart-nums">
-              <div><strong class="tabular" id="chart-total">—</strong><span>Last 10 weeks</span></div>
-              <div><strong class="tabular" id="chart-avg">—</strong><span>Weekly avg</span></div>
+              <div><strong class="tabular" id="activity-total">—</strong><span>Topics · 20 weeks</span></div>
+              <div><strong class="tabular" id="activity-active-days">—</strong><span>Active days</span></div>
             </div>
           </div>
-          <div class="bars" id="activity-bars" aria-label="Topics completed per week"></div>
+          <div class="heatmap-scroll">
+            <div class="heatmap-months" id="activity-months" aria-hidden="true"></div>
+            <div class="heatmap-body">
+              <div class="heatmap-weekdays" aria-hidden="true"><span>Mon</span><span>Tue</span><span>Wed</span><span>Thu</span><span>Fri</span><span>Sat</span><span>Sun</span></div>
+              <div class="heatmap-days" id="activity-days" role="img" aria-label="Learning activity over the last 20 weeks"></div>
+            </div>
+          </div>
+          <div class="activity-footer">
+            <span id="activity-best-day">Best day: —</span>
+            <div class="activity-legend" aria-label="Activity intensity: less to more">
+              <span>Less</span><i class="heat-day"></i><i class="heat-day level-1"></i><i class="heat-day level-2"></i><i class="heat-day level-3"></i><i class="heat-day level-4"></i><span>More</span>
+            </div>
+          </div>
           <p class="chart-note" id="activity-note" hidden></p>
         </section>
 
@@ -353,7 +494,8 @@
           </div>
           <div class="meter-copy"><span id="next-left">&nbsp;</span><b id="next-percent"></b></div>
           <div class="meter"><span id="next-bar"></span></div>
-          <div class="next-cta"><a class="btn btn-glow" id="next-link" href="./">Continue learning <i data-lucide="arrow-right"></i></a></div>
+          <ol class="next-list" id="next-topics" aria-label="Upcoming topics"></ol>
+          <div class="next-cta"><a class="btn btn-glow" id="next-link" href="./"><span id="next-link-label">Continue learning</span><i data-lucide="arrow-right"></i></a></div>
         </section>
       </div>
 
@@ -363,6 +505,12 @@
             <div><p class="eyebrow">Progress by roadmap</p><h2 id="roadmaps-heading">Learning paths</h2></div>
             <span id="path-total"></span>
           </div>
+          <div class="path-tabs" role="group" aria-label="Filter learning paths">
+            <button class="path-tab" type="button" data-path-filter="in-progress" aria-pressed="true">In progress <span id="filter-count-in-progress">0</span></button>
+            <button class="path-tab" type="button" data-path-filter="not-started" aria-pressed="false">Not started <span id="filter-count-not-started">0</span></button>
+            <button class="path-tab" type="button" data-path-filter="guides" aria-pressed="false">Guides <span id="filter-count-guides">0</span></button>
+            <button class="path-tab" type="button" data-path-filter="all" aria-pressed="false">All <span id="filter-count-all">0</span></button>
+          </div>
           <ul class="roadmap-list" id="roadmap-progress" aria-label="Your roadmap progress">
             <li class="empty-state"><span class="skeleton" style="width:60%"></span></li>
             <li class="empty-state"><span class="skeleton" style="width:45%"></span></li>
@@ -371,13 +519,22 @@
           <p class="empty-state search-empty" id="roadmap-search-empty" hidden>No roadmaps match your search.</p>
         </section>
 
-        <section class="panel pad" aria-labelledby="recent-heading">
-          <p class="eyebrow">Latest activity</p>
-          <h2 id="recent-heading">Recently completed</h2>
-          <ul class="recent-list" id="recent-items" aria-label="Recently completed topics">
-            <li class="empty-state">Loading your recent activity…</li>
-          </ul>
-        </section>
+        <div class="side-stack">
+          <section class="panel pad" aria-labelledby="recent-heading">
+            <p class="eyebrow">Latest activity</p>
+            <h2 id="recent-heading">Recently completed</h2>
+            <ul class="recent-list" id="recent-items" aria-label="Recently completed topics">
+              <li class="empty-state">Loading your recent activity…</li>
+            </ul>
+          </section>
+          <section class="panel pad" aria-labelledby="achievements-heading">
+            <div class="achievement-head">
+              <div><p class="eyebrow">Achievements</p><h2 id="achievements-heading">Badges</h2></div>
+              <span class="achievement-count tabular" id="achievement-count">— of 9</span>
+            </div>
+            <ul class="achievement-list" id="achievement-list" aria-label="Badge collection. Scroll horizontally to view all nine badges." tabindex="0"></ul>
+          </section>
+        </div>
       </div>
 
       <div class="page-error" id="dashboard-error" role="alert" hidden>
@@ -399,8 +556,31 @@
       { key: "protocols", title: "Protocols", slug: "protocols", icon: "radio", total: 35, levels: 7 },
       { key: "git-github", title: "Git & GitHub", slug: "git-github", icon: "git-branch", resource: true }
     ];
+    const ACHIEVEMENTS = [
+      { title: "First Commit", hint: "1st topic", icon: "git-commit-horizontal", earned: ({ completedTopics }) => completedTopics >= 1 },
+      { title: "On Fire", hint: "7-day streak", icon: "flame", earned: ({ streak }) => streak >= 7 },
+      { title: "Path Finisher", hint: "Finish a roadmap", icon: "flag", earned: ({ finishedPaths }) => finishedPaths >= 1 },
+      { title: "Getting Started", hint: "5 topics", icon: "circle-check-big", earned: ({ completedTopics }) => completedTopics >= 5 },
+      { title: "Double Digits", hint: "10 topics", icon: "hash", earned: ({ completedTopics }) => completedTopics >= 10 },
+      { title: "Explorer", hint: "Start 3 paths", icon: "compass", earned: ({ startedPaths }) => startedPaths >= 3 },
+      { title: "Weekly Warrior", hint: "30-day streak", icon: "calendar-check", earned: ({ streak }) => streak >= 30 },
+      { title: "Roadmap Collector", hint: "Finish 3 paths", icon: "library-big", earned: ({ finishedPaths }) => finishedPaths >= 3 },
+      { title: "Completionist", hint: "Finish every path", icon: "trophy", earned: ({ finishedPaths, totalPaths }) => finishedPaths === totalPaths }
+    ];
+    const TOPIC_TITLES = {
+      protocols: {
+        1: "Protocol Foundations",
+        2: "Client-Server Basics",
+        3: "TCP vs UDP",
+        4: "Ports & Sockets",
+        5: "DNS Basics"
+      }
+    };
+    const WEEKLY_GOAL = 3;
     const DAY = 86400000;
     const $ = (id) => document.getElementById(id);
+    let activePathFilter = "in-progress";
+    let dashboardRoadmaps = [];
     const el = (tag, className, text) => {
       const n = document.createElement(tag);
       if (className) n.className = className;
@@ -413,17 +593,32 @@
     const formatDate = (v) => (!v || Number.isNaN(Date.parse(v))) ? "Date unavailable"
       : new Date(v).toLocaleDateString(undefined, { month: "short", day: "numeric", year: "numeric" });
     const startOfDay = (t) => { const d = new Date(t); d.setHours(0, 0, 0, 0); return d.getTime(); };
+    const formatDaysAgo = (time) => {
+      const days = Math.max(0, Math.round((startOfDay(Date.now()) - startOfDay(time)) / DAY));
+      return days ? `last studied ${days} day${days === 1 ? "" : "s"} ago` : "studied today";
+    };
 
     const computeProgress = (rows) => {
       const counts = new Map();
+      const lastStudied = new Map();
       const started = new Set(rows
         .filter((r) => r.completed || (r.source === "local" && r.started))
         .map((r) => r.roadmap_id));
-      rows.forEach((r) => { if (r.completed) counts.set(r.roadmap_id, (counts.get(r.roadmap_id) || 0) + 1); });
+      rows.forEach((r) => {
+        if (r.completed) counts.set(r.roadmap_id, (counts.get(r.roadmap_id) || 0) + 1);
+        const time = Date.parse(r.completed_at || r.updated_at || "");
+        if (!Number.isNaN(time)) lastStudied.set(r.roadmap_id, Math.max(lastStudied.get(r.roadmap_id) || 0, time));
+      });
       return ROADMAPS.map((r) => {
-        if (r.resource) return { ...r, completed: 0, percent: 0, started: false };
+        if (r.resource) return { ...r, completed: 0, percent: 0, started: false, lastStudied: 0 };
         const completed = Math.min(counts.get(r.key) || 0, r.total);
-        return { ...r, completed, percent: Math.round((completed / r.total) * 100), started: started.has(r.key) || completed > 0 };
+        return {
+          ...r,
+          completed,
+          percent: Math.round((completed / r.total) * 100),
+          started: started.has(r.key) || completed > 0,
+          lastStudied: lastStudied.get(r.key) || 0
+        };
       });
     };
 
@@ -459,37 +654,80 @@
     };
 
     const computeStreak = (completedRows) => {
-      const days = new Set(completedRows.map(completedAt).filter(Boolean).map(startOfDay));
+      const previousDay = (time) => { const date = new Date(time); date.setDate(date.getDate() - 1); return date.getTime(); };
+      const nextDay = (time) => { const date = new Date(time); date.setDate(date.getDate() + 1); return date.getTime(); };
+      const completedDays = [...new Set(completedRows.map(completedAt).filter(Boolean).map(startOfDay))].sort((a, b) => a - b);
+      const days = new Set(completedDays);
       let day = startOfDay(Date.now());
-      if (!days.has(day)) day -= DAY; // streak still alive if you learned yesterday
+      if (!days.has(day)) day = previousDay(day);
       let streak = 0;
-      while (days.has(day)) { streak++; day -= DAY; }
-      return { streak, today: days.has(startOfDay(Date.now())) };
+      while (days.has(day)) { streak++; day = previousDay(day); }
+      let longest = 0;
+      let run = 0;
+      let previous = null;
+      completedDays.forEach((completedDay) => {
+        run = previous !== null && completedDay === nextDay(previous) ? run + 1 : 1;
+        longest = Math.max(longest, run);
+        previous = completedDay;
+      });
+      return { streak, longest };
     };
 
     const renderActivity = (completedRows) => {
-      const weekStart = (t) => { const d = new Date(startOfDay(t)); d.setDate(d.getDate() - d.getDay()); return d.getTime(); };
-      const thisWeek = weekStart(Date.now());
-      const weeks = Array.from({ length: 10 }, (_, i) => ({ start: thisWeek - (9 - i) * 7 * DAY, count: 0 }));
+      const today = startOfDay(Date.now());
+      const firstWeek = new Date(today);
+      firstWeek.setDate(firstWeek.getDate() - ((firstWeek.getDay() + 6) % 7) - 19 * 7);
+      const firstDay = startOfDay(firstWeek.getTime());
+      const counts = new Map();
       completedRows.forEach((r) => {
-        const t = completedAt(r); if (!t) return;
-        const w = weeks.find((wk) => wk.start === weekStart(t)); if (w) w.count++;
+        const time = completedAt(r);
+        if (!time) return;
+        const date = startOfDay(time);
+        if (date < firstDay || date > today) return;
+        counts.set(date, (counts.get(date) || 0) + 1);
       });
-      const max = Math.max(1, ...weeks.map((w) => w.count));
-      const total = weeks.reduce((s, w) => s + w.count, 0);
-      $("chart-total").textContent = total;
-      $("chart-avg").textContent = (total / weeks.length).toFixed(1);
-      const bars = $("activity-bars");
-      bars.replaceChildren();
-      weeks.forEach((w) => {
-        const label = new Date(w.start).toLocaleDateString(undefined, { month: "short", day: "numeric" });
-        const bar = el("div", "bar" + (w.count ? "" : " zero"));
-        bar.title = `${label}: ${w.count} topic${w.count === 1 ? "" : "s"}`;
-        const fill = el("span"); fill.style.height = `${(w.count / max) * 100}%`;
-        const value = el("b", "", String(w.count)); value.style.bottom = `calc(${(w.count / max) * 100}% + 6px)`;
-        bar.append(value, fill, el("em", "", label));
-        bars.append(bar);
-      });
+      const days = $("activity-days");
+      const months = $("activity-months");
+      days.replaceChildren();
+      months.replaceChildren();
+      let total = 0;
+      let activeDays = 0;
+      let bestDay = null;
+      let lastMonth = "";
+      for (let week = 0; week < 20; week++) {
+        const weekDate = new Date(firstWeek);
+        weekDate.setDate(weekDate.getDate() + week * 7);
+        const month = weekDate.toLocaleDateString(undefined, { month: "short" });
+        if (month !== lastMonth) {
+          const label = el("span", "", month);
+          label.style.gridColumn = String(week + 1);
+          months.append(label);
+          lastMonth = month;
+        }
+        for (let weekday = 0; weekday < 7; weekday++) {
+          const date = new Date(weekDate);
+          date.setDate(date.getDate() + weekday);
+          const timestamp = startOfDay(date.getTime());
+          const count = counts.get(timestamp) || 0;
+          const future = timestamp > today;
+          const level = count >= 6 ? 4 : count >= 4 ? 3 : count >= 2 ? 2 : count ? 1 : 0;
+          const cell = el("span", `heat-day level-${level}${future ? " future" : ""}`);
+          cell.title = `${formatDate(timestamp)}: ${count} topic${count === 1 ? "" : "s"}`;
+          cell.setAttribute("aria-hidden", "true");
+          days.append(cell);
+          if (count) {
+            total += count;
+            activeDays++;
+            if (!bestDay || count > bestDay.count) bestDay = { date: timestamp, count };
+          }
+        }
+      }
+      $("activity-total").textContent = String(total);
+      $("activity-active-days").textContent = String(activeDays);
+      days.setAttribute("aria-label", `Learning activity: ${total} topics on ${activeDays} active ${activeDays === 1 ? "day" : "days"} over the last 20 weeks`);
+      $("activity-best-day").textContent = bestDay
+        ? `Best day: ${new Date(bestDay.date).toLocaleDateString(undefined, { weekday: "short", month: "short", day: "numeric" })} · ${bestDay.count} topic${bestDay.count === 1 ? "" : "s"}`
+        : "Best day: No activity yet";
       const undated = completedRows.filter((row) => !completedAt(row)).length;
       $("activity-note").hidden = !undated;
       $("activity-note").textContent = undated
@@ -497,21 +735,61 @@
         : "";
     };
 
+    const renderStreakWeek = (completedRows) => {
+      const days = new Set(completedRows.map(completedAt).filter(Boolean).map(startOfDay));
+      const start = new Date(startOfDay(Date.now()));
+      start.setDate(start.getDate() - ((start.getDay() + 6) % 7));
+      const labels = ["M", "T", "W", "T", "F", "S", "S"];
+      const week = $("streak-week");
+      week.replaceChildren();
+      labels.forEach((label, index) => {
+        const date = new Date(start);
+        date.setDate(date.getDate() + index);
+        const day = el("span", "streak-day");
+        day.append(el("span", "", label));
+        const dot = el("i", `streak-day-dot${days.has(startOfDay(date.getTime())) ? " active" : ""}`);
+        dot.setAttribute("aria-hidden", "true");
+        day.append(dot);
+        week.append(day);
+      });
+    };
+
     const renderUpNext = (progress) => {
       const next = progress.filter((p) => !p.resource && p.percent < 100 && p.started).sort((a, b) => b.percent - a.percent)[0]
         || progress.find((p) => !p.resource && !p.started);
       const box = $("up-next");
-      if (!next) { box.hidden = true; return; }
+      if (!next) {
+        box.hidden = true;
+        $("hero-next-link").href = "./";
+        $("hero-next-label").textContent = "Browse roadmaps";
+        return;
+      }
       box.hidden = false;
       $("next-icon").replaceChildren(icon(next.icon));
       $("next-heading").textContent = next.title;
-      $("next-sub").textContent = next.completed ? `Topic ${next.completed + 1} of ${next.total}`
-        : next.started ? "Resume your current roadmap" : `${next.levels} levels · ${next.total} topics`;
+      const nextTopicNumber = next.completed + 1;
+      $("next-sub").textContent = `${next.title} · Topic ${nextTopicNumber} of ${next.total} · ~15 min`;
       $("next-left").textContent = `${next.total - next.completed} topics left`;
       $("next-percent").textContent = `${next.percent}%`;
       $("next-bar").style.width = `${next.percent}%`;
       $("next-link").href = `${next.slug}/`;
-      $("next-link").firstChild.textContent = next.started ? "Continue learning " : "Start learning ";
+      $("next-link-label").textContent = next.started ? "Continue learning" : "Start learning";
+      $("hero-next-link").href = `${next.slug}/`;
+      $("hero-next-label").textContent = `${next.started ? "Continue" : "Start"} ${next.title}`;
+      const list = $("next-topics");
+      list.replaceChildren();
+      const topicTitles = TOPIC_TITLES[next.key] || {};
+      const times = ["Now", "12 min", "18 min"];
+      for (let offset = 0; offset < 3 && nextTopicNumber + offset <= next.total; offset++) {
+        const topicNumber = nextTopicNumber + offset;
+        const item = el("li", `next-item${offset === 0 ? " current" : ""}`);
+        item.append(
+          el("span", "next-step", String(topicNumber)),
+          el("span", "next-topic", topicTitles[topicNumber] || `Topic ${topicNumber}`),
+          el("span", "next-time", times[offset])
+        );
+        list.append(item);
+      }
     };
 
     const status = (r) => r.resource ? ["guide", "Guide"] : r.percent === 100 ? ["done", "Done"] : r.started ? ["progress", "In progress"] : ["new", "Not started"];
@@ -528,12 +806,26 @@
     };
 
     const renderRoadmaps = (progress) => {
+      dashboardRoadmaps = progress;
       const list = $("roadmap-progress");
       list.replaceChildren();
-      $("path-total").textContent = `${progress.length} paths`;
-      progress.forEach((r) => {
+      const groups = {
+        "in-progress": progress.filter((r) => !r.resource && r.started && r.percent < 100),
+        "not-started": progress.filter((r) => !r.resource && !r.started),
+        guides: progress.filter((r) => r.resource),
+        all: progress
+      };
+      Object.entries(groups).forEach(([filter, items]) => {
+        $(`filter-count-${filter}`).textContent = String(items.length);
+      });
+      document.querySelectorAll("[data-path-filter]").forEach((button) => {
+        button.setAttribute("aria-pressed", String(button.dataset.pathFilter === activePathFilter));
+      });
+
+      const addRoadmap = (r, suggested = false) => {
         const li = el("li");
         li.dataset.searchText = r.title.toLowerCase();
+        if (suggested) li.dataset.suggested = "true";
         const a = el("a", "r-row");
         a.href = `${r.slug}/`; a.setAttribute("aria-label", `Open ${r.title}`);
         const ic = el("span", "r-icon"); ic.append(icon(r.icon));
@@ -541,7 +833,9 @@
         const name = el("div", "r-name");
         const [cls, label] = status(r);
         name.append(el("strong", "", r.title), el("span", `badge ${cls}`, label));
-        info.append(name, el("div", "r-sub", r.resource ? "Reference guide" : `${r.levels} levels · ${r.total} topics`));
+        const description = r.resource ? "Reference guide"
+          : `${r.levels} levels · ${r.total} topics${r.lastStudied ? ` · ${formatDaysAgo(r.lastStudied)}` : ""}`;
+        info.append(name, el("div", "r-sub", description));
         if (!r.resource) { const m = el("div", "r-mobile-meter"); m.append(meter(r.percent, null, true)); info.append(m); }
         const desk = el("div", "r-desktop");
         if (r.resource) {
@@ -554,7 +848,27 @@
         const open = el("span", "r-open"); open.append(icon("arrow-up-right"));
         a.append(ic, info, desk, open);
         li.append(a); list.append(li);
-      });
+      };
+
+      const selected = groups[activePathFilter] || groups.all;
+      $("path-total").textContent = `${selected.length} path${selected.length === 1 ? "" : "s"}`;
+      if (!selected.length && activePathFilter !== "in-progress") {
+        list.append(el("li", "empty-state", "No roadmaps in this section yet."));
+      }
+      selected.forEach((roadmap) => addRoadmap(roadmap));
+
+      if (activePathFilter === "in-progress") {
+        if (!selected.length) list.append(el("li", "empty-state", "Start a learning path to see your progress here."));
+        const suggestions = ["http", "sql"]
+          .map((key) => progress.find((roadmap) => roadmap.key === key && !roadmap.started))
+          .filter(Boolean);
+        if (suggestions.length) {
+          const heading = el("li", "suggested-heading");
+          heading.append(el("p", "eyebrow", "Suggested next"));
+          list.append(heading);
+          suggestions.forEach((roadmap) => addRoadmap(roadmap, true));
+        }
+      }
     };
 
     const renderRecent = (completedRows) => {
@@ -572,11 +886,38 @@
         const li = el("li", "recent-item");
         const dot = el("span", "dot"); dot.append(icon("check"));
         const body = el("div", "recent-copy");
-        const link = el("a", "recent-title", `Topic ${item.topic_id}`);
+        const topicTitle = TOPIC_TITLES[roadmap?.key]?.[item.topic_id] || `Topic ${item.topic_id}`;
+        const link = el("a", "recent-title", topicTitle);
         link.href = roadmap ? `${roadmap.slug}/` : "./";
         const date = completedAt(item) ? formatDate(item.completed_at || item.updated_at) : "Saved on this device · date not recorded";
         body.append(link, el("div", "recent-meta", `${roadmap ? roadmap.title : "Learning path"} · ${date}`));
         li.append(dot, body); list.append(li);
+      });
+    };
+
+    const renderAchievements = (progress, streak) => {
+      const paths = progress.filter((path) => !path.resource);
+      const stats = {
+        completedTopics: paths.reduce((total, path) => total + path.completed, 0),
+        finishedPaths: paths.filter((path) => path.percent === 100).length,
+        startedPaths: paths.filter((path) => path.started).length,
+        streak,
+        totalPaths: paths.length
+      };
+      const earnedCount = ACHIEVEMENTS.filter((achievement) => achievement.earned(stats)).length;
+      $("achievement-count").textContent = `${earnedCount} of ${ACHIEVEMENTS.length}`;
+      const list = $("achievement-list");
+      list.replaceChildren();
+      ACHIEVEMENTS.forEach((achievement) => {
+        const earned = achievement.earned(stats);
+        const card = el("li", `achievement-card ${earned ? "earned" : "locked"}`);
+        card.setAttribute("aria-label", `${achievement.title}: ${earned ? "earned" : `locked; ${achievement.hint}`}`);
+        const badgeIcon = el("span", "achievement-icon");
+        badgeIcon.append(icon(achievement.icon));
+        const copy = el("div", "achievement-copy");
+        copy.append(el("div", "achievement-name", achievement.title), el("div", "achievement-hint", achievement.hint));
+        card.append(badgeIcon, copy);
+        list.append(card);
       });
     };
 
@@ -590,7 +931,11 @@
         if (match) visible++;
       });
       $("roadmap-search-empty").hidden = !query || visible > 0 || !items.length;
-      $("path-total").textContent = query ? `${visible} of ${items.length} paths` : `${items.length} paths`;
+      const matchingPaths = items.filter((item) => !item.dataset.suggested && !item.hidden).length;
+      const selectedCount = Number($(`filter-count-${activePathFilter}`).textContent) || 0;
+      $("path-total").textContent = query
+        ? `${matchingPaths} of ${selectedCount} paths`
+        : `${selectedCount} path${selectedCount === 1 ? "" : "s"}`;
     };
 
     const setOverall = (percent) => {
@@ -604,11 +949,17 @@
     const showError = (error) => {
       const message = error && error.message ? error.message : "Your dashboard could not be loaded. Please try again.";
       if ($("user-email").textContent === "Loading account…") $("user-email").textContent = "Account details unavailable";
-      ["overall-percent", "completed-count", "total-topics", "stat-completed", "stat-active", "stat-streak", "chart-total", "chart-avg"].forEach((id) => { $(id).textContent = "—"; });
+      ["overall-percent", "completed-count", "total-topics", "stat-completed", "stat-streak", "weekly-progress", "activity-total", "activity-active-days", "path-total"].forEach((id) => { $(id).textContent = "—"; });
       $("overall-percent-unit").hidden = true;
       setOverall(0);
       $("roadmap-progress").replaceChildren(el("li", "empty-state", "Roadmap progress is unavailable right now."));
       $("recent-items").replaceChildren(el("li", "empty-state", "Recent activity is unavailable right now."));
+      $("achievement-count").textContent = `— of ${ACHIEVEMENTS.length}`;
+      $("achievement-list").replaceChildren(el("li", "empty-state", "Badges are unavailable right now."));
+      ["in-progress", "not-started", "guides", "all"].forEach((filter) => { $(`filter-count-${filter}`).textContent = "—"; });
+      $("activity-best-day").textContent = "Best day: Activity unavailable";
+      $("weekly-hint").textContent = "Activity unavailable";
+      $("streak-hint").textContent = "Longest streak unavailable";
       $("dashboard-error-message").textContent = message;
       $("dashboard-error").hidden = false;
       $("dashboard-content").setAttribute("aria-busy", "false");
@@ -644,7 +995,7 @@
         window.ROADMAP_HUB_PROGRESS?.setProfileImage?.($("user-initial"), avatarUrl);
         window.ROADMAP_HUB_PROGRESS?.setProfileImage?.($("topbar-initial"), avatarUrl);
         const name = authenticatedUser.user_metadata?.full_name || authenticatedUser.user_metadata?.name || email.split("@")[0];
-        $("greeting").textContent = `Welcome back, ${String(name).split(" ")[0]}`;
+        $("greeting").textContent = `Welcome back, ${String(name).trim().split(/\s+/)[0].toUpperCase()}`;
 
         const result = await client.from("progress")
           .select("roadmap_id, topic_id, completed, completed_at, updated_at")
@@ -658,10 +1009,19 @@
         const total = paths.reduce((s, p) => s + p.total, 0);
         const done = paths.reduce((s, p) => s + p.completed, 0);
         const percent = total ? Math.min(100, Math.round((done / total) * 100)) : 0;
-        const active = paths.filter((p) => p.started).length;
-        const weekAgo = Date.now() - 7 * DAY;
-        const lastWeek = completedRows.filter((r) => completedAt(r) >= weekAgo).length;
-        const { streak, today } = computeStreak(completedRows);
+        const now = new Date();
+        const weekStart = new Date(now);
+        weekStart.setHours(0, 0, 0, 0);
+        weekStart.setDate(weekStart.getDate() - ((weekStart.getDay() + 6) % 7));
+        const nextWeekStart = new Date(weekStart);
+        nextWeekStart.setDate(nextWeekStart.getDate() + 7);
+        const weeklyDone = completedRows.filter((row) => {
+          const time = completedAt(row);
+          return time >= weekStart.getTime() && time < nextWeekStart.getTime();
+        }).length;
+        const daysLeft = Math.max(0, 6 - ((now.getDay() + 6) % 7));
+        const lastWeek = completedRows.filter((row) => completedAt(row) >= Date.now() - 7 * DAY).length;
+        const { streak, longest } = computeStreak(completedRows);
 
         $("overall-percent").textContent = String(percent);
         $("overall-percent-unit").hidden = false;
@@ -670,18 +1030,19 @@
         setOverall(percent);
         $("stat-completed").textContent = String(done);
         $("stat-week").innerHTML = lastWeek ? `<b>+${lastWeek}</b> in the last 7 days` : "None in the last 7 days";
-        $("stat-active").textContent = String(active);
-        $("stat-paths").textContent = ` / ${paths.length}`;
-        $("progress-path-count").textContent = `${active} ${active === 1 ? "path" : "paths"} underway`;
+        $("weekly-progress").textContent = `${weeklyDone} of ${WEEKLY_GOAL}`;
+        $("weekly-hint").textContent = `this week · ${daysLeft} day${daysLeft === 1 ? "" : "s"} left`;
         $("stat-streak").textContent = String(streak);
         $("streak-unit").textContent = streak === 1 ? " day" : " days";
-        $("streak-hint").textContent = today ? "You learned today — nice work" : streak ? "Learn a topic today to keep it going" : "Complete a topic to start a streak";
+        $("streak-hint").textContent = `Longest: ${longest} day${longest === 1 ? "" : "s"}`;
 
         renderActivity(completedRows);
+        renderStreakWeek(completedRows);
         renderUpNext(progress);
         renderRoadmaps(progress);
         applyRoadmapSearch();
         renderRecent(completedRows);
+        renderAchievements(progress, streak);
         refreshIcons();
         content.setAttribute("aria-busy", "false");
       } catch (error) {
@@ -705,6 +1066,13 @@
       document.addEventListener("keydown", (e) => { if (e.key === "Escape" && menu.classList.contains("is-open")) setMenu(false, true); });
       $("retry-button").addEventListener("click", loadDashboard);
       $("roadmap-search").addEventListener("input", applyRoadmapSearch);
+      document.querySelectorAll("[data-path-filter]").forEach((button) => {
+        button.addEventListener("click", () => {
+          activePathFilter = button.dataset.pathFilter;
+          renderRoadmaps(dashboardRoadmaps);
+          applyRoadmapSearch();
+        });
+      });
       document.addEventListener("keydown", (event) => {
         const target = event.target;
         const editing = target instanceof HTMLElement && (target.isContentEditable || ["INPUT", "TEXTAREA", "SELECT"].includes(target.tagName));

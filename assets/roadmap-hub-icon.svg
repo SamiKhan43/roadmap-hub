@@ -1,16 +1,7 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" role="img" aria-labelledby="title">
-  <title id="title">Roadmap Hub branching circuit icon</title>
-  <rect x="8" y="8" width="496" height="496" rx="112" fill="#121613" stroke="#26312a" stroke-width="18"/>
-  <g fill="none" stroke="#c4f46b" stroke-width="29" stroke-linecap="round" stroke-linejoin="round">
-    <path d="M98 398h72l48-48v-68"/>
-    <path d="M223 282h31l42-42v-62l47-47"/>
-    <path d="M223 282h31l42 42v30l47 47"/>
-  </g>
-  <g fill="#c4f46b">
-    <circle cx="98" cy="398" r="29"/>
-    <circle cx="393" cy="131" r="29"/>
-    <circle cx="393" cy="401" r="29"/>
-  </g>
-  <circle cx="223" cy="282" r="40" fill="#c4f46b"/>
-  <circle cx="223" cy="282" r="24" fill="#121613"/>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" role="img" aria-labelledby="title">
+  <title id="title">Roadmap Hub raven</title>
+  <path fill="#172019" d="M24 89c-6-8-6-16 1-24l-7-6 10-5-8-7 14-2-8-9 16 3-5-12 17 7-1-13 15 11 10-5c11 3 19 11 23 22l18 6-18 9-7 1c-2 14-10 25-22 32l18 11-10 6-17-10-12 7-9-11-13 5 3-12z"/>
+  <path fill="none" stroke="#f0f2ec" stroke-linecap="round" stroke-width="2.5" d="m101 57 10-1"/>
+  <circle cx="81" cy="47" r="6" fill="#f0f2ec"/>
+  <circle cx="81" cy="47" r="3.4" fill="#c6f36a"/>
 </svg>

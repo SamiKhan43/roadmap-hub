@@ -209,6 +209,7 @@
     const authState = await getAuthenticatedUser();
     const session = authState.session;
     const dashboardHref = `${basePath}/dashboard.html` || "/dashboard.html";
+    const skillMapHref = `${basePath}/skill-map.html` || "/skill-map.html";
     const profileHref = `${basePath}/profile.html` || "/profile.html";
     const loginHref = `${basePath}/auth/index.html` || "/auth/index.html";
     const profileImageUrl = getProfileImageUrl(session?.user);
@@ -223,6 +224,7 @@
           </button>
           <div class="account-menu__panel" id="account-menu-panel" aria-label="Account options" hidden>
             <a href="${dashboardHref}">Dashboard</a>
+            <a href="${skillMapHref}">Skill Map</a>
             <a href="${profileHref}">Profile</a>
             <button type="button" data-auth-logout>Sign out</button>
             <p class="account-menu__status" data-account-status role="status" aria-live="polite" hidden></p>
@@ -239,6 +241,7 @@
       ? `
         <div class="nav-account-links">
           <a class="nav-link" href="${dashboardHref}">Dashboard</a>
+          <a class="nav-link" href="${skillMapHref}">Skill Map</a>
           <a class="nav-link nav-profile-link" href="${profileHref}">
             <span class="account-avatar" aria-hidden="true"><i data-lucide="user-round" class="h-4 w-4"></i></span>
             <span>Profile</span>

@@ -125,6 +125,7 @@ Published routes stay at the repository root so their GitHub Pages URLs remain s
 roadmap-hub/
 ├── index.html                   # Hub homepage and roadmap catalog
 ├── dashboard.html               # Signed-in dashboard route
+├── skill-map.html               # Dashboard learning map and suggested path order
 ├── profile.html                 # Profile route
 ├── backend-engineer-roadmap.html # Compatibility redirect
 ├── auth/                        # Sign-in and callback routes
@@ -157,7 +158,15 @@ roadmap-hub/
 
 Each published roadmap has a directory containing its `index.html`. The previous backend roadmap URLs redirect to the current route to preserve existing links.
 
-The dashboard uses `logos/logo-horizontal-dark.svg`, while roadmap pages and the browser favicon use `logos/logo-mark.svg`. Use `logos/logo-horizontal.svg` on light backgrounds, such as this README.
+### Brand Assets
+
+<div align="center">
+  <img src="logos/favicon.svg" alt="Roadmap Hub circular raven favicon" width="80">
+  <br>
+  <em>The Roadmap Hub browser-tab icon</em>
+</div>
+
+The circular favicon is used in browser tabs. The horizontal wordmarks pair the raven with the Roadmap Hub name; use `logos/logo-horizontal-dark.svg` on dark backgrounds and `logos/logo-horizontal.svg` on light backgrounds. Standalone mascot versions are available in `logos/mascot.svg`, `logos/mascot-light.svg`, `logos/mascot-dark.svg`, and `logos/mascot-monochrome.svg`.
 
 ---
 
@@ -195,6 +204,7 @@ Open the root `index.html` file, locate the global `ROADMAPS` array definition, 
 ```
 *   Ensure the `slug` exactly matches your subdirectory name.
 *   Verify the `rgb` value matches your roadmap's accent color.
+*   Add progress metadata in `dashboard.html` and a roadmap card in `skill-map.html`, including its recommended learning phase and topic total.
 *   Update the row in the [Available Roadmaps](#available-roadmaps) table.
 
 ### Step 4: Push to Source Control

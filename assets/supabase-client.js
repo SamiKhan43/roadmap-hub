@@ -33,7 +33,8 @@
       const redirect = requested ? new URL(requested) : new URL(`${window.location.origin}${callbackPath}`);
       const allowedOrigins = new Set([productionOrigin, "http://localhost:8000"]);
       if (!allowedOrigins.has(redirect.origin)) return null;
-      if (redirect.pathname !== callbackPath && !(redirect.origin === "http://localhost:8000" && redirect.pathname === "/auth/callback.html")) return null;
+      if (redirect.pathname !== callbackPath
+        && !(redirect.origin === "http://localhost:8000" && redirect.pathname === "/auth/callback.html")) return null;
       return redirect.href;
     } catch {
       return null;
