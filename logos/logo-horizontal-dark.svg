@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 310 72" role="img" aria-labelledby="title desc">
+  <title id="title">Roadmap Hub</title>
+  <desc id="desc">Roadmap Hub raven mascot and wordmark for dark backgrounds.</desc>
+  <g transform="scale(.5625)">
+    <path fill="#f0f2ec" stroke="#f0f2ec" stroke-width="3" stroke-linejoin="round" d="M24 89c-6-8-6-16 1-24l-7-6 10-5-8-7 14-2-8-9 16 3-5-12 17 7-1-13 15 11 10-5c11 3 19 11 23 22l18 6-18 9-7 1c-2 14-10 25-22 32l18 11-10 6-17-10-12 7-9-11-13 5 3-12z"/>
+    <path fill="none" stroke="#0d0f0e" stroke-linecap="round" stroke-width="3.2" d="m100 58 11-1.2"/>
+    <circle cx="81" cy="47" r="8" fill="#0d0f0e"/>
+    <circle cx="81" cy="47" r="5.3" fill="#c6f36a"/>
+    <circle cx="82.2" cy="47" r="2.3" fill="#0d0f0e"/>
+    <circle cx="79.6" cy="45.3" r="1.1" fill="#fff"/>
+  </g>
+  <text x="84" y="48" fill="#f0f2ec" font-family="Inter, Segoe UI, Helvetica, Arial, sans-serif" font-size="32" font-weight="700" letter-spacing="-.8">Roadmap<tspan fill="#c6f36a"> Hub</tspan></text>
+</svg>
